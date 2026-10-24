@@ -1,0 +1,60 @@
+{
+  "titre": "Semestre 1",
+  "examens": [
+    {
+      "matiere": "Compétences",
+      "epreuves": [{ "nom": "Exam", "date": "2026-10-19" }]
+    },
+    {
+      "matiere": "Réseau",
+      "revision": "reseaux",
+      "epreuves": [{ "nom": "Exam", "date": "2026-11-13" }]
+    },
+    {
+      "matiere": "Stratégie",
+      "epreuves": [{ "nom": "Diapo", "date": "2026-11-16" }]
+    },
+    {
+      "matiere": "Anglais",
+      "epreuves": [{ "nom": "Diapo", "date": "2026-11-16" }]
+    },
+    {
+      "matiere": "Stats",
+      "epreuves": [{ "nom": "Exam", "date": "2026-11-16" }]
+    },
+    {
+      "matiere": "TOEIC",
+      "epreuves": [{ "date": "2026-11-20" }]
+    },
+    {
+      "matiere": "Algèbre",
+      "epreuves": [
+        { "nom": "Exam", "date": "2026-11-26", "poids": 60 },
+        { "nom": "Wims / TD", "poids": 40 }
+      ]
+    },
+    {
+      "matiere": "Traitement de données",
+      "epreuves": [
+        { "nom": "Exam", "date": "2026-11-27", "poids": 50 },
+        { "nom": "Projet", "date": "2026-12-06", "poids": 50 }
+      ]
+    },
+    {
+      "matiere": "C++",
+      "epreuves": [{ "nom": "Schooding" }]
+    },
+    {
+      "matiere": "Négocier",
+      "epreuves": []
+    },
+    {
+      "matiere": "Dev front",
+      "epreuves": []
+    },
+    {
+      "matiere": "Unity",
+      "epreuves": [{ "nom": "Projet", "date": "2026-12-06" }]
+    }
+  ]
+}

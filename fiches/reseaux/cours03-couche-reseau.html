@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Réseaux, cours 3 : Couche réseau</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Réseaux · Fiche de révision · Cours 3</p>
+    <h1>Couche réseau</h1>
+  </div>
+  <p class="source">Adressage IPv4, sous-réseaux, en-tête IP,<br>fragmentation, IPv6, ICMP, routage, RIP</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>Adresse réseau</strong> = IP <strong>AND</strong> masque (partie hôte à 0) ; <strong>broadcast</strong> = partie hôte à 1 ; hôtes utilisables = <strong>2<sup>h</sup> − 2</strong>.</li>
+    <li><strong>Classes</strong> : A 0–127 (/8) · B 128–191 (/16) · C 192–223 (/24).</li>
+    <li><strong>Sous-réseaux</strong> : emprunter n bits à la partie hôte → 2<sup>n</sup> sous-réseaux ; <strong>taille de bloc = 256 − octet du masque</strong>.</li>
+    <li><strong>Fragmentation</strong> : données par fragment = MTU − 20, arrondies au <strong>multiple de 8</strong> ; <strong>offset = décalage en octets / 8</strong> ; MF = 1 sauf pour le dernier.</li>
+    <li><strong>IP</strong> = sans connexion, au mieux, indépendant du support. <strong>TTL</strong> −1 par routeur. Protocole : 1 ICMP, 6 TCP, 17 UDP.</li>
+    <li><strong>Choix de route</strong> : distance administrative la plus faible (connecté 0, statique 1, OSPF 110, RIP 120), puis métrique la plus faible.</li>
+  </ul>
+</div>
+
+<h2>1. Rôle de la couche réseau et adresse IPv4</h2>
+<p><strong>4 fonctions</strong> : adressage logique, encapsulation (segment → paquet), routage, désencapsulation. Protocoles : IP (v4, v6), ICMP, protocoles de routage (OSPF, RIP…).</p>
+<p><strong>IPv4</strong> = <strong>32 bits</strong> = 4 octets écrits en décimal (0–255) séparés par des points. Elle se compose d'un <strong>Network-ID</strong> (le réseau) et d'un <strong>Host-ID</strong> (l'hôte, unique dans le réseau). Le <strong>masque</strong> les sépare : bits à <strong>1</strong> = réseau, bits à <strong>0</strong> = hôte. Configuration manuelle ou automatique (DHCP) ; voir avec <code>ipconfig</code> / <code>ifconfig</code>.</p>
+
+<div class="deux-colonnes">
+  <div class="boite methode">
+    <span class="boite-titre">Tuto : décimal ↔ binaire (un octet)</span>
+    <table class="mono">
+      <tr><th>2<sup>7</sup></th><th>2<sup>6</sup></th><th>2<sup>5</sup></th><th>2<sup>4</sup></th><th>2<sup>3</sup></th><th>2<sup>2</sup></th><th>2<sup>1</sup></th><th>2<sup>0</sup></th></tr>
+      <tr><td>128</td><td>64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr>
+    </table>
+    <p><strong>Décimal → binaire</strong> : de gauche à droite, si la valeur tient, on met 1 et on la soustrait, sinon 0.<br>
+    105 : 64 ✓ (reste 41), 32 ✓ (9), 16 ✗, 8 ✓ (1), 4 ✗, 2 ✗, 1 ✓ → <code>0110 1001</code>.</p>
+    <p><strong>Binaire → décimal</strong> : additionner les valeurs des bits à 1.</p>
+  </div>
+  <div class="boite">
+    <span class="boite-titre">Valeurs de masque à connaître</span>
+    <table class="mono">
+      <tr><th>Bits à 1 dans l'octet</th><th>Valeur</th><th>Bloc (256 − valeur)</th></tr>
+      <tr><td>1</td><td>128</td><td>128</td></tr>
+      <tr><td>2</td><td>192</td><td>64</td></tr>
+      <tr><td>3</td><td>224</td><td>32</td></tr>
+      <tr><td>4</td><td>240</td><td>16</td></tr>
+      <tr><td>5</td><td>248</td><td>8</td></tr>
+      <tr><td>6</td><td>252</td><td>4</td></tr>
+      <tr><td>7</td><td>254</td><td>2</td></tr>
+      <tr><td>8</td><td>255</td><td>1</td></tr>
+    </table>
+    <p>Ex. /26 = 8 + 8 + 8 + <strong>2</strong> → 255.255.255.<strong>192</strong>.</p>
+  </div>
+</div>
+
+<h2>2. Classes, CIDR et adresses spéciales</h2>
+<table>
+  <tr><th>Classe</th><th>1<sup>er</sup> octet</th><th>Masque par défaut</th><th>Bits réseau / hôte</th><th>Nb de réseaux</th><th>Hôtes par réseau</th></tr>
+  <tr><td><strong>A</strong></td><td>0 – 127</td><td>255.0.0.0 (/8)</td><td>8 / 24</td><td>2<sup>7</sup> = 128</td><td>2<sup>24</sup> − 2 = 16 777 214</td></tr>
+  <tr><td><strong>B</strong></td><td>128 – 191</td><td>255.255.0.0 (/16)</td><td>16 / 16</td><td>2<sup>14</sup> = 16 384</td><td>2<sup>16</sup> − 2 = 65 534</td></tr>
+  <tr><td><strong>C</strong></td><td>192 – 223</td><td>255.255.255.0 (/24)</td><td>24 / 8</td><td>2<sup>21</sup> = 2 097 152</td><td>2<sup>8</sup> − 2 = 254</td></tr>
+</table>
+<p><strong>CIDR</strong> : <code>/n</code> = nombre de bits à 1 du masque (partie réseau), sans notion de classe. Partie hôte = 32 − n bits.</p>
+<div class="deux-colonnes">
+  <ul>
+    <li><strong>Adresse réseau</strong> : partie hôte à 0, 1<sup>re</sup> adresse de la plage.</li>
+    <li><strong>Broadcast</strong> : partie hôte à 1, dernière adresse de la plage.</li>
+    <li><strong>127.0.0.1</strong> (127.0.0.0/8) : bouclage (loopback), pour tester TCP/IP sur soi-même.</li>
+  </ul>
+  <ul>
+    <li><strong>Privées</strong> : réseau local uniquement, <strong>non routables</strong>, réutilisables d'un réseau à l'autre.</li>
+    <li><strong>Publiques</strong> : routables sur Internet, acheminées entre FAI.</li>
+    <li><em>Bon à savoir (hors diapo)</em> : plages privées 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16.</li>
+  </ul>
+</div>
+
+<div class="boite methode">
+  <span class="boite-titre">Tuto : adresse réseau, broadcast, plage et nombre d'hôtes</span>
+  <ol>
+    <li>Trouver le <strong>masque</strong> (classe ou /n) et l'<strong>octet « intéressant »</strong> : celui où le masque n'est ni 255 ni 0.</li>
+    <li><strong>Taille de bloc</strong> = 256 − valeur du masque dans cet octet.</li>
+    <li>Lister les multiples du bloc (0, bloc, 2 × bloc…) : l'<strong>adresse réseau</strong> est le multiple juste ≤ à l'octet de l'IP ; les octets suivants passent à 0.</li>
+    <li><strong>Broadcast</strong> = multiple suivant − 1 ; les octets suivants passent à 255.</li>
+    <li><strong>Plage utilisable</strong> = réseau + 1 → broadcast − 1. <strong>Hôtes</strong> = 2<sup>h</sup> − 2 (h = 32 − n).</li>
+  </ol>
+  <div class="deux-colonnes">
+    <div class="exemple"><strong>192.44.10.105 /26</strong> (exemple du cours)<br>
+      Masque 255.255.255.192 → octet 4, bloc = 256 − 192 = <strong>64</strong><br>
+      Multiples : 0, <strong>64</strong>, 128… → 105 est entre 64 et 128<br>
+      Réseau <strong>192.44.10.64</strong> · broadcast <strong>192.44.10.127</strong><br>
+      Plage .65 → .126 · hôtes 2<sup>6</sup> − 2 = <strong>62</strong><br>
+      <span class="mono">Vérif AND : 01101001 AND 11000000 = 01000000 = 64</span></div>
+    <div class="exemple"><strong>172.10.10.172</strong> avec le masque par défaut<br>
+      172 → classe B → /16 : les deux derniers octets sont la partie hôte<br>
+      Réseau <strong>172.10.0.0</strong> · broadcast <strong>172.10.255.255</strong><br><br>
+      <strong>192.168.5.130 /27</strong><br>
+      Bloc = 256 − 224 = 32 → multiples 96, <strong>128</strong>, 160<br>
+      Réseau <strong>.128</strong> · broadcast <strong>.159</strong> · 30 hôtes</div>
+  </div>
+</div>
+
+<h2>3. Créer des sous-réseaux</h2>
+<p>On <strong>emprunte des bits à la partie hôte</strong> pour coder l'ID de sous-réseau : &lt;réseau&gt;&lt;sous-réseau&gt;&lt;hôte&gt;, et on les met à 1 dans le masque.</p>
+<div class="deux-colonnes">
+  <div class="boite methode">
+    <span class="boite-titre">Tuto A : on connaît le nombre de sous-réseaux N</span>
+    <ol>
+      <li>Plus petit n tel que <strong>2<sup>n</sup> ≥ N</strong>.</li>
+      <li>Nouveau masque = masque de départ + n bits.</li>
+      <li>Bloc = 256 − octet du masque → adresses des sous-réseaux = multiples du bloc.</li>
+      <li>Pour chacun : 1<sup>re</sup> adresse + 1, broadcast = suivant − 1.</li>
+    </ol>
+    <div class="exemple"><strong>183.1.0.0</strong> (classe B, /16), 4 sous-réseaux<br>
+      2<sup>2</sup> = 4 → n = 2 → <strong>/18 = 255.255.192.0</strong>, bloc 64 (3<sup>e</sup> octet)
+      <table class="mono">
+        <tr><th>Sous-réseau</th><th>Plage</th><th>Broadcast</th></tr>
+        <tr><td>183.1.0.0</td><td>.0.1 → .63.254</td><td>183.1.63.255</td></tr>
+        <tr><td>183.1.64.0</td><td>.64.1 → .127.254</td><td>183.1.127.255</td></tr>
+        <tr><td>183.1.128.0</td><td>.128.1 → .191.254</td><td>183.1.191.255</td></tr>
+        <tr><td>183.1.192.0</td><td>.192.1 → .255.254</td><td>183.1.255.255</td></tr>
+      </table></div>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Tuto B : on connaît le nombre d'hôtes H par sous-réseau</span>
+    <ol>
+      <li>Plus petit h tel que <strong>2<sup>h</sup> − 2 ≥ H</strong> (bits pour l'hôte).</li>
+      <li>Masque = <strong>/(32 − h)</strong>.</li>
+      <li>Bits de sous-réseau = nouveau masque − masque de départ → <strong>2<sup>(bits)</sup> sous-réseaux</strong>.</li>
+      <li>Bloc, adresses et broadcasts comme au tuto A.</li>
+    </ol>
+    <div class="exemple"><strong>128.99.0.0</strong> (classe B), 1000 hôtes par sous-réseau<br>
+      2<sup>10</sup> − 2 = 1022 ≥ 1000 → h = 10 → /22 = <strong>255.255.252.0</strong><br>
+      Sous-réseau : 22 − 16 = 6 bits → <strong>2<sup>6</sup> = 64 sous-réseaux</strong><br>
+      Bloc = 256 − 252 = 4 (3<sup>e</sup> octet)<br>
+      SR1 : <strong>128.99.0.0</strong> → broadcast <strong>128.99.3.255</strong><br>
+      SR2 : <strong>128.99.4.0</strong> → broadcast <strong>128.99.7.255</strong></div>
+  </div>
+</div>
+
+<h2>4. Le protocole IPv4</h2>
+<p><strong>Caractéristiques</strong> : <strong>sans connexion</strong> (aucun contact préalable, envoi même si la destination ne peut pas recevoir) · <strong>au mieux</strong> (aucune garantie de livraison ni d'absence d'erreur ; la fiabilité vient de TCP) · <strong>indépendant du support</strong> (fibre, satellite, sans-fil… ; adapte la taille des paquets).</p>
+<table>
+  <tr><th>Champ</th><th>Bits</th><th>À retenir</th></tr>
+  <tr><td>Version</td><td>4</td><td>4 (<code>0100</code>) ou 6 (<code>0110</code>)</td></tr>
+  <tr><td>IHL</td><td>4</td><td>Longueur d'en-tête en <strong>mots de 32 bits</strong> : 5 → 20 octets (min) ; 15 → 60 octets (max). Octets = IHL × 4</td></tr>
+  <tr><td>Services différenciés</td><td>8</td><td>DSCP (6, priorité QoS : 000000 best effort, 101110 VoIP) + ECN (2, congestion : 11 = congestion signalée)</td></tr>
+  <tr><td>Total Length</td><td>16</td><td>En-tête + données en octets : 20 à 65 535</td></tr>
+  <tr><td>Identification</td><td>16</td><td>Identique pour tous les fragments d'un même paquet</td></tr>
+  <tr><td>Flags</td><td>3</td><td>0 (inutilisé) · <strong>DF</strong> interdit la fragmentation · <strong>MF</strong> = 1 si d'autres fragments suivent</td></tr>
+  <tr><td>Fragment Offset</td><td>13</td><td>Position du fragment, en <strong>blocs de 8 octets</strong></td></tr>
+  <tr><td>TTL</td><td>8</td><td>−1 à chaque routeur ; à 0 le paquet est détruit (évite les boucles)</td></tr>
+  <tr><td>Protocole</td><td>8</td><td><strong>1 ICMP · 6 TCP · 17 UDP</strong></td></tr>
+  <tr><td>Header Checksum</td><td>16</td><td>Contrôle de l'<strong>en-tête seulement</strong></td></tr>
+  <tr><td>IP source / destination</td><td>32 + 32</td><td>Puis options (0 à 40 octets) et données</td></tr>
+</table>
+
+<h2>5. La fragmentation</h2>
+<p>Chaque réseau a une <strong>MTU</strong> (taille max d'un paquet) : Ethernet <strong>1500</strong>, FDDI 4352, Token Ring 4440 à 17 940, X25 1007. Paquet &gt; MTU → découpé en fragments. Les fragments gardent la même version, IHL, ToS, <strong>identification</strong>, TTL, protocole et adresses ; changent : <strong>longueur, MF, offset, checksum</strong>.</p>
+<div class="boite methode">
+  <span class="boite-titre">Tuto : fragmenter un paquet</span>
+  <ol>
+    <li><strong>Données à transporter</strong> = taille du paquet − 20 (en-tête).</li>
+    <li><strong>Charge max par fragment</strong> = MTU − 20, <strong>arrondie au multiple de 8 inférieur</strong>.</li>
+    <li><strong>Nombre de fragments</strong> = données / charge, arrondi <strong>au-dessus</strong>.</li>
+    <li><strong>Dernier fragment</strong> = données − (nombre − 1) × charge.</li>
+    <li><strong>Offset du fragment k</strong> (k = 0, 1, 2…) = k × charge / 8.</li>
+    <li>Tous : même Identification ; <strong>MF = 1</strong> sauf le dernier (MF = 0). Taille d'un fragment = ses données + 20.</li>
+  </ol>
+  <div class="deux-colonnes">
+    <div class="exemple"><strong>Cours : paquet de 1500 octets, MTU 525</strong><br>
+      Données 1500 − 20 = 1480<br>
+      Charge 525 − 20 = 505 → <strong>504</strong> (504 = 63 × 8)<br>
+      1480 / 504 ≈ 2,9 → <strong>3 fragments</strong> : 504, 504, 472<br>
+      Offsets : 0, 504/8 = <strong>63</strong>, 1008/8 = <strong>126</strong><br>
+      Flags : 001, 001, 000</div>
+    <div class="exemple"><strong>Exercice : paquet de 576 octets, MTU 150</strong><br>
+      Données 576 − 20 = 556<br>
+      Charge 150 − 20 = 130 → <strong>128</strong> ; fragment de 148 octets<br>
+      556 / 128 ≈ 4,3 → <strong>5 fragments</strong><br>
+      Dernier : 556 − 4 × 128 = <strong>44 octets</strong><br>
+      Offsets : <strong>0, 16, 32, 48, 64</strong></div>
+  </div>
+</div>
+<div class="boite piege"><span class="boite-titre">Pièges</span>Oublier de retirer les 20 octets d'en-tête ; donner l'offset en octets au lieu de blocs de 8 ; oublier d'arrondir la charge au multiple de 8.</div>
+
+<h2>6. IPv6</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li><strong>128 bits</strong> (≈ 340 × 10<sup>36</sup> adresses) contre 32 bits (≈ 4,3 milliards).</li>
+      <li>Écriture : <strong>8 blocs de 16 bits en hexa</strong> séparés par « : ».</li>
+      <li>Apports : en-tête simplifié, auto-configuration, <strong>multicast au lieu du broadcast</strong>, <strong>IPsec</strong> obligatoire, plus besoin de <strong>NAT</strong>.</li>
+      <li>Coexistence avec IPv4 : <strong>double pile</strong>, <strong>tunneling</strong>, <strong>NAT64</strong>.</li>
+      <li>En-tête de taille <strong>fixe : 40 octets</strong>.</li>
+    </ul>
+    <div class="boite methode"><span class="boite-titre">Tuto : abréger une adresse IPv6</span>
+      1. Retirer les zéros en tête de chaque bloc. 2. Remplacer <strong>une seule</strong> suite de blocs nuls par <code>::</code>.<br>
+      <code>2001:0db8:0000:0000:0101:abcd:0000:1234</code><br>→ <code>2001:db8:0:0:101:abcd:0:1234</code> → <code>2001:db8::101:abcd:0:1234</code></div>
+  </div>
+  <table>
+    <tr><th>IPv4</th><th>IPv6</th></tr>
+    <tr><td>Version (4)</td><td>Version (6)</td></tr>
+    <tr><td>Services différenciés</td><td>Traffic Class</td></tr>
+    <tr><td>—</td><td><strong>Flow Label</strong> (20 bits, nouveau : flux à traiter spécialement, ex. VoIP)</td></tr>
+    <tr><td>Total Length</td><td>Payload Length (sans l'en-tête de base)</td></tr>
+    <tr><td>Protocole</td><td>Next Header (6 TCP, 17 UDP, 58 ICMPv6)</td></tr>
+    <tr><td>TTL</td><td>Hop Limit</td></tr>
+    <tr><td>IP src / dest 32 bits</td><td>IP src / dest 128 bits</td></tr>
+  </table>
+</div>
+
+<h2>7. ICMP</h2>
+<div class="deux-colonnes">
+  <p><strong>ICMP</strong> (couche 3) contrôle les erreurs de transmission ; il est encapsulé dans IP (<strong>Protocole = 1</strong>). <code>ping</code> envoie des <strong>requêtes d'écho (type 8)</strong> et reçoit des <strong>réponses d'écho (type 0)</strong>.</p>
+  <table>
+    <tr><th>Type</th><th>Signification</th></tr>
+    <tr><td>0 / 8</td><td>Réponse / requête d'écho (ping)</td></tr>
+    <tr><td>3</td><td>Destination inaccessible (code 0 réseau, 1 hôte, 2 protocole, 3 port, 4 fragmentation nécessaire mais DF)</td></tr>
+    <tr><td>5</td><td>Redirection</td></tr>
+    <tr><td>11</td><td>Temps dépassé (TTL à 0 ou réassemblage trop long)</td></tr>
+    <tr><td>12</td><td>Problème de paramètre (en-tête erroné)</td></tr>
+  </table>
+</div>
+
+<h2>8. Le routage</h2>
+<p><strong>Routage</strong> = trouver le meilleur chemin. <strong>Passerelle par défaut</strong> = l'équipement (routeur) qui fait sortir le trafic du réseau local. <strong>Table de routage</strong> : destination, masque, passerelle (« on-link » = joignable directement), interface, <strong>métrique</strong> (coût : la plus faible est préférée). <code>0.0.0.0/0</code> = <strong>route par défaut</strong>.</p>
+<div class="deux-colonnes">
+  <div class="boite methode">
+    <span class="boite-titre">Tuto : où l'hôte envoie-t-il le paquet ?</span>
+    <ol>
+      <li>Calculer le réseau de la destination (IP dest AND masque de chaque route).</li>
+      <li>Si c'est <strong>son propre réseau</strong> (route « on-link ») → envoi <strong>direct</strong> par son interface.</li>
+      <li>Sinon, aucune route précise → <strong>route par défaut 0.0.0.0</strong> → envoi à la <strong>passerelle</strong>, qui choisit la suite.</li>
+    </ol>
+    <div class="exemple">PC1 = 192.168.10.10/24, passerelle 192.168.10.1.<br>→ 192.168.10.20 : direct (on-link).<br>→ 10.10.10.10 : passerelle 192.168.10.1.</div>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Tuto : quelle route le routeur choisit-il ?</span>
+    <ol>
+      <li>Même destination apprise par plusieurs sources → la plus petite <strong>distance administrative</strong>.</li>
+      <li>Même protocole → la plus petite <strong>métrique</strong>.</li>
+    </ol>
+    <table class="mono">
+      <tr><th>Origine</th><th>DA</th><th>Origine</th><th>DA</th></tr>
+      <tr><td>Connecté</td><td>0</td><td>IGRP</td><td>100</td></tr>
+      <tr><td>Statique</td><td>1</td><td>OSPF</td><td>110</td></tr>
+      <tr><td>Récap. EIGRP</td><td>5</td><td>IS-IS</td><td>115</td></tr>
+      <tr><td>BGP externe</td><td>20</td><td>RIP</td><td>120</td></tr>
+      <tr><td>EIGRP interne</td><td>90</td><td>EIGRP externe</td><td>170</td></tr>
+      <tr><td></td><td></td><td>BGP interne</td><td>200</td></tr>
+    </table>
+  </div>
+</div>
+<table>
+  <tr><th></th><th>Statique (configuré à la main, <code>ip route</code>)</th><th>Dynamique (protocoles de routage)</th></tr>
+  <tr><td>+</td><td>Simple, sécurisé, pas de trafic de mise à jour</td><td>Mise à jour automatique, pas de charge d'administration, évolutif</td></tr>
+  <tr><td>−</td><td>Mise à jour manuelle à chaque changement, erreurs, peu évolutif</td><td>Trafic de mises à jour ; OSPF et EIGRP demandent du processeur</td></tr>
+</table>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Vecteur de distance</strong> : chaque route = distance (métrique) + direction (prochain saut). RIPv1, RIPv2, IGRP (obsolète), EIGRP.</p>
+    <p><strong>État de lien</strong> : chaque routeur a la topologie complète ; mise à jour seulement en cas de changement. <strong>OSPF</strong>, <strong>IS-IS</strong>.</p>
+  </div>
+  <div class="boite">
+    <span class="boite-titre">RIP</span>
+    Vecteur de distance, métrique = <strong>nombre de sauts</strong>, <strong>15 max</strong> (16 = injoignable), mises à jour toutes les <strong>30 s</strong>. Limites : petits réseaux, convergence lente, boucles.<br>
+    <strong>RIPv1</strong> : pas de VLSM, broadcast, pas d'authentification. <strong>RIPv2</strong> : VLSM, multicast <strong>224.0.0.9</strong>, authentification. <strong>RIPng</strong> : IPv6.
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Réseaux, cours 2 : Couches physique et liaison</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Réseaux · Fiche de révision · Cours 2</p>
+    <h1>Couches physique et liaison de données</h1>
+  </div>
+  <p class="source">Supports, mesures et temps de transmission,<br>adresse MAC, trame Ethernet, CRC, ARP, switch</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>3 formules</strong> : T<sub>e</sub> = L / D (émission), T<sub>p</sub> = distance / vitesse (propagation), DA = T<sub>e</sub> + T<sub>p</sub>.</li>
+    <li><strong>MAC</strong> = 48 bits (6 octets) ; broadcast <code>FF-FF-FF-FF-FF-FF</code> ; multicast commence par <code>01-00-5E</code>.</li>
+    <li><strong>Trame Ethernet</strong> : préambule 7 + SFD 1 | MAC dest 6 + MAC src 6 + EtherType 2 (= en-tête 14) | données ≥ 46 | FCS 4 (CRC).</li>
+    <li><strong>EtherType</strong> : 0x0800 IPv4, 0x86DD IPv6, 0x0806 ARP.</li>
+    <li><strong>ARP</strong> : IP → MAC ; requête en broadcast, seul le destinataire répond ; hors du réseau, on demande la MAC de la <strong>passerelle</strong>.</li>
+    <li><strong>Switch</strong> : apprend la MAC <strong>source</strong>, inonde si la destination est inconnue, sinon envoie sur le bon port.</li>
+  </ul>
+</div>
+
+<h2>1. Les supports de transmission</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Avec guide physique</strong> : paires torsadées, coaxial (courant électrique) ; fibre optique (lumière).<br>
+    <strong>Sans guide</strong> : faisceaux hertziens, ondes radio (ondes électromagnétiques) ; laser, infrarouge.</p>
+    <p><strong>Paire torsadée</strong> : le plus répandu en LAN (RJ45). La torsade réduit la <strong>diaphonie</strong> (un signal qui « déteint » sur le fil voisin).</p>
+    <p><strong>Coaxial</strong> : âme en cuivre, isolant, blindage tressé, gaine. Large bande passante, un peu cher ; encore utilisé pour la <strong>TV par câble</strong>.</p>
+  </div>
+  <table>
+    <tr><th>Câble</th><th>Blindage</th><th>Usage</th></tr>
+    <tr><td><strong>UTP</strong></td><td>Aucun (<em>Unshielded</em>)</td><td>Le plus utilisé pour Ethernet</td></tr>
+    <tr><td><strong>STP</strong></td><td>Chaque paire (<em>Shielded</em>)</td><td>Moins de bruit → meilleur signal, plus longue distance</td></tr>
+    <tr><td><strong>FTP</strong></td><td>Écran alu global (<em>Foiled</em>)</td><td>Le type standard, le plus distribué en France</td></tr>
+    <tr><td><strong>SFTP</strong></td><td>Chaque paire + tresse globale</td><td>Locaux à fortes perturbations électromagnétiques</td></tr>
+  </table>
+</div>
+
+<h3>Fibre optique</h3>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Cœur</strong> (silice) + <strong>gaine optique</strong> + gaines de protection. La lumière reste dans le cœur par <strong>réflexion totale</strong> si <span class="cle">n<sub>1</sub> (cœur) &gt; n<sub>2</sub> (gaine)</span>.</p>
+    <p><strong>Émetteur</strong> : LED ou diode laser (électrique → lumière). <strong>Récepteur</strong> : photodiode PIN (lumière → électrique).</p>
+    <p><strong>+</strong> débits très élevés, faible atténuation (répéteur tous les <strong>80 km</strong>, contre 5 km pour le cuivre), insensible aux perturbations électromagnétiques.<br><strong>−</strong> coût, raccordement complexe, fragile (ne se plie pas).</p>
+  </div>
+  <table>
+    <tr><th></th><th>Monomode</th><th>Multimode</th></tr>
+    <tr><td>Cœur</td><td>Fin, <strong>1 seul chemin</strong></td><td>Large (50–62,5 µm), plusieurs chemins</td></tr>
+    <tr><td>Dispersion</td><td>Faible</td><td>Forte</td></tr>
+    <tr><td>Distance</td><td>Jusqu'à ~100 km</td><td>Jusqu'à ~2 km</td></tr>
+    <tr><td>Source</td><td><strong>Laser</strong></td><td><strong>LED</strong></td></tr>
+    <tr><td>Usage</td><td>Réseaux fédérateurs, campus</td><td>Réseaux locaux</td></tr>
+  </table>
+</div>
+<p><strong>Ondes</strong> : caractérisées par leur <strong>fréquence</strong> (Hz) et leur <strong>longueur d'onde</strong>. <strong>Faisceaux hertziens</strong> : 2 à 15 GHz (jusqu'à 80 GHz), antennes directionnelles. + mobilité, milieux ouverts ; − murs, interférences, sécurité à soigner.</p>
+
+<h2>2. Mesures utiles et calcul des temps</h2>
+<table>
+  <tr><th>Grandeur</th><th>Définition</th><th>Formule</th><th>Unité</th></tr>
+  <tr><td><strong>Bande passante</strong></td><td>Capacité <strong>brute</strong> du support</td><td>—</td><td>bit/s</td></tr>
+  <tr><td><strong>Débit</strong></td><td>Bits <strong>réellement</strong> transmis par seconde (≤ bande passante, dépend du trafic et de la latence)</td><td>—</td><td>bit/s</td></tr>
+  <tr><td><strong>Temps d'émission</strong> T<sub>e</sub></td><td>Du 1<sup>er</sup> au dernier bit mis sur la ligne</td><td><span class="formule">T<sub>e</sub> = L / D</span></td><td>s</td></tr>
+  <tr><td><strong>Temps de propagation</strong> T<sub>p</sub></td><td>Trajet d'un bit d'un bout à l'autre</td><td><span class="formule">T<sub>p</sub> = d / v</span></td><td>s</td></tr>
+  <tr><td><strong>Délai d'acheminement</strong> DA</td><td>Du début de l'émission à la fin de la réception</td><td><span class="formule">DA = T<sub>e</sub> + T<sub>p</sub></span></td><td>s</td></tr>
+</table>
+<div class="boite methode">
+  <span class="boite-titre">Tuto : calculer T<sub>e</sub>, T<sub>p</sub> et DA</span>
+  <ol>
+    <li><strong>Mettre la taille L en bits</strong> : 1 octet = 8 bits ; ko = 10<sup>3</sup>, Mo = 10<sup>6</sup> octets (convention des réseaux).</li>
+    <li><strong>Mettre le débit D en bit/s</strong> : 1 kbit/s = 10<sup>3</sup>, 1 Mbit/s = 10<sup>6</sup>, 1 Gbit/s = 10<sup>9</sup> bit/s.</li>
+    <li><strong>T<sub>e</sub> = L / D</strong> (ne dépend <em>pas</em> de la distance).</li>
+    <li><strong>Distance et vitesse dans les mêmes unités</strong> (km et km/s). Lumière / signal : 300 000 km/s.</li>
+    <li><strong>T<sub>p</sub> = d / v</strong> (ne dépend <em>pas</em> de la taille du message).</li>
+    <li><strong>DA = T<sub>e</sub> + T<sub>p</sub></strong>, puis convertir en ms si besoin (× 1000).</li>
+  </ol>
+  <div class="exemple"><strong>Exemple</strong> : fichier de 1 Mo, débit 10 Mbit/s, liaison de 600 km à 300 000 km/s.<br>
+  L = 1 × 10<sup>6</sup> × 8 = 8 × 10<sup>6</sup> bits → T<sub>e</sub> = 8 × 10<sup>6</sup> / 10<sup>7</sup> = <strong>0,8 s</strong><br>
+  T<sub>p</sub> = 600 / 300 000 = 0,002 s = <strong>2 ms</strong> → DA = 0,8 + 0,002 = <strong>0,802 s</strong></div>
+</div>
+<div class="boite piege"><span class="boite-titre">Pièges</span>Oublier le × 8 (octets → bits) ; mélanger ms et s ; mettre la distance en m avec une vitesse en km/s.</div>
+
+<h2>3. Couche liaison et adresse MAC</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Rôle</strong> : communication fiable entre deux nœuds du même support. <strong>4 fonctions</strong> : encapsulation, contrôle d'accès au support, détection d'erreurs, adressage physique. <strong>2 sous-couches</strong> : <strong>LLC</strong> et <strong>MAC</strong>.</p>
+    <p><strong>Adresse MAC</strong> : <strong>48 bits = 6 octets = 12 chiffres hexa</strong>, fixée en usine.<br><strong>OUI</strong> (3 premiers octets) = constructeur ; <strong>NIC</strong> (3 derniers) = la carte.</p>
+  </div>
+  <table>
+    <tr><th>Type</th><th>Pour qui</th><th>Adresse</th></tr>
+    <tr><td>Unicast</td><td>Un hôte</td><td>MAC de la carte</td></tr>
+    <tr><td>Broadcast</td><td>Tout le réseau local (ARP, DHCP)</td><td><code>FF-FF-FF-FF-FF-FF</code> (tous les bits à 1)</td></tr>
+    <tr><td>Multicast</td><td>Un groupe d'hôtes</td><td><code>01-00-5E-…</code></td></tr>
+  </table>
+</div>
+<div class="boite methode">
+  <span class="boite-titre">Tuto : adresse MAC multicast à partir d'une IP multicast (224.0.0.0 à 239.255.255.255)</span>
+  <ol>
+    <li>Écrire le préfixe <strong><code>01-00-5E</code></strong>.</li>
+    <li>Prendre les <strong>3 derniers octets</strong> de l'IP. Si le 1<sup>er</sup> des trois est ≥ 128, lui <strong>retirer 128</strong> (on ne garde que 23 bits : le 25<sup>e</sup> bit de la MAC vaut 0).</li>
+    <li>Convertir chacun en <strong>hexadécimal sur 2 chiffres</strong> : quotient de la division par 16 = 1<sup>er</sup> chiffre, reste = 2<sup>e</sup> (10 = A, 11 = B, 12 = C, 13 = D, 14 = E, 15 = F).</li>
+  </ol>
+  <div class="exemple">
+    <strong>224.0.0.10</strong> → 0, 0, 10 → <code>00-00-0A</code> → <strong><code>01-00-5E-00-00-0A</code></strong><br>
+    <strong>224.0.0.200</strong> → 200 = 12 × 16 + 8 → <code>C8</code> → <strong><code>01-00-5E-00-00-C8</code></strong><br>
+    <strong>239.200.1.5</strong> → 200 ≥ 128 donc 200 − 128 = 72 = 4 × 16 + 8 → <code>48</code> → <strong><code>01-00-5E-48-01-05</code></strong>
+  </div>
+</div>
+
+<h2>4. La trame Ethernet</h2>
+<p>Ethernet (IEEE 802.2 et 802.3) est la technologie LAN dominante ; ses normes (Fast Ethernet 100 Mbit/s, Gigabit, 10 Gigabit) ne diffèrent qu'à la <strong>couche physique</strong>. Trame = en-tête + données + queue ; taille variable (ATM : fixe, 53 octets).</p>
+<table>
+  <tr><th>Préambule</th><th>SFD</th><th>MAC dest</th><th>MAC source</th><th>EtherType</th><th>Données</th><th>FCS</th></tr>
+  <tr><td>7 octets <code>0xAA</code><br>synchronisation</td><td>1 octet <code>0xAB</code><br>début de trame</td><td>6 octets</td><td>6 octets</td><td>2 octets<br>protocole encapsulé</td><td>≥ 46 octets<br>(paquet IP…)</td><td>4 octets<br>CRC</td></tr>
+</table>
+<p><strong>En-tête = 6 + 6 + 2 = 14 octets.</strong> EtherType : <code>0x0800</code> IPv4 · <code>0x86DD</code> IPv6 · <code>0x0806</code> ARP.</p>
+
+<h2>5. Détection d'erreurs : le CRC</h2>
+<div class="boite methode">
+  <span class="boite-titre">Tuto : calculer le CRC à l'émission</span>
+  <ol>
+    <li><strong>Polynôme → mot binaire</strong> : un bit par puissance, de la plus grande à x<sup>0</sup>. g(x) = x<sup>4</sup> + x<sup>2</sup> + x → x<sup>4</sup> x<sup>3</sup> x<sup>2</sup> x<sup>1</sup> x<sup>0</sup> = <code>1 0 1 1 0</code>. Degré <strong>m = 4</strong>.</li>
+    <li><strong>Ajouter m zéros</strong> à la fin du message.</li>
+    <li>Placer le mot du polynôme sous le <strong>premier « 1 »</strong> et faire un <strong>XOR</strong> (noté ^) bit à bit (identiques → 0, différents → 1).</li>
+    <li>Recommencer sous le nouveau premier « 1 », jusqu'à ce qu'il reste moins de m + 1 bits.</li>
+    <li>Les <strong>m derniers bits</strong> = le <strong>CRC</strong>. On transmet <strong>message + CRC</strong>.</li>
+  </ol>
+  <div class="deux-colonnes">
+    <div>
+      <strong>Exemple du cours</strong> : message <code>11100111</code>, g = <code>10110</code>
+<pre>  1 1 1 0 0 1 1 1 0 0 0 0   ← message + 0000
+^ 1 0 1 1 0
+  0 1 0 1 0 1 1 1 0 0 0 0
+^   1 0 1 1 0
+  0 0 0 0 1 1 1 1 0 0 0 0
+^         1 0 1 1 0
+  0 0 0 0 0 1 0 0 0 0 0 0
+^           1 0 1 1 0
+  0 0 0 0 0 0 0 1 1 0 0 0
+^               1 0 1 1 0
+  0 0 0 0 0 0 0 0 1 1 1 0   → CRC = 1110</pre>
+      On transmet <code>11100111 1110</code>.
+    </div>
+    <div>
+      <p><strong>À la réception</strong> : on divise le mot reçu <strong>tel quel</strong> (sans ajouter de zéros) par le polynôme.</p>
+      <ul>
+        <li><strong>Reste = 0</strong> → pas d'erreur détectée.</li>
+        <li><strong>Reste ≠ 0</strong> → erreur.</li>
+      </ul>
+      <p>Ex. <code>11100111 1110</code> ÷ <code>10110</code> → reste <code>0000</code> : correct.</p>
+      <p><strong>Exercices du cours (même g)</strong> :<br>
+      <code>1111011101</code> → CRC <strong>1100</strong><br>
+      <code>1100010101</code> → CRC <strong>1000</strong><br>
+      <code>1111000101010</code> reçu → reste 0 : <strong>correct</strong></p>
+      <div class="boite piege"><span class="boite-titre">Pièges</span>Le CRC a <strong>m</strong> bits (garder les zéros de tête, ex. <code>0110</code>). On ajoute les zéros à l'émission, <strong>pas</strong> à la réception.</div>
+    </div>
+  </div>
+</div>
+
+<h2>6. ARP (Address Resolution Protocol)</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>But</strong> : trouver l'adresse <strong>MAC</strong> à partir de l'adresse <strong>IP</strong>.</p>
+    <ol>
+      <li>A consulte son <strong>cache ARP</strong>. Si la MAC y est, il l'utilise.</li>
+      <li>Sinon, <strong>ARP Request</strong> en <strong>broadcast</strong> (MAC dest <code>FF-FF-FF-FF-FF-FF</code>) : « qui a l'IP x ? ». Tout le LAN la reçoit.</li>
+      <li>Seul le propriétaire de l'IP répond : <strong>ARP Reply</strong> avec sa MAC.</li>
+      <li>A stocke le couple IP/MAC dans son cache (pour une courte durée).</li>
+    </ol>
+    <p><strong>Destination hors du réseau local</strong> : A demande la MAC de sa <strong>passerelle</strong> (routeur), pas celle de la machine distante.</p>
+  </div>
+  <table>
+    <tr><th>Champ du paquet ARP</th><th>Valeur</th></tr>
+    <tr><td>Hardware type</td><td>1 = Ethernet</td></tr>
+    <tr><td>Protocol type</td><td>0x0800 = IP</td></tr>
+    <tr><td>Hardware / Protocol size</td><td>6 (MAC) / 4 (IPv4)</td></tr>
+    <tr><td>Operation (opcode)</td><td><strong>1 = Request</strong>, <strong>2 = Reply</strong></td></tr>
+    <tr><td>Sender MAC / IP</td><td>Émetteur</td></tr>
+    <tr><td>Target MAC / IP</td><td>Cible (MAC à <strong>0</strong> dans une requête)</td></tr>
+  </table>
+</div>
+
+<h2>7. Fonctionnement d'un switch</h2>
+<div class="deux-colonnes">
+  <table>
+    <tr><th>Fonction</th><th>Ce qu'il fait</th></tr>
+    <tr><td><strong>Apprentissage</strong></td><td>Note « MAC <strong>source</strong> ↔ port d'arrivée » dans sa table MAC</td></tr>
+    <tr><td><strong>Inondation</strong></td><td>MAC dest inconnue → envoie sur <strong>tous les ports sauf celui d'arrivée</strong></td></tr>
+    <tr><td><strong>Réacheminement sélectif</strong></td><td>MAC dest connue → envoie sur <strong>son seul port</strong></td></tr>
+    <tr><td><strong>Horodatage</strong></td><td>Les entrées sont datées ; les plus anciennes sont supprimées</td></tr>
+    <tr><td><strong>Filtrage</strong></td><td>Jette les trames abîmées (CRC faux) ou interdites</td></tr>
+  </table>
+  <div class="boite methode">
+    <span class="boite-titre">Tuto : « que fait le switch ? »</span>
+    <ol>
+      <li>Regarder la <strong>MAC source</strong> → l'ajouter à la table avec le port d'arrivée.</li>
+      <li>Regarder la <strong>MAC destination</strong> dans la table :
+        <ul><li>connue → envoyer sur ce port uniquement ;</li><li>inconnue (ou broadcast) → inonder tous les ports sauf l'arrivée.</li></ul></li>
+    </ol>
+    <div class="exemple">Table vide, l'hôte 0A (port Fa1) écrit à 0C : le switch apprend <strong>0A → Fa1</strong> et <strong>inonde</strong>. Il n'apprendra 0C que quand 0C répondra.</div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,232 @@
+/* Fiches de révision : mise en page A4 pour l'impression en PDF (scripts/build-fiches.js) */
+
+@page {
+  size: A4;
+  margin: 13mm 13mm 15mm;
+
+  @bottom-right {
+    content: counter(page) " / " counter(pages);
+    font: 8pt "Segoe UI", system-ui, sans-serif;
+    color: #8a877e;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  margin: 0;
+  color: #1b1a17;
+  font: 9.5pt/1.45 "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+/* En-tête */
+
+.entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  border-bottom: 3px solid #2a4bd7;
+}
+
+.entete .surtitre {
+  margin: 0;
+  color: #2a4bd7;
+  font-size: 8.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.entete h1 {
+  margin: 2px 0 0;
+  font-size: 19pt;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.entete .source {
+  color: #6b6860;
+  font-size: 8pt;
+  text-align: right;
+}
+
+h2 {
+  margin: 14px 0 6px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #cdd5f5;
+  color: #2a4bd7;
+  font-size: 12pt;
+  break-after: avoid;
+}
+
+h3 {
+  margin: 8px 0 3px;
+  font-size: 10pt;
+  break-after: avoid;
+}
+
+p {
+  margin: 0 0 5px;
+}
+
+ul,
+ol {
+  margin: 0 0 5px;
+  padding-left: 16px;
+}
+
+li {
+  margin-bottom: 1px;
+}
+
+strong {
+  font-weight: 650;
+}
+
+/* Blocs */
+
+.boite {
+  margin: 6px 0;
+  padding: 7px 10px;
+  border: 1px solid #e4e0d7;
+  border-radius: 7px;
+  break-inside: avoid;
+}
+
+.boite > :last-child {
+  margin-bottom: 0;
+}
+
+.boite-titre {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 8pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.essentiel {
+  background: #eef1fd;
+  border-color: #c9d2f6;
+}
+
+.essentiel .boite-titre {
+  color: #2a4bd7;
+}
+
+.methode {
+  background: #f8f8f6;
+  border-left: 4px solid #2a4bd7;
+}
+
+.methode .boite-titre {
+  color: #2a4bd7;
+}
+
+.piege {
+  background: #fdf0eb;
+  border-color: #f2c9b9;
+}
+
+.piege .boite-titre {
+  color: #c0360f;
+}
+
+.astuce {
+  background: #eaf6ee;
+  border-color: #bfe3cb;
+}
+
+.astuce .boite-titre {
+  color: #18763f;
+}
+
+.exemple {
+  margin-top: 5px;
+  padding: 5px 8px;
+  background: #fff;
+  border: 1px dashed #cdc8bc;
+  border-radius: 5px;
+}
+
+.deux-colonnes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.deux-colonnes > .boite {
+  margin: 0;
+}
+
+/* Tableaux */
+
+table {
+  width: 100%;
+  margin: 4px 0 6px;
+  border-collapse: collapse;
+  font-size: 8.8pt;
+  break-inside: avoid;
+}
+
+th,
+td {
+  padding: 3px 6px;
+  border-bottom: 1px solid #e4e0d7;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #eeebe4;
+  font-weight: 650;
+}
+
+/* Code et calculs */
+
+code,
+.mono,
+pre {
+  font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+}
+
+code {
+  padding: 0 3px;
+  background: #eeebe4;
+  border-radius: 3px;
+  font-size: 0.95em;
+}
+
+pre {
+  margin: 4px 0;
+  padding: 6px 8px;
+  background: #fff;
+  border: 1px solid #e4e0d7;
+  border-radius: 5px;
+  font-size: 8.8pt;
+  line-height: 1.35;
+  white-space: pre;
+}
+
+.formule {
+  display: inline-block;
+  padding: 2px 8px;
+  margin: 2px 0;
+  background: #fff;
+  border: 1px solid #c9d2f6;
+  border-radius: 5px;
+  font-weight: 650;
+}
+
+.cle {
+  color: #2a4bd7;
+  font-weight: 700;
+}

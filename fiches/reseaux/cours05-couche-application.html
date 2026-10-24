@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Réseaux, cours 5 : Couche application</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Réseaux · Fiche de révision · Cours 5</p>
+    <h1>Couche application</h1>
+  </div>
+  <p class="source">HTTP, DNS, DHCP, SMTP / POP3 / IMAP,<br>FTP, Telnet et SSH</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li>La couche Application de TCP/IP = couches <strong>5, 6 et 7</strong> d'OSI.</li>
+    <li><strong>HTTP</strong> : requête (MÉTHODE URL VERSION) → réponse (VERSION CODE TEXTE). GET lit, POST crée, PUT modifie. 200 OK, 400 Bad Request, 404 Not Found.</li>
+    <li><strong>DNS</strong> : nom → IP. A (IPv4), AAAA (IPv6), PTR (inverse), NS, CNAME (alias), MX (mail), SOA.</li>
+    <li><strong>DHCP</strong> (UDP 67/68) : <strong>D</strong>iscover → <strong>O</strong>ffer → <strong>R</strong>equest → <strong>A</strong>ck (« DORA »), adresse prêtée pour un <strong>bail</strong>.</li>
+    <li><strong>IMAP</strong> synchronise (mails sur le serveur), <strong>POP3</strong> télécharge (mails sur l'appareil). <strong>SSH</strong> (22) chiffré remplace <strong>Telnet</strong> (23) en clair.</li>
+  </ul>
+</div>
+
+<h2>1. HTTP</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Protocole entre le <strong>navigateur</strong> (client) et les <strong>serveurs web</strong> : une requête, puis une réponse.</p>
+    <p><strong>Afficher <code>http://www.cisco.com/index.html</code></strong> :</p>
+    <ol>
+      <li>Découper l'URL : <code>http</code> (protocole), <code>www.cisco.com</code> (serveur), <code>index.html</code> (fichier).</li>
+      <li>Demander au <strong>DNS</strong> l'adresse IP du serveur, puis envoyer <code>GET /index.html</code>.</li>
+      <li>Le serveur renvoie le code <strong>HTML</strong>.</li>
+      <li>Le navigateur l'interprète et affiche la page.</li>
+    </ol>
+    <p><strong>URL</strong> : <code>protocole://[user:password@]hôte[:port][/chemin][/document]</code>. L'hôte est un FQDN ; le port par défaut de HTTP est 80.</p>
+  </div>
+  <div>
+    <table class="mono">
+      <tr><th>Requête</th><th>Réponse</th></tr>
+      <tr><td>GET /index.html HTTP/1.1<br>Host: www.cisco.com<br>User-Agent: …<br><em>(ligne vide)</em><br>[corps : données POST…]</td><td>HTTP/1.1 200 OK<br>Server: Apache…<br>Content-Type: text/html<br><em>(ligne vide)</em><br>&lt;html&gt;…</td></tr>
+    </table>
+    <table>
+      <tr><th>Méthode</th><th>Rôle</th><th>Exemple</th></tr>
+      <tr><td><strong>GET</strong></td><td>Demander sans rien modifier</td><td>Afficher une page</td></tr>
+      <tr><td><strong>POST</strong></td><td>Envoyer des données pour <strong>créer</strong></td><td>Formulaire d'inscription</td></tr>
+      <tr><td><strong>PUT</strong></td><td><strong>Mettre à jour</strong></td><td>Modifier son profil</td></tr>
+    </table>
+    <p>Codes : <strong>200</strong> OK · <strong>400</strong> Bad Request · <strong>404</strong> Not Found · « Authorization Required » (authentification).</p>
+  </div>
+</div>
+
+<h2>2. DNS (Domain Name System)</h2>
+<p>Un paquet IP a besoin d'une <strong>adresse IP</strong>, pas d'un nom : le DNS traduit les <strong>noms de domaine</strong> en adresses, grâce à des serveurs de noms organisés en <strong>arbre</strong>.</p>
+<div class="deux-colonnes">
+  <div>
+    <table>
+      <tr><th colspan="2">FQDN <code>www.exemple.com.</code> (de droite à gauche)</th></tr>
+      <tr><td><code>.</code> final</td><td><strong>Racine</strong> (souvent omise)</td></tr>
+      <tr><td><code>com</code></td><td><strong>TLD</strong> : domaine de premier niveau (.com, .fr, .org)</td></tr>
+      <tr><td><code>exemple</code></td><td>Domaine de deuxième niveau (celui qu'on enregistre)</td></tr>
+      <tr><td><code>www</code></td><td>Nom d'hôte : un service ou une machine</td></tr>
+    </table>
+    <p><strong>13 serveurs racines</strong> (a à m.root-servers.net), chacun répliqué sur des centaines de machines dans le monde : c'est le point de départ de toute recherche.</p>
+  </div>
+  <table>
+    <tr><th>Enregistrement</th><th>Rôle</th></tr>
+    <tr><td><strong>A</strong></td><td>Nom → IPv4 (le plus courant)</td></tr>
+    <tr><td><strong>AAAA</strong></td><td>Nom → IPv6</td></tr>
+    <tr><td><strong>PTR</strong></td><td>IP → nom (résolution <strong>inverse</strong>, <code>in-addr.arpa</code>)</td></tr>
+    <tr><td><strong>NS</strong></td><td>Serveurs de noms qui font autorité sur le domaine</td></tr>
+    <tr><td><strong>CNAME</strong></td><td>Alias vers un autre nom</td></tr>
+    <tr><td><strong>MX</strong></td><td>Serveur de messagerie du domaine</td></tr>
+    <tr><td><strong>SOA</strong></td><td>Infos administratives de la zone (serial, refresh, retry, expire, TTL)</td></tr>
+  </table>
+</div>
+<div class="deux-colonnes">
+  <div class="boite"><span class="boite-titre">Résolution récursive</span>Le serveur interrogé <strong>relaie</strong> lui-même la requête de serveur en serveur (racine → TLD → serveur qui fait autorité) et renvoie <strong>la réponse finale</strong>.</div>
+  <div class="boite"><span class="boite-titre">Résolution itérative</span>Le serveur renvoie seulement <strong>l'adresse du prochain serveur</strong> à interroger. Utilisée si la récursivité est désactivée ou non demandée, et par les serveurs de premier niveau très sollicités.</div>
+</div>
+
+<h2>3. DHCP (Dynamic Host Configuration Protocol)</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Donne automatiquement leur configuration IP aux machines (client/serveur, extension de BOOTP). <strong>UDP</strong>, ports <strong>67</strong> (serveur) et <strong>68</strong> (client) : suffisant pour des échanges simples sur le LAN.</p>
+    <p>Le serveur a une <strong>plage d'adresses</strong> ; il donne une adresse libre, ou réutilise celle d'un client déconnecté. Adresse prêtée pour une durée limitée : le <strong>bail</strong>, renouvelable par un DHCPRequest.</p>
+  </div>
+  <table>
+    <tr><th>Message</th><th>Qui</th><th>Rôle</th></tr>
+    <tr><td><strong>1. Discover</strong></td><td>Client (diffusion)</td><td>« Y a-t-il un serveur DHCP ? »</td></tr>
+    <tr><td><strong>2. Offer</strong></td><td>Serveur</td><td>Propose une adresse IP</td></tr>
+    <tr><td><strong>3. Request</strong></td><td>Client (diffusion)</td><td>Demande l'adresse proposée</td></tr>
+    <tr><td><strong>4. Ack</strong></td><td>Serveur</td><td>Envoie la configuration complète</td></tr>
+    <tr><td>Decline</td><td>Client</td><td>Refuse : la vérification ARP a obtenu une réponse (adresse déjà prise)</td></tr>
+    <tr><td>Release</td><td>Client</td><td>Rend son adresse en quittant le réseau</td></tr>
+  </table>
+</div>
+<div class="boite astuce"><span class="boite-titre">Moyen mnémotechnique</span><strong>DORA</strong> : <strong>D</strong>iscover, <strong>O</strong>ffer, <strong>R</strong>equest, <strong>A</strong>ck. Le client parle en premier et en dernier (Discover, Request), le serveur répond (Offer, Ack).</div>
+
+<h2>4. Messagerie : SMTP, POP3, IMAP</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>SMTP</strong> : envoi des e-mails. Port <strong>25</strong> entre serveurs de messagerie, port <strong>587</strong> pour les clients.</p>
+    <p><strong>POP3</strong> : connexion, <strong>téléchargement</strong>, lecture hors ligne. + simple, hors ligne ; − pas de synchronisation, perte possible des données.</p>
+    <p><strong>IMAP</strong> : connexion, <strong>synchronisation</strong>, modifications en temps réel. + synchronisé, accès à distance, plusieurs appareils.</p>
+  </div>
+  <table>
+    <tr><th></th><th>IMAP</th><th>POP3</th></tr>
+    <tr><td>Synchronisation</td><td>Oui</td><td>Non</td></tr>
+    <tr><td>E-mails conservés</td><td>Sur le <strong>serveur</strong></td><td>Sur l'<strong>appareil</strong></td></tr>
+    <tr><td>Accès multiple</td><td>Oui</td><td>Non</td></tr>
+  </table>
+</div>
+
+<h2>5. FTP, Telnet et SSH</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>FTP</strong> (sur TCP) : échange de fichiers avec <strong>deux canaux</strong> : <strong>contrôle</strong> (commandes, port <strong>21</strong>) et <strong>données</strong> (transfert, port <strong>20</strong>), pour séparer les rôles et envoyer des commandes pendant un transfert.</p>
+    <p><strong>Limites</strong> : données et identifiants <strong>en clair</strong>. Alternatives sécurisées : <strong>FTPS</strong> (FTP sur SSL/TLS) et <strong>SFTP</strong> (via SSH).</p>
+  </div>
+  <table>
+    <tr><th></th><th>Telnet</th><th>SSH</th></tr>
+    <tr><td>Port</td><td>23</td><td>22</td></tr>
+    <tr><td>Chiffrement</td><td>Non (texte en clair)</td><td>Oui (RSA, AES, ECC)</td></tr>
+    <tr><td>Authentification</td><td>Identifiant / mot de passe</td><td>Mot de passe ou clé publique/privée</td></tr>
+    <tr><td>Fonctions</td><td>Commandes à distance</td><td>+ tunnels, transfert de fichiers</td></tr>
+    <tr><td>Aujourd'hui</td><td>Déconseillé</td><td>Fortement recommandé</td></tr>
+  </table>
+</div>
+
+<h2>6. Récapitulatif des protocoles</h2>
+<table>
+  <tr><th>Protocole</th><th>Rôle</th><th>Transport</th><th>Port(s)</th></tr>
+  <tr><td>HTTP / HTTPS</td><td>Web</td><td>TCP</td><td>80 / 443</td></tr>
+  <tr><td>DNS</td><td>Nom → adresse IP</td><td>UDP (et TCP)</td><td>53</td></tr>
+  <tr><td>DHCP</td><td>Configuration IP automatique</td><td>UDP</td><td>67 (serveur) / 68 (client)</td></tr>
+  <tr><td>SMTP</td><td>Envoi d'e-mails</td><td>TCP</td><td>25 (serveurs) / 587 (clients)</td></tr>
+  <tr><td>POP3 / IMAP</td><td>Lecture des e-mails</td><td>TCP</td><td>110 / 143</td></tr>
+  <tr><td>FTP</td><td>Transfert de fichiers</td><td>TCP</td><td>21 (contrôle) / 20 (données)</td></tr>
+  <tr><td>TFTP</td><td>Transfert de fichiers simplifié</td><td>UDP</td><td>69</td></tr>
+  <tr><td>Telnet / SSH</td><td>Accès à distance</td><td>TCP</td><td>23 / 22</td></tr>
+  <tr><td>SNMP</td><td>Supervision du réseau</td><td>UDP</td><td>161</td></tr>
+</table>
+
+</body>
+</html>

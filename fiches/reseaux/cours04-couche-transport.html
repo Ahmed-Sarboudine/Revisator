@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Réseaux, cours 4 : Couche transport</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Réseaux · Fiche de révision · Cours 4</p>
+    <h1>Couche transport</h1>
+  </div>
+  <p class="source">Rôles, ports, TCP (en-tête, connexion,<br>numéros d'ordre, fenêtre), UDP</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>3 rôles</strong> : segmenter et réassembler, identifier les applications (<strong>ports</strong>), proposer TCP (fiable) ou UDP (rapide).</li>
+    <li><strong>Ports</strong> : 0–1023 connus · 1024–49151 enregistrés · 49152–65535 dynamiques (clients).</li>
+    <li><strong>TCP</strong> : segments, en-tête <strong>20 octets</strong>, connexion en 3 temps (SYN, SYN+ACK, ACK), fermeture en 4 (FIN, ACK, FIN, ACK).</li>
+    <li><strong>N° d'ordre suivant = n° d'ordre + taille</strong> ; <strong>n° de reçu = prochain octet attendu</strong> ; <strong>fenêtre</strong> = octets envoyables avant d'attendre un reçu.</li>
+    <li><strong>UDP</strong> : datagrammes, en-tête <strong>8 octets</strong>, sans connexion, ni retransmission, ni ordre, ni contrôle de flux.</li>
+  </ul>
+</div>
+
+<h2>1. Rôles de la couche transport</h2>
+<p>Elle gère les <strong>communications logiques entre applications</strong> sur des hôtes différents : c'est le lien entre la couche application et les couches basses.</p>
+<ol>
+  <li><strong>Segmentation</strong> : découper les données en blocs de taille adaptée, ajouter un en-tête à chacun (segment ou datagramme), réassembler dans le bon ordre à l'arrivée.</li>
+  <li><strong>Identification des applications</strong> par un <strong>numéro de port</strong> : port source (application d'origine) et port de destination (application distante).</li>
+  <li><strong>Options de transport</strong> selon les besoins : TCP ou UDP, compromis entre fiabilité et charge du réseau.</li>
+</ol>
+
+<h2>2. Les numéros de port</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Statique</strong> (fixé par défaut ou à la main) → processus <strong>serveur</strong>.<br><strong>Dynamique</strong> (tiré au hasard, sert d'adresse de retour) → processus <strong>client</strong>.</p>
+    <table>
+      <tr><th>Plage (IANA)</th><th>Groupe</th><th>Pour</th></tr>
+      <tr><td>0 – 1023</td><td>Ports <strong>connus</strong></td><td>Applications standards (HTTP 80, DNS 53, SMTP 25)</td></tr>
+      <tr><td>1024 – 49151</td><td>Ports <strong>enregistrés</strong></td><td>Applications moins courantes (H.323 1720, RADIUS 1812)</td></tr>
+      <tr><td>49152 – 65535</td><td>Ports <strong>dynamiques / privés</strong></td><td>Clients qui ouvrent une connexion</td></tr>
+    </table>
+  </div>
+  <table>
+    <tr><th>Port</th><th>Transport</th><th>Service</th></tr>
+    <tr><td>20 / 21</td><td>TCP</td><td>FTP données / contrôle</td></tr>
+    <tr><td>22</td><td>TCP</td><td>SSH</td></tr>
+    <tr><td>23</td><td>TCP</td><td>Telnet</td></tr>
+    <tr><td>25</td><td>TCP</td><td>SMTP</td></tr>
+    <tr><td>53</td><td>UDP, TCP</td><td>DNS</td></tr>
+    <tr><td>67 / 68</td><td>UDP</td><td>DHCP serveur / client</td></tr>
+    <tr><td>69</td><td>UDP</td><td>TFTP</td></tr>
+    <tr><td>80</td><td>TCP</td><td>HTTP</td></tr>
+    <tr><td>110</td><td>TCP</td><td>POP3</td></tr>
+    <tr><td>143</td><td>TCP</td><td>IMAP</td></tr>
+    <tr><td>161</td><td>UDP</td><td>SNMP</td></tr>
+    <tr><td>443</td><td>TCP</td><td>HTTPS</td></tr>
+  </table>
+</div>
+<div class="boite astuce"><span class="boite-titre">Astuce</span>Les services en <strong>UDP</strong> sont les « petites questions-réponses » et le temps réel : <strong>DNS, DHCP, TFTP, SNMP</strong>. Tout ce qui doit arriver entier (web, mail, fichiers, sessions à distance) est en <strong>TCP</strong>.</div>
+
+<h2>3. TCP ou UDP ?</h2>
+<table>
+  <tr><th></th><th>TCP</th><th>UDP</th></tr>
+  <tr><td>Connexion</td><td>Oui (3-way handshake)</td><td>Non</td></tr>
+  <tr><td>Fiabilité</td><td>Accusés de réception, renvoi des pertes</td><td>Aucune garantie (« au mieux »)</td></tr>
+  <tr><td>Ordre</td><td>Oui (numéros d'ordre)</td><td>Non</td></tr>
+  <tr><td>Contrôle de flux</td><td>Oui (fenêtre)</td><td>Non</td></tr>
+  <tr><td>PDU / en-tête</td><td>Segment / <strong>20 octets</strong></td><td>Datagramme / <strong>8 octets</strong></td></tr>
+  <tr><td>Charge réseau</td><td>Plus forte</td><td>Faible, plus rapide</td></tr>
+  <tr><td>Exemples</td><td>HTTP/HTTPS, SMTP/IMAP, FTP</td><td>VoIP, streaming en direct, DNS, DHCP, TFTP, SNMP</td></tr>
+</table>
+
+<h2>4. L'en-tête TCP</h2>
+<div class="deux-colonnes">
+  <table>
+    <tr><th>Champ</th><th>Bits</th><th>Rôle</th></tr>
+    <tr><td>Port source / destination</td><td>16 + 16</td><td>Applications</td></tr>
+    <tr><td><strong>N° d'ordre</strong> (séquence)</td><td>32</td><td>Position des données → réassemblage dans l'ordre</td></tr>
+    <tr><td><strong>N° de reçu</strong> (ACK)</td><td>32</td><td>Prochain octet attendu</td></tr>
+    <tr><td>Longueur d'en-tête</td><td>4</td><td>Taille de l'en-tête</td></tr>
+    <tr><td>Réservé</td><td>6</td><td>Usage futur</td></tr>
+    <tr><td>Bits de contrôle (flags)</td><td>6</td><td>URG, ACK, PSH, RST, SYN, FIN</td></tr>
+    <tr><td><strong>Fenêtre</strong></td><td>16</td><td>Octets envoyables avant d'attendre un reçu</td></tr>
+    <tr><td>Somme de contrôle</td><td>16</td><td>Erreurs d'en-tête <strong>et</strong> de données</td></tr>
+    <tr><td>Urgent</td><td>16</td><td>Données urgentes</td></tr>
+  </table>
+  <table>
+    <tr><th>Flag</th><th>Signification</th></tr>
+    <tr><td><strong>SYN</strong></td><td>Synchroniser les n° d'ordre : <strong>ouverture</strong></td></tr>
+    <tr><td><strong>ACK</strong></td><td>Accusé de réception (ouverture et fermeture)</td></tr>
+    <tr><td><strong>FIN</strong></td><td>Plus de données : <strong>fermeture</strong></td></tr>
+    <tr><td><strong>RST</strong></td><td>Réinitialiser (erreur, délai dépassé)</td></tr>
+    <tr><td><strong>PSH</strong></td><td>Passer les données à l'application tout de suite</td></tr>
+    <tr><td><strong>URG</strong></td><td>Le pointeur urgent est significatif</td></tr>
+  </table>
+</div>
+
+<h2>5. Ouverture et fermeture d'une connexion</h2>
+<div class="deux-colonnes">
+  <div class="boite">
+    <span class="boite-titre">Ouverture : three-way handshake (3 étapes)</span>
+<pre>Client A                 Serveur B
+   │ ─────── SYN ──────────▶ │
+   │ ◀────── SYN + ACK ───── │
+   │ ─────── ACK ──────────▶ │</pre>
+  </div>
+  <div class="boite">
+    <span class="boite-titre">Fermeture (4 étapes)</span>
+<pre>Client A                 Serveur B
+   │ ─────── FIN ──────────▶ │
+   │ ◀────── ACK ─────────── │
+   │ ◀────── FIN ─────────── │
+   │ ─────── ACK ──────────▶ │</pre>
+  </div>
+</div>
+<p>Communication complète : <strong>ouverture → échange de données → fermeture</strong>. Chaque côté ferme son sens séparément, d'où les 4 étapes.</p>
+
+<h2>6. Numéros d'ordre, reçus et fenêtre</h2>
+<div class="boite methode">
+  <span class="boite-titre">Tuto : calculer les numéros</span>
+  <ol>
+    <li>Un segment de numéro d'ordre <strong>S</strong> et de taille <strong>T</strong> octets contient les octets <strong>S à S + T − 1</strong>.</li>
+    <li><strong>N° d'ordre du segment suivant = S + T</strong>.</li>
+    <li><strong>N° de reçu = dernier octet reçu dans l'ordre + 1</strong> (le prochain attendu). Reçu 1001 = « j'ai tout jusqu'à 1000 ».</li>
+    <li>Avec une fenêtre <strong>W</strong> : l'expéditeur envoie <strong>W octets</strong> (soit W / T segments) puis attend le reçu.</li>
+    <li><strong>Perte</strong> : le récepteur renvoie un reçu égal au <strong>premier octet manquant</strong> et peut <strong>réduire la fenêtre</strong>.</li>
+  </ol>
+  <div class="deux-colonnes">
+    <div class="exemple"><strong>Exemple 1</strong> : segment n° 1001, 500 octets<br>
+      Il contient les octets 1001 à 1500 (1000 octets ont déjà été envoyés avant).<br>
+      Segment suivant : <strong>1501</strong> · reçu attendu : <strong>1501</strong></div>
+    <div class="exemple"><strong>Exemple 2</strong> : fenêtre 3000, segments de 1500<br>
+      Envoi n° 1 et n° 1501 → reçu <strong>3001</strong><br>
+      Envoi n° 3001 et n° 4501 → reçu <strong>6001</strong><br>
+      Si le 3001 est perdu (le 4501 arrive) → reçu <strong>3001</strong> + fenêtre réduite à 1500</div>
+  </div>
+</div>
+<div class="boite piege"><span class="boite-titre">Pièges</span>Le reçu n'est <strong>pas</strong> le dernier octet reçu mais le <strong>suivant</strong> (+1). Après une perte, le reçu reste bloqué sur le premier octet manquant, même si des segments suivants sont arrivés.</div>
+
+<h2>7. UDP</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Protocole <strong>simple et sans connexion</strong>, datagrammes envoyés au mieux, en-tête de <strong>8 octets</strong>.</p>
+    <p><strong>Qui l'utilise ?</strong></p>
+    <ul>
+      <li><strong>Temps réel</strong> (VoIP, streaming) : tolère quelques pertes, pas les délais.</li>
+      <li><strong>Requêtes simples</strong> : DNS, DHCP.</li>
+      <li>Applications qui <strong>gèrent elles-mêmes</strong> la fiabilité : SNMP, TFTP.</li>
+    </ul>
+  </div>
+  <table>
+    <tr><th>Avantages</th><th>Inconvénients</th></tr>
+    <tr><td>Rapide : ni connexion, ni accusé, ni retransmission</td><td>Aucune garantie d'arrivée</td></tr>
+    <tr><td>En-tête léger (8 octets) → plus de données utiles</td><td>Pas de contrôle de flux → risque de surcharge</td></tr>
+    <tr><td>Adapté au temps réel</td><td>Paquets corrompus simplement ignorés</td></tr>
+  </table>
+</div>
+
+</body>
+</html>

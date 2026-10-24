@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Réseaux, cours 1 : Introduction générale</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Réseaux · Fiche de révision · Cours 1</p>
+    <h1>Introduction générale</h1>
+  </div>
+  <p class="source">Concepts, classification, équipements,<br>modèles TCP/IP et OSI, encapsulation</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>Taille des réseaux</strong> : PAN (~10 m) &lt; LAN (~100 m) &lt; MAN (~10 km) &lt; WAN (pays) &lt; Internet (continents).</li>
+    <li><strong>Équipements</strong> : le <strong>hub</strong> répète à tout le monde, le <strong>switch</strong> choisit le port selon l'adresse MAC, le <strong>routeur</strong> choisit le chemin entre réseaux.</li>
+    <li><strong>4 besoins</strong> d'une architecture : tolérance aux pannes, évolutivité, qualité de service (QoS), sécurité.</li>
+    <li><strong>TCP/IP = 4 couches</strong> (pratique), <strong>OSI = 7 couches</strong> (théorique, 1984).</li>
+    <li><strong>Encapsulation</strong> : Données → Segment → Paquet → Trame → Bits, avec les ports, puis les adresses IP, puis les adresses MAC.</li>
+  </ul>
+</div>
+
+<h2>1. Définitions et historique</h2>
+<p><strong>Réseau informatique</strong> : ensemble de moyens <strong>matériels et logiciels</strong> qui assurent les communications entre ordinateurs, terminaux et éléments d'interconnexion, et font circuler des données selon des <strong>protocoles</strong>. Il sert à communiquer, partager des ressources et des données, et rechercher des informations.</p>
+<table>
+  <tr><th>1966</th><th>1969</th><th>1972</th><th>1974</th><th>1984</th></tr>
+  <tr><td>Lancement du projet ARPANET (DARPA, DoD)</td><td>ARPANET voit le jour : 1<sup>er</sup> réseau à transfert de paquets</td><td>1<sup>re</sup> démonstration officielle</td><td>Création de TCP/IP</td><td>ARPANET adopte TCP/IP (1000 nœuds) : base d'Internet</td></tr>
+</table>
+
+<h2>2. Classification par taille (couverture)</h2>
+<table>
+  <tr><th>Type</th><th>Portée</th><th>Rôle</th><th>Supports / technologie</th><th>Exemple</th></tr>
+  <tr><td><strong>PAN</strong> Personal</td><td>~10 m</td><td>Appareils personnels</td><td>USB, Bluetooth</td><td>PC ↔ smartphone</td></tr>
+  <tr><td><strong>LAN</strong> Local</td><td>~100 m</td><td>Une entreprise, communications locales sans Internet</td><td>Paire torsadée, coaxial ; Ethernet ; switchs (et routeurs entre LAN)</td><td>Réseau d'une entreprise</td></tr>
+  <tr><td><strong>MAN</strong> Metropolitan</td><td>~10 km</td><td>Relie des LAN d'une ville</td><td>Paire torsadée, fibre ; Metro-Ethernet</td><td>Bâtiments d'une ville</td></tr>
+  <tr><td><strong>WAN</strong> Wide</td><td>~100 km et plus</td><td>Relie des MAN d'un pays, passe par Internet</td><td>Fibre ; ATM, MPLS</td><td>Agences d'une banque dans plusieurs villes</td></tr>
+  <tr><td><strong>Internet</strong></td><td>Milliers de km</td><td>Relie des WAN de continents</td><td>Fibre, câbles sous-marins</td><td>Sièges d'une multinationale</td></tr>
+</table>
+<div class="deux-colonnes">
+  <div class="boite astuce"><span class="boite-titre">Astuce</span>Ordre alphabétique trompeur : retiens <strong>P-L-M-W</strong> = <strong>P</strong>ersonnel, <strong>L</strong>ocal, <strong>M</strong>étropolitain, <strong>W</strong>ide (le monde).</div>
+  <div class="boite"><span class="boite-titre">VLAN</span>Crée des réseaux locaux <strong>logiquement distincts sur le même switch</strong>, pour la gestion et la sécurité.</div>
+</div>
+
+<h2>3. Topologies</h2>
+<p><strong>Physique</strong> = où sont les câbles et les machines. <strong>Logique</strong> = par où passe l'information (comment les trames circulent).</p>
+<table>
+  <tr><th>Topologie</th><th>Principe</th><th>+</th><th>−</th></tr>
+  <tr><td><strong>Bus</strong></td><td>Tout le monde sur un seul câble</td><td>Simple</td><td>Câble en panne = plus de réseau ; débit partagé ; collisions</td></tr>
+  <tr><td><strong>Étoile</strong></td><td>Tous reliés à un nœud central (switch, hub, routeur)</td><td>Pas de collisions</td><td>Nœud central en panne = plus rien</td></tr>
+  <tr><td><strong>Anneau</strong> (Token Ring)</td><td>Anneau fermé ; on émet quand on a le <strong>jeton</strong></td><td>Accès équitable ; pas de point central</td><td>Ajout/retrait = interruption ; dépannage difficile</td></tr>
+  <tr><td><strong>Maillée</strong></td><td>Chaque station reliée à plusieurs autres</td><td>Robuste (redondance), flexible</td><td>Coût, complexité, consommation d'énergie</td></tr>
+  <tr><td><strong>Hiérarchique</strong></td><td>Réseau divisé en niveaux</td><td colspan="2">—</td></tr>
+</table>
+<div class="boite piege"><span class="boite-titre">Piège</span>Ne pas confondre physique et logique : un réseau peut être <strong>physiquement en étoile</strong> et <strong>logiquement en bus</strong> (ou maillé).</div>
+
+<h2>4. Équipements</h2>
+<table>
+  <tr><th>Équipement</th><th>Intelligent ?</th><th>Rôle</th></tr>
+  <tr><td><strong>Carte réseau (NIC)</strong></td><td>—</td><td>Interface machine ↔ support : découpe en <strong>trames</strong>, transforme en <strong>signaux</strong>, possède une <strong>adresse MAC</strong> unique (voir avec <code>ipconfig</code> sous Windows, <code>ifconfig</code> sous Linux)</td></tr>
+  <tr><td><strong>Hub</strong> (concentrateur)</td><td>Non</td><td>Régénère le signal et le répète vers <strong>tous</strong> les appareils</td></tr>
+  <tr><td><strong>Switch</strong> (commutateur)</td><td><strong>Oui</strong></td><td>4 à 48 ports Ethernet ; envoie la trame <strong>uniquement</strong> sur le port du destinataire (selon l'adresse MAC)</td></tr>
+  <tr><td><strong>Routeur</strong></td><td>Oui</td><td>Interconnecte des réseaux ; <strong>route</strong> les paquets (choisit le chemin)</td></tr>
+  <tr><td><strong>Répéteur</strong></td><td>Non</td><td>Régénère le signal pour aller plus loin ; peut relier deux supports (câble ↔ fibre)</td></tr>
+  <tr><td>Serveur / câbles / baie de brassage</td><td>—</td><td>Héberge des services (web, mail…) / relie les machines (RJ45, fibre) / regroupe les équipements actifs et les arrivées de câbles</td></tr>
+</table>
+<div class="boite astuce"><span class="boite-titre">Astuce</span>« Intelligent » = <strong>lit une adresse</strong> pour décider : le switch lit la MAC, le routeur lit l'IP. Le hub et le répéteur ne lisent rien, ils recopient le signal.</div>
+
+<h2>5. Besoins d'une architecture réseau</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li><strong>Tolérance aux pannes</strong> : limiter l'impact des pannes et rétablir vite → <strong>redondance</strong>.</li>
+      <li><strong>Évolutivité</strong> : accueillir de nouveaux utilisateurs sans dégrader le service des autres.</li>
+      <li><strong>Qualité de service (QoS)</strong> : transporter correctement chaque trafic (débit, délai, pertes). Méthode : <strong>classer</strong> les applications, leur donner une <strong>priorité</strong>, gérer des <strong>files d'attente</strong>.</li>
+      <li><strong>Sécurité</strong>.</li>
+    </ul>
+  </div>
+  <table>
+    <tr><th>FAI (ISP)</th><th>Rôle</th></tr>
+    <tr><td>Niveau 1</td><td>Connexions nationales et internationales, <strong>réseau fédérateur</strong> d'Internet</td></tr>
+    <tr><td>Niveau 2</td><td>Services régionaux, paient le niveau 1</td></tr>
+    <tr><td>Niveau 3</td><td>Contact avec les utilisateurs finaux, paient le niveau 2</td></tr>
+  </table>
+</div>
+
+<h2>6. Commutation de circuits ou de paquets</h2>
+<table>
+  <tr><th></th><th>Circuits (ex. téléphone RTC)</th><th>Paquets (ex. Internet)</th></tr>
+  <tr><td>Principe</td><td>Un circuit est <strong>réservé</strong> de bout en bout (orienté connexion)</td><td>Message découpé en paquets, chacun peut prendre <strong>un chemin différent</strong> (sans connexion)</td></tr>
+  <tr><td>+</td><td>Liaison et débit <strong>garantis</strong></td><td>Ressources partagées, chemins redondants, évolutif, tolérant aux pannes</td></tr>
+  <tr><td>−</td><td>Panne = appel coupé ; circuit occupé même sans parler ; peu de nouveaux circuits</td><td>Il faut gérer la <strong>QoS</strong> (prioriser le temps réel)</td></tr>
+</table>
+
+<h2>7. Modèles en couches</h2>
+<div class="deux-colonnes">
+  <table>
+    <tr><th>OSI (7, théorique, 1984)</th><th>TCP/IP (4)</th><th>PDU</th><th>Adresse ajoutée</th></tr>
+    <tr><td>7 Application<br>6 Présentation<br>5 Session</td><td><strong>Application</strong> (HTTP, SMTP)</td><td>Données</td><td>—</td></tr>
+    <tr><td>4 Transport</td><td><strong>Transport</strong> (TCP, UDP)</td><td>Segment (TCP)<br>Datagramme (UDP)</td><td>Ports</td></tr>
+    <tr><td>3 Réseau</td><td><strong>Internet</strong> : meilleur chemin</td><td>Paquet</td><td>IP</td></tr>
+    <tr><td>2 Liaison<br>1 Physique</td><td><strong>Accès réseau</strong> : matériel, supports</td><td>Trame<br>Bits</td><td>MAC (+ queue de trame)</td></tr>
+  </table>
+  <div>
+    <div class="boite astuce"><span class="boite-titre">Moyen mnémotechnique (OSI, de 1 à 7)</span><strong>P</strong>our <strong>L</strong>e <strong>R</strong>éseau, <strong>T</strong>out <strong>S</strong>e <strong>P</strong>asse <strong>A</strong>utomatiquement : Physique, Liaison, Réseau, Transport, Session, Présentation, Application.</div>
+    <div class="boite"><span class="boite-titre">Pourquoi des couches ?</span>Une communication fait intervenir logiciels et matériels de façon complexe : chaque couche a un rôle précis et ne dialogue qu'avec ses voisines grâce à des <strong>protocoles</strong>.</div>
+  </div>
+</div>
+
+<div class="boite methode">
+  <span class="boite-titre">Méthode : encapsulation et désencapsulation</span>
+  <p><strong>À l'envoi (on descend la pile)</strong>, chaque couche ajoute son en-tête :</p>
+  <ol>
+    <li><strong>Application</strong> : les données (ex. HTML via HTTP).</li>
+    <li><strong>Transport</strong> : en-tête avec <strong>ports</strong> source et destination → <strong>segment</strong>.</li>
+    <li><strong>Internet</strong> : en-tête avec <strong>adresses IP</strong> source et destination → <strong>paquet</strong>.</li>
+    <li><strong>Accès réseau</strong> : en-tête avec <strong>adresses MAC</strong> + queue de trame (contrôle d'erreurs) → <strong>trame</strong>, puis codage en <strong>bits</strong>.</li>
+  </ol>
+  <p><strong>À la réception (on remonte)</strong> : la carte vérifie que la <strong>MAC de destination est la sienne</strong>, retire en-tête et queue de trame → paquet ; la couche Internet retire l'en-tête IP → segment ; la couche transport retire l'en-tête TCP et réassemble → données pour l'application.</p>
+  <div class="exemple">
+    <strong>Exercice du cours (p. 53)</strong> : un hôte source (MAC 00-E0-3D-A0-09-4F, IP 10.13.151.181, port 30423) envoie des données FTP à un hôte destination (MAC 00-E0-E6-A6-3E-03, IP 10.65.122.157, port 21). Ordre dans la trame, chaque fois <em>destination puis source</em> :
+    <table class="mono">
+      <tr><th colspan="2">En-tête de trame</th><th colspan="2">En-tête IP</th><th colspan="2">En-tête TCP</th><th rowspan="2">Données</th><th rowspan="2">Queue</th></tr>
+      <tr><th>MAC dest</th><th>MAC source</th><th>IP dest</th><th>IP source</th><th>Port dest</th><th>Port src</th></tr>
+      <tr><td>00-E0-E6-A6-3E-03</td><td>00-E0-3D-A0-09-4F</td><td>10.65.122.157</td><td>10.13.151.181</td><td>21</td><td>30423</td><td>…</td><td>FCS</td></tr>
+    </table>
+    Le port 21 est celui de FTP (côté serveur) ; 30423 est un port dynamique choisi par le client.
+  </div>
+</div>
+
+</body>
+</html>

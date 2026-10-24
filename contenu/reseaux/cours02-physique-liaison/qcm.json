@@ -1,0 +1,486 @@
+{
+  "matiere": "Réseaux",
+  "document": "cours",
+  "titre": "Couches physique et liaison de données",
+  "questions": [
+    {
+      "id": "c2-001",
+      "type": "unique",
+      "enonce": "Lequel de ces supports de transmission est **sans guide physique** ?",
+      "choix": ["La paire torsadée", "Le câble coaxial", "La fibre optique", "Les faisceaux hertziens"],
+      "reponses": [3],
+      "explication": "Les supports sans guide physique utilisent les ondes électromagnétiques (faisceaux hertziens, ondes radio) ou la lumière libre (laser, infrarouge). La fibre optique transporte aussi de la lumière, mais **guidée** dans un câble.",
+      "page": 2
+    },
+    {
+      "id": "c2-002",
+      "type": "unique",
+      "enonce": "Quel est le type de câble le plus répandu dans les réseaux locaux (LAN), avec des connecteurs RJ45 ?",
+      "choix": ["Le câble coaxial", "Le câble à paires torsadées", "La fibre optique monomode", "Le câble USB"],
+      "reponses": [1],
+      "explication": "Le **câble à paires torsadées** est le plus répandu en LAN, avec des connecteurs RJ45. Le coaxial sert plutôt aux liaisons avec des antennes (TV, radio).",
+      "page": 3
+    },
+    {
+      "id": "c2-003",
+      "type": "unique",
+      "enonce": "Pourquoi les fils d'un câble à paires torsadées sont-ils torsadés ?",
+      "choix": [
+        "Pour augmenter la vitesse de propagation",
+        "Pour réduire la diaphonie",
+        "Pour rendre le câble plus souple",
+        "Pour pouvoir utiliser des connecteurs RJ45"
+      ],
+      "reponses": [1],
+      "explication": "La torsade réduit la **diaphonie** : l'interférence d'un signal avec un autre, souvent due à l'induction électromagnétique entre fils voisins.",
+      "page": 4
+    },
+    {
+      "id": "c2-004",
+      "type": "unique",
+      "enonce": "Que désigne un câble **UTP** ?",
+      "choix": [
+        "Un câble à paires torsadées non blindées, le plus utilisé pour Ethernet",
+        "Un câble à paires torsadées dont chaque paire est blindée",
+        "Un câble coaxial pour la télévision",
+        "Une fibre optique multimode"
+      ],
+      "reponses": [0],
+      "explication": "**UTP** = *Unshielded Twisted-Pair* : paires torsadées **non blindées**. C'est le câble le plus fréquemment utilisé pour les réseaux Ethernet. Le **STP** (*Shielded*) blinde chaque paire.",
+      "page": 5
+    },
+    {
+      "id": "c2-005",
+      "type": "multiple",
+      "enonce": "Quels sont les avantages d'un câble **STP** (blindé) par rapport à un câble UTP ?",
+      "choix": [
+        "Le bruit électrique, à l'intérieur comme à l'extérieur du câble, est réduit",
+        "La qualité du signal est améliorée",
+        "La distance de transmission peut être plus longue",
+        "Il est moins cher"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "Le blindage du STP réduit la diaphonie et les bruits extérieurs, d'où une **meilleure qualité de signal** et une **distance plus longue**. Il n'est pas moins cher : c'est l'UTP qui est le plus répandu.",
+      "page": 5
+    },
+    {
+      "id": "c2-006",
+      "type": "unique",
+      "enonce": "Quel câble à paires torsadées faut-il utiliser dans des locaux soumis à de **fortes perturbations électromagnétiques** ?",
+      "choix": ["UTP", "FTP", "SFTP", "Aucun, seul le coaxial convient"],
+      "reponses": [2],
+      "explication": "Le **SFTP** combine un blindage de chaque paire et une tresse de blindage globale : c'est un câble de haute qualité pour les environnements très perturbés. Le FTP n'a qu'un écran global (c'est le type standard), l'UTP n'en a pas.",
+      "page": 6
+    },
+    {
+      "id": "c2-007",
+      "type": "unique",
+      "enonce": "Pour quel usage le câble coaxial est-il encore très utilisé aujourd'hui ?",
+      "choix": ["Les réseaux locaux Ethernet", "La télévision par câble", "Les réseaux fédérateurs longue distance", "Les connexions Bluetooth"],
+      "reponses": [1],
+      "explication": "Le coaxial a été largement utilisé dans le système téléphonique (où la fibre le remplace), mais il reste très utilisé pour la **télévision par câble**.",
+      "page": 7
+    },
+    {
+      "id": "c2-008",
+      "type": "unique",
+      "enonce": "Dans une fibre optique, quelle condition permet la réflexion totale de la lumière ? ($n_1$ : indice du cœur, $n_2$ : indice de la gaine optique)",
+      "choix": ["$n_1 > n_2$", "$n_1 < n_2$", "$n_1 = n_2$", "Elle ne dépend pas des indices"],
+      "reponses": [0],
+      "explication": "La lumière reste piégée dans le cœur par **réflexion totale** car l'indice du cœur est supérieur à celui de la gaine : $n_1 > n_2$.",
+      "page": 9
+    },
+    {
+      "id": "c2-009",
+      "type": "multiple",
+      "enonce": "Quels composants peuvent servir de **source de lumière** dans une liaison par fibre optique ?",
+      "choix": ["Une LED (diode électroluminescente)", "Une diode laser", "Une photodiode PIN", "Une antenne directionnelle"],
+      "reponses": [0, 1],
+      "explication": "La source transforme les impulsions électriques en impulsions lumineuses : **LED** ou **diode laser**. La photodiode PIN fait l'inverse : c'est le **détecteur** à la réception.",
+      "page": 10
+    },
+    {
+      "id": "c2-010",
+      "type": "multiple",
+      "enonce": "Quelles affirmations sur la fibre **monomode** sont vraies ?",
+      "choix": [
+        "La lumière se propage selon un seul chemin",
+        "Elle utilise des LED comme source de lumière",
+        "Elle convient aux longues distances (jusqu'à environ 100 km)",
+        "Elle a une forte dispersion"
+      ],
+      "reponses": [0, 2],
+      "explication": "Monomode : cœur fin, **un seul chemin**, faible dispersion, **lasers**, longues distances (réseaux fédérateurs). Les LED et la forte dispersion caractérisent la fibre **multimode** (jusqu'à 2 km environ).",
+      "page": 11
+    },
+    {
+      "id": "c2-011",
+      "type": "unique",
+      "enonce": "Pour relier des équipements d'un réseau local sur quelques centaines de mètres avec une source LED, quelle fibre choisir ?",
+      "choix": ["Monomode", "Multimode", "Aucune, la fibre ne fonctionne qu'avec un laser", "Peu importe, elles sont identiques"],
+      "reponses": [1],
+      "explication": "La fibre **multimode** (cœur de 50 à 62,5 µm) utilise des LED et convient aux distances moyennes, jusqu'à 2 km environ : réseaux locaux, quelques centaines de mètres.",
+      "page": 11
+    },
+    {
+      "id": "c2-012",
+      "type": "multiple",
+      "enonce": "Quels sont les avantages de la fibre optique ?",
+      "choix": [
+        "Une bande passante bien plus large et des débits très élevés",
+        "Une faible atténuation",
+        "L'immunité aux interférences électromagnétiques",
+        "Une manipulation facile : elle supporte bien d'être pliée"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "La fibre offre de gros débits, une faible atténuation (un répéteur tous les 80 km contre 5 km pour le cuivre) et n'est pas affectée par les perturbations électromagnétiques. En revanche, elle est **coûteuse** et **délicate** : elle ne supporte pas d'être pliée.",
+      "page": 12
+    },
+    {
+      "id": "c2-013",
+      "type": "unique",
+      "enonce": "D'après le cours, tous les combien faut-il un répéteur sur une liaison en fibre optique, comparé au cuivre ?",
+      "choix": ["5 km pour la fibre, 80 km pour le cuivre", "80 km pour la fibre, 5 km pour le cuivre", "100 m pour les deux", "Jamais pour la fibre"],
+      "reponses": [1],
+      "explication": "Grâce à sa faible atténuation, la fibre n'a besoin d'un répéteur que tous les **80 km**, contre **5 km** pour le cuivre.",
+      "page": 12
+    },
+    {
+      "id": "c2-014",
+      "type": "multiple",
+      "enonce": "Quels sont les **inconvénients** des faisceaux hertziens et des supports sans fil ?",
+      "choix": [
+        "La couverture est limitée par certains matériaux de bâtiment",
+        "Ils sont sensibles aux interférences",
+        "La sécurisation du réseau doit être performante",
+        "Ils limitent la mobilité des utilisateurs"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "Sans fil : limité par les murs, sensible aux interférences, et il faut une sécurité solide. La **mobilité** est au contraire leur principal **avantage**.",
+      "page": 14
+    },
+    {
+      "id": "c2-015",
+      "type": "unique",
+      "enonce": "Comment le cours définit-il la **bande passante** ?",
+      "choix": [
+        "Le temps mis par un signal pour parcourir le support",
+        "La capacité brute d'un support à transporter des données pendant une période donnée, en bit/s",
+        "Le nombre de bits réellement transmis par seconde",
+        "La longueur maximale d'un câble"
+      ],
+      "reponses": [1],
+      "explication": "La bande passante est la **capacité brute** du support, mesurée en bit/s. Le nombre de bits réellement transmis par unité de temps, c'est le **débit**, généralement inférieur.",
+      "page": 16
+    },
+    {
+      "id": "c2-016",
+      "type": "multiple",
+      "enonce": "Quelles affirmations sur le **débit** sont vraies ?",
+      "choix": [
+        "Il est généralement inférieur à la bande passante",
+        "Il dépend de la quantité et du type de trafic",
+        "La latence due aux périphériques traversés l'influence",
+        "Il est toujours égal à la bande passante"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "Le débit est le nombre de bits transmis par unité de temps. Il est en général **inférieur** à la bande passante, à cause du trafic et de la latence créée par les périphériques entre la source et la destination.",
+      "page": 17
+    },
+    {
+      "id": "c2-017",
+      "type": "unique",
+      "exercice": "On envoie un message de $10\\,000$ bits sur une liaison de $600$ km, avec un débit de $1$ Mbit/s. Le signal se propage à $300\\,000$ km/s.",
+      "enonce": "Quel est le **temps d'émission** $T_e$ ?",
+      "choix": ["1 ms", "2 ms", "10 ms", "12 ms"],
+      "reponses": [2],
+      "explication": "$T_e = \\dfrac{L}{D} = \\dfrac{10\\,000}{10^6} = 0{,}01$ s $= 10$ ms. Le temps d'émission ne dépend pas de la distance.",
+      "page": 18
+    },
+    {
+      "id": "c2-018",
+      "type": "unique",
+      "exercice": "On envoie un message de $10\\,000$ bits sur une liaison de $600$ km, avec un débit de $1$ Mbit/s. Le signal se propage à $300\\,000$ km/s.",
+      "enonce": "Quel est le **temps de propagation** $T_p$ ?",
+      "choix": ["0,2 ms", "2 ms", "10 ms", "20 ms"],
+      "reponses": [1],
+      "explication": "$T_p = \\dfrac{\\text{distance}}{\\text{vitesse}} = \\dfrac{600}{300\\,000} = 0{,}002$ s $= 2$ ms. Il ne dépend pas de la taille du message.",
+      "page": 19
+    },
+    {
+      "id": "c2-019",
+      "type": "unique",
+      "exercice": "On envoie un message de $10\\,000$ bits sur une liaison de $600$ km, avec un débit de $1$ Mbit/s. Le signal se propage à $300\\,000$ km/s.",
+      "enonce": "Quel est le **délai d'acheminement** (temps de transfert) du message ?",
+      "choix": ["2 ms", "8 ms", "10 ms", "12 ms"],
+      "reponses": [3],
+      "explication": "$DA = T_e + T_p = 10 + 2 = 12$ ms : c'est le temps entre le début de l'émission et la fin de la réception.",
+      "page": 20
+    },
+    {
+      "id": "c2-020",
+      "type": "multiple",
+      "enonce": "Quels sont les rôles de la couche liaison de données ?",
+      "choix": [
+        "L'encapsulation des données en trames",
+        "Le contrôle d'accès au support",
+        "Le routage des paquets entre réseaux",
+        "L'adressage physique"
+      ],
+      "reponses": [0, 1, 3],
+      "explication": "La couche 2 assure une communication fiable entre deux nœuds d'un même support : encapsulation, contrôle d'accès au support, **détection d'erreurs** et adressage physique (MAC). Le routage entre réseaux relève de la couche 3.",
+      "page": 25
+    },
+    {
+      "id": "c2-021",
+      "type": "unique",
+      "enonce": "Quelles sont les deux sous-couches de la couche liaison de données ?",
+      "choix": ["TCP et UDP", "LLC et MAC", "OUI et NIC", "UTP et STP"],
+      "reponses": [1],
+      "explication": "La couche liaison se divise en **LLC** (*Logical Link Control*) et **MAC** (*Media Access Control*). OUI et NIC sont les deux parties d'une adresse MAC.",
+      "page": 25
+    },
+    {
+      "id": "c2-022",
+      "type": "multiple",
+      "enonce": "Quelles affirmations sur l'adresse MAC Ethernet sont vraies ?",
+      "choix": [
+        "Elle fait 48 bits, soit 6 octets ou 12 chiffres hexadécimaux",
+        "Ses 3 premiers octets (OUI) identifient le constructeur",
+        "Elle fait 32 bits, comme une adresse IPv4",
+        "Elle est attribuée par le fournisseur d'accès Internet"
+      ],
+      "reponses": [0, 1],
+      "explication": "Une adresse MAC fait **48 bits** (6 octets, 12 chiffres hexa). L'**OUI** (3 octets) identifie le constructeur, la partie NIC est attribuée par le constructeur à chaque carte.",
+      "page": 27
+    },
+    {
+      "id": "c2-023",
+      "type": "unique",
+      "enonce": "Quelle est l'adresse MAC de broadcast (diffusion) ?",
+      "choix": ["00-00-00-00-00-00", "FF-FF-FF-FF-FF-FF", "01-00-5E-00-00-00", "FF-FF-FF-00-00-00"],
+      "reponses": [1],
+      "explication": "En broadcast, **tous les bits sont à 1** : FF-FF-FF-FF-FF-FF. Tous les hôtes du domaine de broadcast traitent la trame (utilisé notamment par ARP et DHCP). 01-00-5E est le préfixe du multicast.",
+      "page": 29
+    },
+    {
+      "id": "c2-024",
+      "type": "unique",
+      "exercice": "Une adresse MAC multicast commence par les 24 bits 01-00-5E, suivis d'un bit à 0, puis des 23 bits de poids faible de l'adresse IP multicast.",
+      "enonce": "Quelle est l'adresse MAC multicast associée à l'adresse IP multicast **224.0.0.10** ?",
+      "choix": ["01-00-5E-00-00-10", "01-00-5E-00-00-0A", "FF-FF-FF-00-00-0A", "01-00-5E-E0-00-0A"],
+      "reponses": [1],
+      "explication": "On garde le préfixe **01-00-5E**, puis les 23 bits de poids faible de l'IP : ici 0.0.10, soit 00-00-**0A** en hexadécimal (10 = 0x0A). Le piège est d'écrire 10 en décimal.",
+      "page": 31
+    },
+    {
+      "id": "c2-025",
+      "type": "unique",
+      "exercice": "Une adresse MAC multicast commence par les 24 bits 01-00-5E, suivis d'un bit à 0, puis des 23 bits de poids faible de l'adresse IP multicast.",
+      "enonce": "Quelle est l'adresse MAC multicast associée à l'adresse IP multicast **224.0.0.200** ?",
+      "choix": ["01-00-5E-00-00-C8", "01-00-5E-00-00-200", "01-00-5E-00-00-8C", "01-00-5E-E0-00-C8"],
+      "reponses": [0],
+      "explication": "200 en hexadécimal vaut **C8** (12 × 16 + 8). L'adresse est donc 01-00-5E-00-00-C8.",
+      "page": 31
+    },
+    {
+      "id": "c2-026",
+      "type": "unique",
+      "enonce": "Entre les différentes normes Ethernet (Fast Ethernet, Gigabit, 10 Gigabit), où se situent les différences ?",
+      "choix": ["À la couche physique", "À la couche réseau", "Dans le format des adresses MAC", "Dans la couche application"],
+      "reponses": [0],
+      "explication": "Ethernet (normes IEEE 802.2 et 802.3) décrit à la fois les protocoles de couche 2 et les technologies de couche 1. Les différences entre ses normes sont à la **couche physique**.",
+      "page": 34
+    },
+    {
+      "id": "c2-027",
+      "type": "multiple",
+      "enonce": "Quel champ de la trame Ethernet permet la **synchronisation** entre l'émetteur et le récepteur ?",
+      "choix": ["Le préambule (7 octets)", "L'EtherType", "Le FCS", "L'adresse MAC source"],
+      "reponses": [0],
+      "explication": "Le **préambule** (7 octets à 0xAA = 10101010) synchronise les périphériques. Il est suivi du **SFD** (0xAB = 10101011), qui signale le début de la trame.",
+      "page": 36
+    },
+    {
+      "id": "c2-028",
+      "type": "multiple",
+      "enonce": "Que contient l'en-tête d'une trame Ethernet (14 octets) ?",
+      "choix": [
+        "L'adresse MAC de destination (6 octets)",
+        "L'adresse MAC source (6 octets)",
+        "L'EtherType (2 octets)",
+        "Les adresses IP source et destination"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "6 + 6 + 2 = **14 octets** : MAC destination, MAC source, EtherType. Les adresses IP sont dans le paquet IP, transporté dans le champ de **données** de la trame.",
+      "page": 37
+    },
+    {
+      "id": "c2-029",
+      "type": "unique",
+      "enonce": "Une trame Ethernet a un champ EtherType égal à **0x0806**. Que transporte-t-elle ?",
+      "choix": ["Un paquet IPv4", "Un paquet IPv6", "Un message ARP", "Une trame de broadcast"],
+      "reponses": [2],
+      "explication": "EtherType : **0x0800** pour IPv4, **0x86DD** pour IPv6, **0x0806** pour ARP.",
+      "page": 37
+    },
+    {
+      "id": "c2-030",
+      "type": "unique",
+      "enonce": "Quelle est la longueur **minimale** du champ de données d'une trame Ethernet ?",
+      "choix": ["14 octets", "46 octets", "53 octets", "1500 octets"],
+      "reponses": [1],
+      "explication": "Le champ de données, qui contient le PDU réseau, fait au minimum **46 octets**. 14 octets, c'est l'en-tête ; 53 octets, la taille fixe d'une cellule ATM.",
+      "page": 38
+    },
+    {
+      "id": "c2-031",
+      "type": "unique",
+      "enonce": "À quoi sert le champ **FCS** (4 octets) à la fin d'une trame Ethernet ?",
+      "choix": [
+        "À indiquer le protocole encapsulé",
+        "À vérifier que la trame a été reçue sans erreur, grâce au CRC",
+        "À synchroniser l'émetteur et le récepteur",
+        "À indiquer la longueur de la trame"
+      ],
+      "reponses": [1],
+      "explication": "Le **FCS** (*Frame Check Sequence*) permet de vérifier l'intégrité de la trame avec un contrôle de redondance cyclique (**CRC**).",
+      "page": 39
+    },
+    {
+      "id": "c2-032",
+      "type": "unique",
+      "enonce": "Quel mot binaire correspond au polynôme générateur $g(x) = x^4 + x^2 + x$ ?",
+      "choix": ["1011", "10110", "01101", "11010"],
+      "reponses": [1],
+      "explication": "On écrit le coefficient de chaque puissance de $x^4$ à $x^0$ : $x^4$ (1), $x^3$ (0), $x^2$ (1), $x^1$ (1), $x^0$ (0), soit **10110**. Le degré est 4, donc on ajoutera 4 zéros au message.",
+      "page": 42
+    },
+    {
+      "id": "c2-033",
+      "type": "unique",
+      "exercice": "On utilise le polynôme générateur $g(x) = x^4 + x^2 + x$ (mot binaire `10110`). On ajoute 4 zéros au message, puis on fait des XOR successifs avec `10110` jusqu'à obtenir un reste de 4 bits.",
+      "enonce": "On veut transmettre le message `1111011101`. Quel est le CRC à ajouter ?",
+      "choix": ["`1100`", "`1000`", "`1110`", "`0000`"],
+      "reponses": [0],
+      "explication": "Le reste de la division de `1111011101 0000` par `10110` est **1100** : on transmet donc `1111011101 1100`. (`1110` est le CRC de l'exemple du cours pour `11100111`.)",
+      "page": 45
+    },
+    {
+      "id": "c2-034",
+      "type": "unique",
+      "exercice": "On utilise le polynôme générateur $g(x) = x^4 + x^2 + x$ (mot binaire `10110`). On ajoute 4 zéros au message, puis on fait des XOR successifs avec `10110` jusqu'à obtenir un reste de 4 bits.",
+      "enonce": "On veut transmettre le message `1100010101`. Quel est le mot transmis ?",
+      "choix": ["`1100010101 0000`", "`1100010101 1000`", "`1100010101 1100`", "`1000 1100010101`"],
+      "reponses": [1],
+      "explication": "Le CRC vaut **1000** et il est ajouté **à la fin** du message : `1100010101 1000`.",
+      "page": 46
+    },
+    {
+      "id": "c2-035",
+      "type": "multiple",
+      "exercice": "On utilise le polynôme générateur $g(x) = x^4 + x^2 + x$ (mot binaire `10110`). On reçoit le message `1111000101010`.",
+      "enonce": "La division du message reçu par `10110` donne un reste de `0000`. Que peut-on conclure ?",
+      "choix": [
+        "Aucune erreur n'est détectée",
+        "Le message contient une erreur",
+        "Il faut d'abord ajouter 4 zéros au message reçu",
+        "Le CRC reçu vaut 0000"
+      ],
+      "reponses": [0],
+      "explication": "À la réception, on divise directement le message reçu (sans ajouter de zéros) par le polynôme : un **reste nul** signifie qu'il n'y a pas d'erreur. Le CRC reçu, ce sont les 4 derniers bits : `1010`.",
+      "page": 47
+    },
+    {
+      "id": "c2-036",
+      "type": "unique",
+      "enonce": "Quel est le rôle du protocole ARP ?",
+      "choix": [
+        "Trouver l'adresse IP d'une machine à partir de son nom",
+        "Trouver l'adresse MAC d'une machine à partir de son adresse IP",
+        "Attribuer automatiquement une adresse IP",
+        "Vérifier l'intégrité des trames"
+      ],
+      "reponses": [1],
+      "explication": "**ARP** (*Address Resolution Protocol*) permet de connaître l'adresse **MAC** d'une carte réseau à partir de son adresse **IP**. Il consulte d'abord la table (cache) ARP, puis émet une requête si l'adresse n'y est pas.",
+      "page": 49
+    },
+    {
+      "id": "c2-037",
+      "type": "multiple",
+      "enonce": "L'hôte A connaît l'adresse IP de l'hôte B mais pas son adresse MAC. Que se passe-t-il ?",
+      "choix": [
+        "A envoie une requête ARP avec l'adresse MAC de destination FF:FF:FF:FF:FF:FF",
+        "Toutes les machines du réseau local reçoivent la requête",
+        "Toutes les machines répondent avec leur adresse MAC",
+        "A garde l'adresse obtenue dans son cache ARP pendant une courte période"
+      ],
+      "reponses": [0, 1, 3],
+      "explication": "La requête ARP part en **broadcast** et tout le LAN la reçoit, mais **seul B répond** (*ARP Reply*) avec son adresse MAC. A la stocke dans son **cache ARP** pour éviter de refaire la requête.",
+      "page": 50
+    },
+    {
+      "id": "c2-038",
+      "type": "unique",
+      "exercice": "L'hôte A (10.10.0.1) doit envoyer une trame vers **172.16.0.10**, qui se trouve en dehors de son réseau. Sa passerelle est le routeur **10.10.0.254**, dont l'adresse MAC n'est pas dans le cache ARP de A.",
+      "enonce": "Quelle adresse IP A demande-t-il dans sa requête ARP ?",
+      "choix": ["172.16.0.10", "10.10.0.254", "10.10.0.255", "255.255.255.255"],
+      "reponses": [1],
+      "explication": "Hors du réseau local, la trame doit être remise à la **passerelle**. A cherche donc l'adresse MAC de **10.10.0.254**, puis la stocke dans son cache ARP. ARP ne traverse pas le routeur pour atteindre 172.16.0.10.",
+      "page": 56
+    },
+    {
+      "id": "c2-039",
+      "type": "multiple",
+      "exercice": "Capture Wireshark d'une requête ARP :\n\n```\nEthernet II, Src: 00:24:e8:ca:dd:de, Dst: ff:ff:ff:ff:ff:ff\n  Type: ARP (0x0806)\nAddress Resolution Protocol (request)\n  Opcode: request (1)\n  Sender MAC address: 00:24:e8:ca:dd:de\n  Sender IP address: 192.168.1.59\n  Target MAC address: 00:00:00:00:00:00\n  Target IP address: 192.168.1.1\n```",
+      "enonce": "Quelles affirmations sont vraies ?",
+      "choix": [
+        "L'adresse IP source est 192.168.1.59 et l'adresse IP de destination 192.168.1.1",
+        "La trame est envoyée en broadcast",
+        "Le champ Target MAC address est à 0 car c'est justement l'adresse recherchée",
+        "Le champ EtherType 0x0806 indique un paquet IPv4"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "La machine 192.168.1.59 demande « *Who has 192.168.1.1?* » en **broadcast** (ff:ff:ff:ff:ff:ff). Dans une requête, l'adresse MAC cible est mise à 0. EtherType **0x0806** indique **ARP** (IPv4 serait 0x0800).",
+      "page": 60
+    },
+    {
+      "id": "c2-040",
+      "type": "unique",
+      "enonce": "Dans un paquet ARP, que vaut le champ **Operation** pour une réponse ?",
+      "choix": ["00", "01", "02", "06"],
+      "reponses": [2],
+      "explication": "Operation : **01** pour une requête (*Request*), **02** pour une réponse (*Reply*). 06 est la longueur d'une adresse Ethernet (*Hardware Address Length*).",
+      "page": 62
+    },
+    {
+      "id": "c2-041",
+      "type": "unique",
+      "exercice": "Un switch vient d'être allumé : sa table MAC est vide. L'hôte 1 (adresse MAC 0A, branché sur le port Fa1) envoie une trame à l'hôte 2 (adresse MAC 0C, port Fa6).",
+      "enonce": "Que fait le switch ?",
+      "choix": [
+        "Il envoie la trame uniquement sur Fa6",
+        "Il enregistre 0A sur le port Fa1, puis envoie la trame sur tous les ports sauf Fa1",
+        "Il rejette la trame car 0C n'est pas dans sa table",
+        "Il enregistre 0C sur le port Fa6, puis envoie la trame sur Fa6"
+      ],
+      "reponses": [1],
+      "explication": "**Apprentissage** : le switch note l'adresse **source** (0A) et son port (Fa1). **Inondation** : la destination 0C étant inconnue, il envoie la trame sur tous les ports sauf celui d'arrivée. Il n'apprendra 0C que lorsque l'hôte 2 répondra.",
+      "page": 66
+    },
+    {
+      "id": "c2-042",
+      "type": "multiple",
+      "enonce": "Parmi ces fonctions, lesquelles sont assurées par un switch de couche 2 ?",
+      "choix": [
+        "L'apprentissage des correspondances adresse MAC ↔ port",
+        "L'inondation quand l'adresse MAC de destination est inconnue",
+        "Le routage des paquets entre réseaux IP",
+        "Le filtrage des trames endommagées (CRC faux)"
+      ],
+      "reponses": [0, 1, 3],
+      "explication": "Fonctions d'un switch : apprentissage, inondation, réacheminement sélectif, horodatage des entrées de la table MAC et filtrage. Il se base uniquement sur les adresses MAC : le **routage IP** est le rôle du routeur.",
+      "page": 72
+    }
+  ]
+}
