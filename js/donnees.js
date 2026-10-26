@@ -89,7 +89,7 @@ export async function questionsDeLaMatiere(matiere) {
   return Promise.all(matiere.documents.map((doc) => questionsDuDocument(matiere, doc)));
 }
 
-function melanger(liste) {
+export function melanger(liste) {
   const copie = [...liste];
   for (let i = copie.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

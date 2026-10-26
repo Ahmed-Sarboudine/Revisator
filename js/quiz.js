@@ -2,7 +2,7 @@
 
 import { echapper, markdown, markdownEnLigne } from "./rendu.js";
 import { noterResultat, erreursDe } from "./erreurs.js";
-import { urlPdf } from "./donnees.js";
+import { urlPdf, melanger } from "./donnees.js";
 import { icones } from "./icones.js";
 
 const NOMS_DOCUMENT = { cours: "Cours", td: "TD" };
@@ -18,6 +18,8 @@ export function lancerQuiz(conteneur, options) {
     const { q, matiere, doc } = items[position];
     const multiple = q.type === "multiple";
     const typeInput = multiple ? "checkbox" : "radio";
+    // les choix sont mélangés à chaque affichage ; value garde l'indice d'origine
+    const ordre = melanger(q.choix.map((_, i) => i));
 
     conteneur.innerHTML = `
       <header class="barre-quiz">
@@ -44,14 +46,14 @@ export function lancerQuiz(conteneur, options) {
         <p class="consigne ${multiple ? "consigne-multiple" : ""}">${multiple ? "Plusieurs réponses possibles" : "Une seule réponse"}</p>
         <form>
           <ul class="choix ${multiple ? "choix-multiple" : ""}">
-            ${q.choix
+            ${ordre
               .map(
-                (c, i) => `
+                (i, position) => `
               <li>
                 <label class="choix-item">
                   <input type="${typeInput}" name="choix" value="${i}">
-                  <span class="choix-lettre" aria-hidden="true">${LETTRES[i]}</span>
-                  <span class="choix-texte">${markdownEnLigne(c)}</span>
+                  <span class="choix-lettre" aria-hidden="true">${LETTRES[position]}</span>
+                  <span class="choix-texte">${markdownEnLigne(q.choix[i])}</span>
                 </label>
               </li>`
               )
@@ -84,9 +86,9 @@ export function lancerQuiz(conteneur, options) {
       noterResultat(matiere.id, items[position].cle, juste);
 
       form.classList.add("corrige");
-      inputs.forEach((input, i) => {
+      inputs.forEach((input) => {
         input.disabled = true;
-        const bonne = q.reponses.includes(i);
+        const bonne = q.reponses.includes(Number(input.value));
         let etat = null;
         if (bonne && input.checked) etat = ["juste", icones.juste, "Bonne réponse"];
         else if (bonne) etat = ["manquee", icones.juste, multiple ? "À cocher aussi" : "La bonne réponse"];

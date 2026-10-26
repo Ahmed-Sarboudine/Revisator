@@ -25,7 +25,7 @@ Pas de backend, pas de compte : tout tourne dans le navigateur.
 - **Correction immédiate** : après avoir validé chaque question, le site montre si c'est juste, les bonnes réponses et l'explication, puis on passe à la suivante. Score récapitulatif à la fin de la série.
 - **Mode examen** : un QCM par matière qui pioche un **échantillon** de questions dans tous ses cours et TDs (pas toutes les questions), réparti entre les documents pour couvrir tout le programme. Pas de chronomètre.
 - **Revoir mes erreurs** : les questions ratées sont mémorisées dans le navigateur (`localStorage`) ; un mode ne repose que celles-ci. Dès qu'une question est réussie (dans n'importe quel mode), elle sort de la liste.
-- Les questions s'affichent dans l'ordre du fichier, sans mélange (sauf le tirage du mode examen).
+- Les questions s'affichent dans l'ordre du fichier (sauf le tirage du mode examen), mais **l'ordre des réponses est mélangé à chaque affichage** : on ne peut pas retenir « c'était la B ». Dans les explications, ne jamais faire référence à une lettre ou à une position.
 - **Pensé pour le téléphone d'abord** : une question par écran, gros boutons, lisible sans zoomer ; s'adapte aussi à l'ordinateur.
 - **Mise en forme** : énoncés, choix et explications en Markdown, formules en LaTeX (`$...$`), blocs de code.
 
