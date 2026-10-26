@@ -963,6 +963,33 @@ a.nav-exam,
   margin-bottom: 0;
 }
 
+.figure {
+  margin: 0 0 16px;
+}
+
+.figure a {
+  display: block;
+  overflow-x: auto;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid var(--bordure);
+  border-radius: 12px;
+}
+
+.figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.figure figcaption {
+  margin-top: 6px;
+  color: var(--texte-2);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
 .enonce {
   font-size: 1.25rem;
   line-height: 1.4;

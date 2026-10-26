@@ -55,6 +55,11 @@ for (const idMatiere of sousDossiers(contenu)) {
       erreurs.push(...erreursQcm.map((err) => `${chemin}/qcm.json : ${err}`));
       continue;
     }
+    for (const q of qcm.questions) {
+      if (q.image && !existsSync(join(dirMatiere, idDoc, q.image))) {
+        erreurs.push(`${chemin}/qcm.json : question ${q.id} : image "${q.image}" introuvable dans le dossier`);
+      }
+    }
     if (!idDoc.startsWith(qcm.document)) {
       erreurs.push(`${chemin}/qcm.json : « document » vaut "${qcm.document}" mais le dossier ne commence pas par "${qcm.document}"`);
     }
@@ -66,6 +71,7 @@ for (const idMatiere of sousDossiers(contenu)) {
       ...(qcm.cours ? { cours: qcm.cours } : {}),
       pdf: existsSync(join(dirMatiere, idDoc, "document.pdf")),
       fiche: existsSync(join(dirMatiere, idDoc, "fiche.pdf")),
+      corrige: existsSync(join(dirMatiere, idDoc, "corrige.pdf")),
       nbQuestions: qcm.questions.length,
     });
   }

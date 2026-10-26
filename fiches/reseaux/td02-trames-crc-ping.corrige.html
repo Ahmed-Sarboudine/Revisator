@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Corrigé — Réseaux, TD 2</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Réseaux · Corrigé · TD 2</p>
+    <h1>Trames et ARP, CRC, ping, traceroute, classes</h1>
+  </div>
+  <p class="source">Corrigé rédigé à partir des cours 2 et 3.<br>Les décodages et calculs ont été vérifiés.</p>
+</header>
+
+<h2>Exercice 1 : analyse de trames et ARP</h2>
+<div class="boite methode">
+  <span class="boite-titre">Méthode : découper une trame Ethernet qui contient de l'ARP</span>
+  On compte les octets dans l'ordre (sans préambule ni CRC) : <strong>6</strong> MAC destination · <strong>6</strong> MAC source · <strong>2</strong> type (<code>08 06</code> = ARP) · puis le paquet ARP : <strong>2</strong> hardware type · <strong>2</strong> protocol type · <strong>1</strong> HLEN · <strong>1</strong> PLEN · <strong>2</strong> opération (1 = requête, 2 = réponse) · <strong>6</strong> MAC émetteur · <strong>4</strong> IP émetteur · <strong>6</strong> MAC cible · <strong>4</strong> IP cible.<br>
+  IP en hexadécimal → décimal octet par octet : <code>81</code> = 8 × 16 + 1 = 129 ; <code>68</code> = 104 ; <code>FE</code> = 254.
+</div>
+<img class="figure" style="max-width:80%" src="../../contenu/reseaux/td02-trames-crc-ping/fig-paquet-arp.png" alt="Structure d'un paquet ARP (annexe du TD)">
+
+<p class="question-td">1. Trame 1 et trame 2</p>
+<table class="octets">
+  <tr><th>Champ</th><th>Trame 1</th><th>Trame 2</th></tr>
+  <tr><td>MAC destination</td><td>FF:FF:FF:FF:FF:FF (broadcast)</td><td>08:00:20:02:45:9E</td></tr>
+  <tr><td>MAC source</td><td>08:00:20:02:45:9E</td><td>08:00:20:07:0B:94</td></tr>
+  <tr><td>Type</td><td>08 06 → ARP</td><td>08 06 → ARP</td></tr>
+  <tr><td>Hardware / protocol type</td><td>00 01 Ethernet / 08 00 IP</td><td>00 01 Ethernet / 08 00 IP</td></tr>
+  <tr><td>HLEN / PLEN</td><td>6 / 4</td><td>6 / 4</td></tr>
+  <tr><td>Opération</td><td><strong>00 01 → requête</strong></td><td><strong>00 02 → réponse</strong></td></tr>
+  <tr><td>MAC émetteur</td><td>08:00:20:02:45:9E</td><td>08:00:20:07:0B:94</td></tr>
+  <tr><td>IP émetteur</td><td>81 68 FE 06 → 129.104.254.6</td><td>81 68 FE 05 → 129.104.254.5</td></tr>
+  <tr><td>MAC cible</td><td>00:00:00:00:00:00 (inconnue)</td><td>08:00:20:02:45:9E</td></tr>
+  <tr><td>IP cible</td><td>81 68 FE 05 → 129.104.254.5</td><td>81 68 FE 06 → 129.104.254.6</td></tr>
+</table>
+<div class="reponse"><strong>Interprétation</strong> : dans la trame 1, la machine 129.104.254.6 demande en broadcast « qui a 129.104.254.5 ? ». La trame 2 est la <strong>réponse</strong> : 129.104.254.5 indique que son adresse MAC est 08:00:20:07:0B:94, et l'envoie directement (en unicast) au demandeur.</div>
+
+<p class="question-td">2. Trame ARP à analyser, et réponse renvoyée</p>
+<div class="reponse">
+  La trame donnée est une <strong>requête</strong> (opération 1) en broadcast : la machine 00:40:05:13:65:80, d'IP <code>80 DE 0C 01</code> = <strong>128.222.12.1</strong>, demande la MAC de <code>80 DE 0C 02</code> = <strong>128.222.12.2</strong>.<br>
+  La machine 128.222.12.2 (MAC 00:40:05:10:93:71) renvoie la réponse suivante : on échange émetteur et cible, on met l'opération à 2 et on remplit sa propre MAC.
+</div>
+<table class="octets">
+  <tr><th>MAC dest</th><th>MAC source</th><th>Type</th><th>HW</th><th>Proto</th><th>HLEN PLEN</th><th>Op.</th></tr>
+  <tr><td>00 40 05 13 65 80</td><td>00 40 05 10 93 71</td><td>08 06</td><td>00 01</td><td>08 00</td><td>06 04</td><td><strong>00 02</strong></td></tr>
+  <tr><th colspan="2">MAC émetteur</th><th>IP émetteur</th><th colspan="2">MAC cible</th><th colspan="2">IP cible</th></tr>
+  <tr><td colspan="2">00 40 05 10 93 71</td><td>80 DE 0C 02</td><td colspan="2">00 40 05 13 65 80</td><td colspan="2">80 DE 0C 01</td></tr>
+</table>
+
+<h2>Exercice 2 : CRC</h2>
+<div class="deux-colonnes">
+  <div>
+    <p class="question-td">1. Message 0011111101, g(x) = x<sup>2</sup> + x + 1</p>
+    <div class="reponse">
+      g(x) → <code>111</code>, degré 2 → on ajoute <strong>2 zéros</strong>.
+<pre>  0 0 1 1 1 1 1 1 0 1 0 0   ← message + 00
+^     1 1 1
+  0 0 0 0 0 1 1 1 0 1 0 0
+^           1 1 1
+  0 0 0 0 0 0 0 0 0 1 0 0
+^                   1 1 1
+  0 0 0 0 0 0 0 0 0 0 1 1   → CRC = 11</pre>
+      Message codé : <strong><code>0011111101 11</code></strong>. Les zéros de tête du message ne changent rien : on place g sous le premier 1.
+    </div>
+  </div>
+  <div>
+    <p class="question-td">2. Mot reçu 101011000110, g(x) = x<sup>6</sup> + x<sup>4</sup> + x + 1</p>
+    <div class="reponse">
+      g(x) → <code>1010011</code> (x<sup>6</sup> x<sup>5</sup> x<sup>4</sup> x<sup>3</sup> x<sup>2</sup> x<sup>1</sup> x<sup>0</sup>), degré 6. On divise le mot reçu <strong>tel quel</strong> :
+<pre>  1 0 1 0 1 1 0 0 0 1 1 0   ← mot reçu
+^ 1 0 1 0 0 1 1
+  0 0 0 0 1 0 1 0 0 1 1 0
+^         1 0 1 0 0 1 1
+  0 0 0 0 0 0 0 0 0 0 0 0   → reste 000000</pre>
+      a. Reste nul : <strong>transmission correcte</strong> (aucune erreur détectée).<br>
+      b. Le CRC occupe les 6 derniers bits (<code>000110</code>) : le message émis est <strong><code>101011</code></strong>.
+    </div>
+  </div>
+</div>
+
+<h2>Exercice 3 : ping</h2>
+<pre>64 bytes from 193.93.28.7.  icmp_seq=0  ttl=255  time=0.7ms
+1 packet transmitted, 1 packet received, 0 % packet loss</pre>
+<div class="reponse">
+  <ol>
+    <li><strong>Oui</strong>, la machine est opérationnelle : elle a répondu à la requête d'écho (1 paquet envoyé, 1 reçu, 0 % de perte).</li>
+    <li>0,7 ms aller-retour, c'est <strong>très court</strong> : la machine est proche, sur le réseau local.</li>
+    <li><code>icmp_seq=0</code> est le <strong>numéro de séquence</strong> de la requête d'écho : c'est la première (0), ce qui permet d'associer chaque réponse à sa requête.</li>
+    <li><strong>Non</strong> : le TTL reçu vaut 255, la valeur maximale. Il n'a donc pas été décrémenté : aucun routeur traversé (chaque routeur retire 1 au TTL).</li>
+  </ol>
+</div>
+
+<h2>Exercice 4 : traceroute</h2>
+<pre> 1  193.51.91.1     1 ms    1 ms    1 ms
+ 2  2.0.0.1        23 ms   23 ms   23 ms
+ 3  11.6.1.1      105 ms   35 ms   35 ms
+ 4  11.6.13.1      37 ms   35 ms   34 ms
+ 5  189.52.80.1    37 ms   60 ms   36 ms
+ 6  193.48.58.41   51 ms   39 ms   46 ms
+ 7  193.48.53.49   39 ms   47 ms   44 ms
+ 8  193.220.180.9  44 ms    *       *
+ 9  195.48.58.43   48 ms   38 ms   44 ms
+10  195.48.58.50  145 ms 1706 ms   64 ms
+11  194.206.207.18 61 ms  146 ms   44 ms
+12  194.207.206.5 166 ms  261 ms  189 ms</pre>
+<div class="reponse">
+  <ol>
+    <li><strong>But</strong> : afficher le chemin (la liste des routeurs) entre ma machine et une destination. <strong>Principe</strong> : on envoie des paquets avec un <strong>TTL de 1, puis 2, puis 3…</strong> Chaque routeur où le TTL tombe à 0 détruit le paquet et renvoie un message ICMP <strong>« temps dépassé » (type 11)</strong> : on découvre ainsi les routeurs un par un, avec 3 mesures de délai par saut.</li>
+    <li>Ligne 1 ≤ 1 ms : c'est le <strong>premier routeur</strong>, la passerelle du réseau local, très proche.</li>
+    <li>Les <strong>astérisques</strong> : aucune réponse reçue dans le délai imparti (paquet ou réponse perdu, ou routeur qui ne répond pas, par exemple à cause d'un filtrage).</li>
+    <li>Les délais varient pour une même destination selon la <strong>charge du réseau</strong> : files d'attente dans les routeurs, congestion, priorité donnée au trafic, et parfois un chemin différent.</li>
+    <li>On regroupe les adresses par réseau (classe) : 11.6.1.1 et 11.6.13.1 sont dans le même réseau de classe A (11.0.0.0), 195.48.58.43 et 195.48.58.50 dans le même réseau de classe C. Les 12 routeurs appartiennent donc à <strong>10 réseaux différents</strong>.</li>
+  </ol>
+</div>
+
+<h2>Exercice 5 : classes et sous-réseaux</h2>
+<p class="question-td">Avec les masques par défaut (classes)</p>
+<table class="octets">
+  <tr><th>Adresse IP</th><th>124.23.12.71</th><th>124.12.23.71</th><th>194.12.23.71</th></tr>
+  <tr><td>Classe</td><td>A (124 ≤ 127)</td><td>A</td><td>C (192 ≤ 194 ≤ 223)</td></tr>
+  <tr><td>Adresse du réseau</td><td>124.0.0.0</td><td>124.0.0.0</td><td>194.12.23.0</td></tr>
+  <tr><td>Adresse de diffusion</td><td>124.255.255.255</td><td>124.255.255.255</td><td>194.12.23.255</td></tr>
+</table>
+<p class="question-td">Avec les masques imposés</p>
+<table class="octets">
+  <tr><th>Adresse IP</th><th>124.23.12.71</th><th>124.12.23.71</th><th>194.12.23.71</th></tr>
+  <tr><td>Masque</td><td>255.0.0.0</td><td>255.255.255.0</td><td>255.255.255.240</td></tr>
+  <tr><td>Adresse du sous-réseau</td><td>124.0.0.0</td><td>124.12.23.0</td><td>194.12.23.64</td></tr>
+  <tr><td>Diffusion</td><td>124.255.255.255</td><td>124.12.23.255</td><td>194.12.23.79</td></tr>
+</table>
+<div class="reponse">Dernière colonne : masque .240 → taille de bloc 256 − 240 = <strong>16</strong>. Multiples de 16 : 48, <strong>64</strong>, 80. 71 est entre 64 et 80 → sous-réseau <strong>.64</strong>, diffusion 80 − 1 = <strong>.79</strong>.</div>
+
+</body>
+</html>

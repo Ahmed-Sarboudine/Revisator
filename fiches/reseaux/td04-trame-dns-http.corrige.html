@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Corrigé — Réseaux, TD 4</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Réseaux · Corrigé · TD 4</p>
+    <h1>Analyse détaillée d'une trame, DNS, HTTP</h1>
+  </div>
+  <p class="source">Corrigé rédigé à partir des cours 2 à 5.<br>Les conversions hexadécimales ont été vérifiées.</p>
+</header>
+
+<h2>Exercice : analyse détaillée d'une trame (DHCP Discover)</h2>
+<img class="figure" style="max-width:85%" src="../../contenu/reseaux/td04-trame-dns-http/fig-capture-wireshark.png" alt="Capture Wireshark : échange DHCP puis ping">
+<p>On étudie la trame n° 49, le <strong>DHCP Discover</strong> : le PC n'a pas encore d'adresse IP (source 0.0.0.0) et cherche un serveur DHCP en diffusion (destination 255.255.255.255).</p>
+
+<div class="boite methode">
+  <span class="boite-titre">Méthode : lire une trame octet par octet</span>
+  On découpe dans l'ordre, chaque fois avec la taille connue des champs : <strong>en-tête Ethernet (14 octets)</strong> → <strong>en-tête IPv4 (IHL × 4 octets)</strong> → <strong>en-tête UDP (8 octets)</strong> ou TCP (20). Pour convertir un champ hexa en décimal : chaque chiffre vaut 0–15 (A = 10 … F = 15) ; <code>01 48</code> = 1 × 256 + 4 × 16 + 8 = 328.
+</div>
+
+<table class="octets">
+  <tr><th colspan="3">En-tête Ethernet (14 octets)</th><th colspan="4">En-tête UDP (8 octets)</th></tr>
+  <tr><th>MAC dest</th><th>MAC source</th><th>Type</th><th>Port src</th><th>Port dest</th><th>Longueur</th><th>Checksum</th></tr>
+  <tr><td>ff ff ff ff ff ff</td><td>00 24 e8 ca dd de</td><td>08 00</td><td>00 44</td><td>00 43</td><td>01 34</td><td>1d d6</td></tr>
+</table>
+<table class="octets">
+  <tr><th colspan="10">En-tête IPv4 (20 octets)</th></tr>
+  <tr><th>Version + IHL</th><th>ToS</th><th>Longueur</th><th>Identif.</th><th>Flags + offset</th><th>TTL</th><th>Protocole</th><th>Checksum</th><th>IP source</th><th>IP destination</th></tr>
+  <tr><td>45</td><td>00</td><td>01 48</td><td>00 f1</td><td>00 00</td><td>80</td><td>11</td><td>38 b5</td><td>00 00 00 00</td><td>ff ff ff ff</td></tr>
+</table>
+
+<div class="deux-colonnes">
+  <div>
+    <p class="question-td">1) Base utilisée</p>
+    <div class="reponse">La base <strong>16 (hexadécimal)</strong> : deux chiffres hexa par octet.</div>
+    <p class="question-td">2) Adresses MAC</p>
+    <div class="reponse">Destination : <strong>ff:ff:ff:ff:ff:ff</strong> (broadcast).<br>Source : <strong>00:24:e8:ca:dd:de</strong> (le PC).</div>
+    <p class="question-td">3) Protocole de couche 3</p>
+    <div class="reponse">Type <code>08 00</code> → <strong>IPv4</strong>.</div>
+    <p class="question-td">4) Octets de l'en-tête Ethernet</p>
+    <div class="reponse"><code>ff ff ff ff ff ff 00 24 e8 ca dd de 08 00</code> (14 octets).</div>
+    <p class="question-td">5) et 6) Version et longueur de l'en-tête</p>
+    <div class="reponse"><code>45</code> : 1<sup>er</sup> chiffre <strong>4 = IPv4</strong> ; 2<sup>e</sup> chiffre IHL = 5 mots de 32 bits = <strong>20 octets</strong> (pas d'options).</div>
+    <p class="question-td">7) Type de service</p>
+    <div class="reponse">Il sert à donner une <strong>priorité</strong> au paquet (qualité de service, DSCP + ECN). Valeur par défaut : <strong>0x00</strong>.</div>
+    <p class="question-td">8) Longueur totale</p>
+    <div class="reponse"><code>01 48</code> = <strong>328 octets</strong> (en-tête IP compris).</div>
+  </div>
+  <div>
+    <p class="question-td">9) Identification</p>
+    <div class="reponse"><code>0x00F1</code> = 15 × 16 + 1 = <strong>241</strong>.</div>
+    <p class="question-td">10) Fragmentation ?</p>
+    <div class="reponse"><code>00 00</code> : flags DF = 0, MF = 0 et offset = 0 → <strong>pas de fragmentation</strong> (paquet complet, unique).</div>
+    <p class="question-td">11) Durée de vie</p>
+    <div class="reponse">TTL <code>0x80</code> = <strong>128</strong> sauts maximum.</div>
+    <p class="question-td">12) Protocole transporté</p>
+    <div class="reponse"><code>0x11</code> = 17 → <strong>UDP</strong>. Normal : DHCP fonctionne sur UDP.</div>
+    <p class="question-td">13) Adresses IP</p>
+    <div class="reponse">Source <strong>0.0.0.0</strong> (le PC n'a pas encore d'adresse) ; destination <strong>255.255.255.255</strong> (diffusion à tout le réseau local).</div>
+    <p class="question-td">14) Octets de l'en-tête IPv4</p>
+    <div class="reponse"><code>45 00 01 48 00 f1 00 00 80 11 38 b5 00 00 00 00 ff ff ff ff</code> (20 octets).</div>
+    <p class="question-td">15) Ports</p>
+    <div class="reponse">Source <code>00 44</code> = <strong>68</strong> (bootp<strong>c</strong> = <strong>client</strong>) ; destination <code>00 43</code> = <strong>67</strong> (bootp<strong>s</strong> = <strong>serveur</strong>).</div>
+    <p class="question-td">16) Longueur du PDU de couche 4</p>
+    <div class="reponse">Champ longueur UDP <code>01 34</code> = <strong>308 octets</strong> (8 d'en-tête + 300 de données). Vérification : 328 − 20 (en-tête IP) = 308.</div>
+  </div>
+</div>
+
+<h2>Exercice : DNS (1), les temporisateurs</h2>
+<table>
+  <tr><th>Valeur</th><th>Nom</th><th>Rôle</th></tr>
+  <tr><td>21 600 s = <strong>6 h</strong></td><td>Refresh</td><td>Intervalle au bout duquel le serveur <strong>secondaire</strong> vérifie (via le numéro de série) si la zone du primaire a changé</td></tr>
+  <tr><td>3 600 s = <strong>1 h</strong></td><td>Retry</td><td>Si la vérification a échoué (primaire injoignable), délai avant un nouvel essai</td></tr>
+  <tr><td>604 800 s = <strong>7 jours</strong></td><td>Expire</td><td>Sans contact avec le primaire pendant cette durée, le secondaire considère ses données comme périmées et cesse de répondre pour la zone</td></tr>
+  <tr><td>172 800 s = <strong>2 jours</strong></td><td>Time to Live</td><td>Durée pendant laquelle les autres serveurs peuvent garder les enregistrements en <strong>cache</strong></td></tr>
+</table>
+
+<h2>Exercice : DNS (2), un fichier de zone</h2>
+<div class="reponse">
+  <p><strong>a)</strong> C'est le <strong>fichier de zone</strong> du domaine <code>my.domain</code> : un enregistrement <strong>SOA</strong> (autorité, numéro de série et temporisateurs), un <strong>NS</strong> (le serveur de noms curly), des <strong>A</strong> (nom → IP des 4 machines), puis la zone de <strong>résolution inverse</strong> <code>1.168.192.in-addr.arpa</code> avec des <strong>PTR</strong> (IP → nom), et la zone inverse de la boucle locale (127.0.0.1 → localhost).</p>
+  <p><strong>b)</strong> Expire = 3 600 000 s = 1000 h ≈ <strong>41,7 jours</strong> (41 jours et 16 h).</p>
+  <p><strong>c)</strong> Refresh = 3600 s = <strong>1 heure</strong>.</p>
+  <p><strong>d)</strong> Le serveur de noms est <strong>curly.my.domain</strong>, adresse <strong>192.168.1.1</strong> (lignes NS puis A).</p>
+  <p><strong>e)</strong> L'enregistrement <strong>PTR</strong> de la zone inverse : <code>4 IN PTR shemp.my.domain.</code> (c'est-à-dire 4.1.168.192.in-addr.arpa → shemp.my.domain).</p>
+  <p><strong>f)</strong> Ajouter dans la zone, et augmenter le numéro de série (ex. 961231) pour que les secondaires se mettent à jour :</p>
+<pre>mail.my.domain.     IN A     192.168.1.10
+my.domain.          IN MX 10 mail.my.domain.
+10                  IN PTR   mail.my.domain.     ; dans la zone 1.168.192.IN-ADDR.ARPA</pre>
+  <p><strong>g)</strong> Un alias se crée avec un <strong>CNAME</strong> : <code>smtp.my.domain.  IN CNAME  mail.my.domain.</code></p>
+</div>
+<p class="question-td">Les éléments d'une URL, et le rôle de « :// »</p>
+<div class="reponse"><code>protocole://[utilisateur:motdepasse@]hôte[:port][/chemin][/document]</code>, par exemple <code>http://www.exemple.fr:80/rep/index.html</code>. Le <strong>« : »</strong> termine le nom du protocole (schéma) et le <strong>« // »</strong> annonce que la suite commence par le nom de l'hôte : on sait ainsi où s'arrête le protocole et où commence l'adresse du serveur.</div>
+
+<h2>Exercice : HTTP, analyse d'une requête</h2>
+<table>
+  <tr><th>Ligne</th><th>Rôle</th></tr>
+  <tr><td><code>GET / http/1.1</code></td><td>Ligne de requête : méthode <strong>GET</strong> (lire sans modifier), ressource <strong>/</strong> (racine du site, la page d'accueil), version <strong>HTTP/1.1</strong></td></tr>
+  <tr><td><code>Host: www.exemple.fr</code></td><td>Nom du serveur demandé (obligatoire en HTTP/1.1 : plusieurs sites peuvent partager une même IP)</td></tr>
+  <tr><td><code>User-Agent: Mozilla/5.0 … Firefox/5.0</code></td><td>Le client : navigateur Firefox 5 sous Windows 7 (Windows NT 6.1)</td></tr>
+  <tr><td><code>Accept: text/html, …</code></td><td>Types de contenu (MIME) acceptés par le navigateur</td></tr>
+  <tr><td><code>Accept-Language: fr,en</code></td><td>Langues préférées : français, sinon anglais</td></tr>
+  <tr><td><code>Accept-Encoding: gzip, deflate</code></td><td>Compressions acceptées pour la réponse</td></tr>
+  <tr><td><code>Accept-Charset: ISO-8859-1,utf-8</code></td><td>Jeux de caractères acceptés</td></tr>
+  <tr><td><code>Connection: keep-alive</code></td><td>Garder la connexion TCP ouverte pour les requêtes suivantes (images, CSS…)</td></tr>
+</table>
+<p>Il n'y a pas de corps : une requête GET n'envoie pas de données. Le message se termine par une ligne vide.</p>
+
+</body>
+</html>

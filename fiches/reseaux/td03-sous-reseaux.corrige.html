@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Corrigé — Réseaux, TD 3</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Réseaux · Corrigé · TD 3</p>
+    <h1>Classes, masques et création de sous-réseaux</h1>
+  </div>
+  <p class="source">Corrigé rédigé à partir du cours 3.<br>Toutes les adresses ont été vérifiées par script.</p>
+</header>
+
+<div class="boite methode">
+  <span class="boite-titre">Rappel de méthode (sert dans tous les exercices)</span>
+  <ul>
+    <li><strong>/n → masque</strong> : n bits à 1. Dans l'octet incomplet : 1 bit = 128, 2 = 192, 3 = 224, 4 = 240, 5 = 248, 6 = 252, 7 = 254.</li>
+    <li><strong>Taille de bloc</strong> = 256 − valeur du masque dans l'octet incomplet. <strong>Réseau</strong> = multiple du bloc juste en dessous ; <strong>diffusion</strong> = multiple suivant − 1.</li>
+    <li><strong>Hôtes</strong> = 2<sup>h</sup> − 2 avec h = 32 − n. <strong>Sous-réseaux</strong> : n bits empruntés avec 2<sup>n</sup> ≥ nombre voulu (convention du cours).</li>
+  </ul>
+</div>
+
+<h2>Exercice 1</h2>
+<table class="octets">
+  <tr><th>Adresse IP</th><th>Masque</th><th>Adresse réseau</th><th>Nb de machines</th><th>Diffusion</th></tr>
+  <tr><td>204.160.241.93/24</td><td>255.255.255.0</td><td>204.160.241.0</td><td>254</td><td>204.160.241.255</td></tr>
+  <tr><td>138.96.32.3/24</td><td>255.255.255.0</td><td>138.96.32.0</td><td>254</td><td>138.96.32.255</td></tr>
+  <tr><td>18.181.0.31/24</td><td>255.255.255.0</td><td>18.181.0.0</td><td>254</td><td>18.181.0.255</td></tr>
+  <tr><td>172.161.210.50/19</td><td>255.255.224.0</td><td>172.161.192.0</td><td>8190</td><td>172.161.223.255</td></tr>
+  <tr><td>192.168.1.200/28</td><td>255.255.255.240</td><td>192.168.1.192</td><td>14</td><td>192.168.1.207</td></tr>
+</table>
+<div class="deux-colonnes">
+  <div class="reponse"><strong>172.161.210.50/19</strong> : 19 = 16 + 3 → 3<sup>e</sup> octet = 224, bloc 32. Multiples de 32 : 160, <strong>192</strong>, 224 → 210 est dans 192 à 223. Hôtes : 2<sup>13</sup> − 2 = 8190.</div>
+  <div class="reponse"><strong>192.168.1.200/28</strong> : 4<sup>e</sup> octet = 240, bloc 16. 200 / 16 = 12,5 → 12 × 16 = <strong>192</strong> ; diffusion 208 − 1 = 207. Hôtes : 2<sup>4</sup> − 2 = 14.</div>
+</div>
+
+<h2>Exercice 2 : masque pour un nombre de sous-réseaux</h2>
+<table class="octets">
+  <tr><th>ID réseau</th><th>Masque par défaut</th><th>Bits à prévoir</th><th>Masque de sous-réseau</th><th>Nb d'hôtes</th></tr>
+  <tr><td>114.0.0.0 (7 SR)</td><td>255.0.0.0 (A)</td><td>3 (2<sup>3</sup> = 8 ≥ 7)</td><td>255.224.0.0 (/11)</td><td>2<sup>21</sup> − 2 = 2 097 150</td></tr>
+  <tr><td>192.168.69.0 (5 SR)</td><td>255.255.255.0 (C)</td><td>3 (8 ≥ 5)</td><td>255.255.255.224 (/27)</td><td>2<sup>5</sup> − 2 = 30</td></tr>
+  <tr><td>221.14.32.0 (6 SR)</td><td>255.255.255.0 (C)</td><td>3 (8 ≥ 6)</td><td>255.255.255.224 (/27)</td><td>30</td></tr>
+  <tr><td>172.16.0.0 (12 SR)</td><td>255.255.0.0 (B)</td><td>4 (16 ≥ 12)</td><td>255.255.240.0 (/20)</td><td>2<sup>12</sup> − 2 = 4094</td></tr>
+</table>
+
+<h2>Exercice 3 : réseau 126.122.27.0</h2>
+<p class="question-td">1. Masque pour 254 nœuds maximum</p>
+<div class="reponse">254 = 2<sup>8</sup> − 2 → 8 bits pour les hôtes → <strong>255.255.255.0 (/24)</strong>.</div>
+<p class="question-td">2. 12 sous-réseaux de 12 nœuds</p>
+<div class="reponse">Sous-réseaux : 2<sup>4</sup> = 16 ≥ 12 → <strong>4 bits</strong>. Il reste 8 − 4 = 4 bits d'hôte : 2<sup>4</sup> − 2 = 14 ≥ 12, ça suffit.<br>Masque : <strong>255.255.255.240 (/28)</strong>, taille de bloc 16.</div>
+<p class="question-td">3. Adresse de la machine n° 3 du réseau n° 9 (sous-réseaux numérotés de 1 à 12)</p>
+<div class="reponse">On prend le numéro de sous-réseau comme valeur des 4 bits de sous-réseau : 9 = <code>1001</code> → 4<sup>e</sup> octet <code>1001 0000</code> = 144, donc le réseau n° 9 est 126.122.27.144. La machine n° 3 a la partie hôte <code>0011</code> → <code>1001 0011</code> = 147 → <strong>126.122.27.147</strong>.<br>
+<em>Variante, si le réseau n° 1 correspond à la valeur 0000 : réseau n° 9 = 126.122.27.128, machine 3 = 126.122.27.131. Vérifie la convention vue en TD.</em></div>
+<p class="question-td">4. Sous-réseau de 126.122.27.123</p>
+<div class="reponse">123 = <code>0111 1011</code> → bits de sous-réseau <code>0111</code> = 7 → sous-réseau <strong>126.122.27.112</strong> (112 = 7 × 16), qui va de .112 à .127 (diffusion .127). C'est le sous-réseau n° 7 avec la même convention qu'à la question 3.</div>
+
+<h2>Exercice 4</h2>
+<p class="question-td">1. Réseau 129.178.0.0 découpé en 60 sous-réseaux</p>
+<div class="reponse">Classe B (/16). 2<sup>6</sup> = 64 ≥ 60 → <strong>6 bits</strong> de sous-réseau → /22.<br>
+1.1. Bits d'hôte : 32 − 22 = 10 → <strong>2<sup>10</sup> − 2 = 1022 machines</strong> par sous-réseau.<br>
+1.2. Masque : <strong>255.255.252.0</strong>.</div>
+<p class="question-td">2. Masque 255.255.248.0 : les trois stations sont-elles dans le même sous-réseau ?</p>
+<div class="reponse">3<sup>e</sup> octet du masque = 248 → bloc <strong>8</strong>. On regarde le 3<sup>e</sup> octet de chaque adresse :
+<ul>
+  <li>129.148.<strong>208</strong>.26 → 208 = 26 × 8 → sous-réseau <strong>129.148.208.0</strong></li>
+  <li>129.148.<strong>216</strong>.145 → 216 = 27 × 8 → sous-réseau <strong>129.148.216.0</strong></li>
+  <li>129.148.<strong>210</strong>.32 → 210 est entre 208 et 215 → sous-réseau <strong>129.148.208.0</strong></li>
+</ul>
+<span class="verdict">Non</span> : 129.148.208.26 et 129.148.210.32 sont dans le même sous-réseau, mais pas 129.148.216.145.</div>
+
+<h2>Exercice 5</h2>
+<table class="octets">
+  <tr><th>Réseau</th><th>Diffusion</th><th>Nb de machines</th><th>1<sup>re</sup> adresse</th><th>Dernière adresse</th></tr>
+  <tr><td>192.168.1.0/24</td><td>192.168.1.255</td><td>254</td><td>192.168.1.1</td><td>192.168.1.254</td></tr>
+  <tr><td>10.0.128.0/17</td><td>10.0.255.255</td><td>32 766</td><td>10.0.128.1</td><td>10.0.255.254</td></tr>
+  <tr><td>172.20.128.0/18</td><td>172.20.191.255</td><td>16 382</td><td>172.20.128.1</td><td>172.20.191.254</td></tr>
+  <tr><td>10.0.0.0/9</td><td>10.127.255.255</td><td>8 388 606</td><td>10.0.0.1</td><td>10.127.255.254</td></tr>
+</table>
+<div class="reponse">Exemple /17 : 17 = 16 + 1 → 3<sup>e</sup> octet = 128, bloc 128 → de 10.0.128.0 à 10.0.255.255 ; hôtes 2<sup>15</sup> − 2 = 32 766. Pour /9 : 2<sup>e</sup> octet = 128, bloc 128 → 10.0.0.0 à 10.127.255.255 ; hôtes 2<sup>23</sup> − 2.</div>
+
+<h2>Exercice 6 : créer des sous-réseaux</h2>
+<table class="octets">
+  <tr><th>Réseau</th><th>Sous-réseaux</th><th>Bits</th><th>Nouveau masque</th><th>Machines</th><th>Bloc</th></tr>
+  <tr><td>172.20.0.0 /18</td><td>11</td><td>4</td><td>255.255.252.0 (/22)</td><td>1022</td><td>4 (3<sup>e</sup> octet)</td></tr>
+  <tr><td>112.32.0.0 /11</td><td>4</td><td>2</td><td>255.248.0.0 (/13)</td><td>524 286</td><td>8 (2<sup>e</sup> octet)</td></tr>
+  <tr><td>202.255.0.128 /25</td><td>5</td><td>3</td><td>255.255.255.240 (/28)</td><td>14</td><td>16 (4<sup>e</sup> octet)</td></tr>
+  <tr><td>162.216.0.0 /23</td><td>6</td><td>3</td><td>255.255.255.192 (/26)</td><td>62</td><td>64 (4<sup>e</sup> octet)</td></tr>
+</table>
+<div class="deux-colonnes">
+  <div class="reponse"><strong>172.20.0.0</strong> (11 premiers sur 16)<br>
+    <span class="mono">172.20.0.0 → 172.20.3.255<br>172.20.4.0 → 172.20.7.255<br>172.20.8.0 → 172.20.11.255<br>… (de 4 en 4) …<br>172.20.40.0 → 172.20.43.255</span></div>
+  <div class="reponse"><strong>112.32.0.0</strong><br>
+    <span class="mono">112.32.0.0 → 112.39.255.255<br>112.40.0.0 → 112.47.255.255<br>112.48.0.0 → 112.55.255.255<br>112.56.0.0 → 112.63.255.255</span></div>
+  <div class="reponse"><strong>202.255.0.128</strong> (5 premiers sur 8)<br>
+    <span class="mono">202.255.0.128 → .143<br>202.255.0.144 → .159<br>202.255.0.160 → .175<br>202.255.0.176 → .191<br>202.255.0.192 → .207</span></div>
+  <div class="reponse"><strong>162.216.0.0</strong> (6 premiers sur 8)<br>
+    <span class="mono">162.216.0.0 → 162.216.0.63<br>162.216.0.64 → 162.216.0.127<br>162.216.0.128 → 162.216.0.191<br>162.216.0.192 → 162.216.0.255<br>162.216.1.0 → 162.216.1.63<br>162.216.1.64 → 162.216.1.127</span></div>
+</div>
+<div class="boite piege"><span class="boite-titre">Pièges</span>Dans la ligne 162.216.0.0 /23, les sous-réseaux débordent sur le 3<sup>e</sup> octet : après 162.216.0.192 vient 162.216.<strong>1</strong>.0. Pour 202.255.0.128 /25, on part de .128, pas de .0.</div>
+
+</body>
+</html>

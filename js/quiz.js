@@ -30,6 +30,16 @@ export function lancerQuiz(conteneur, options) {
       <article class="question apparition">
         ${options.afficherOrigine ? `<p class="surtitre">${NOMS_DOCUMENT[doc.document]} · ${echapper(doc.titre)}</p>` : ""}
         ${q.exercice ? `<div class="exercice"><span class="etiquette">Exercice</span>${markdown(q.exercice)}</div>` : ""}
+        ${
+          q.image
+            ? `<figure class="figure">
+                <a href="contenu/${matiere.id}/${doc.id}/${q.image}" target="_blank" rel="noopener" aria-label="Agrandir la figure">
+                  <img src="contenu/${matiere.id}/${doc.id}/${q.image}" alt="${echapper(q.legende || "Figure de l'exercice")}">
+                </a>
+                ${q.legende ? `<figcaption>${markdownEnLigne(q.legende)}</figcaption>` : ""}
+              </figure>`
+            : ""
+        }
         <div class="enonce">${markdown(q.enonce)}</div>
         <p class="consigne ${multiple ? "consigne-multiple" : ""}">${multiple ? "Plusieurs réponses possibles" : "Une seule réponse"}</p>
         <form>

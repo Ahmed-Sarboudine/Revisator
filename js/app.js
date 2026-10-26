@@ -18,6 +18,7 @@ import {
   tirerExamen,
   urlPdf,
   urlFiche,
+  urlCorrige,
 } from "./donnees.js";
 import { lancerQuiz } from "./quiz.js";
 import { icones } from "./icones.js";
@@ -106,6 +107,11 @@ function ligneDocument(matiere, doc) {
       ${
         doc.fiche
           ? `<a class="bouton-fiche" href="${urlFiche(matiere.id, doc.id)}" target="_blank" rel="noopener" aria-label="Fiche de révision de ${echapper(doc.titre)}">${icones.fiche}<span>Fiche</span></a>`
+          : ""
+      }
+      ${
+        doc.corrige
+          ? `<a class="bouton-fiche" href="${urlCorrige(matiere.id, doc.id)}" target="_blank" rel="noopener" aria-label="Corrigé de ${echapper(doc.titre)}">${icones.corrige}<span>Corrigé</span></a>`
           : ""
       }
       ${

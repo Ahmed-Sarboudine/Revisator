@@ -56,7 +56,15 @@ node scripts/build-index.js
 
 Corriger jusqu'à ce que le script passe.
 
-## 6. Fiche de révision
+## Images dans les questions
+
+Pour un exercice qui s'appuie sur une figure (tableau à relier, capture, schéma d'en-tête), découper la zone du PDF avec pypdfium2 (rendu `scale=3` puis `crop`) et l'enregistrer en PNG dans le dossier du document (`fig-<nom>.png`), ou dessiner un schéma en SVG. La référencer avec `"image": "fig-<nom>.png"` et une `"legende"`. Ne pas montrer dans l'image la réponse de la question où elle apparaît.
+
+## Pour un TD : le corrigé
+
+Écrire `fiches/<matiere>/<dossier>.corrige.html` (modèle : les corrigés existants) : pour chaque exercice, la question, une boîte `methode` quand il y a un calcul, et la réponse dans une boîte `reponse`. Les figures de l'énoncé s'insèrent avec `<img class="figure" src="../../contenu/<matiere>/<dossier>/fig-….png">`. Vérifier toutes les réponses numériques par script (CRC, adresses, conversions hexa). `node scripts/build-fiches.js <dossier>` produit `corrige.pdf`.
+
+## 6. Fiche de révision (pour un cours)
 
 Écrire `fiches/<matiere>/<dossier>.html` sur le modèle des fiches existantes (même structure : en-tête, encadré « À retenir en priorité », sections numérotées, tableaux, encadrés `methode` pour chaque type de calcul avec un exemple chiffré vérifié par script, `piege`, `astuce`). Viser 2 à 5 pages A4. Puis :
 

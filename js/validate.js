@@ -40,6 +40,10 @@ export function validerQcm(qcm) {
 
     if (!TYPES_QUESTION.includes(q.type)) erreurs.push(`${ou} : « type » doit valoir "unique" ou "multiple"`);
     if (q.exercice !== undefined && !texteNonVide(q.exercice)) erreurs.push(`${ou} : « exercice » doit être un texte`);
+    if (q.image !== undefined && !(texteNonVide(q.image) && /^[\w.-]+\.(png|jpe?g|svg|webp)$/i.test(q.image))) {
+      erreurs.push(`${ou} : « image » doit être un nom de fichier image du dossier (ex. "fig-trame.png")`);
+    }
+    if (q.legende !== undefined && !texteNonVide(q.legende)) erreurs.push(`${ou} : « legende » doit être un texte`);
     if (!texteNonVide(q.enonce)) erreurs.push(`${ou} : « enonce » manquant`);
     if (!texteNonVide(q.explication)) erreurs.push(`${ou} : « explication » manquante`);
     if (q.page !== undefined && !(Number.isInteger(q.page) && q.page >= 1)) {

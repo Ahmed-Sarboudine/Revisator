@@ -1,0 +1,225 @@
+{
+  "matiere": "Réseaux",
+  "document": "td",
+  "titre": "TD 1 : modèles OSI et TCP/IP, performances",
+  "cours": "cours01-introduction",
+  "questions": [
+    {
+      "id": "td1-001",
+      "type": "unique",
+      "enonce": "À quelle couche du modèle TCP/IP correspond la couche **réseau (3)** du modèle OSI ?",
+      "choix": ["Application", "Transport", "Internet", "Accès réseau"],
+      "reponses": [2],
+      "explication": "OSI 7-6-5 → Application ; 4 → Transport ; **3 → Internet** ; 2-1 → Accès réseau.",
+      "page": 1
+    },
+    {
+      "id": "td1-002",
+      "type": "multiple",
+      "enonce": "Quelles couches du modèle OSI sont regroupées dans la couche **Accès réseau** de TCP/IP ?",
+      "choix": ["Physique (1)", "Liaison de données (2)", "Réseau (3)", "Session (5)"],
+      "reponses": [0, 1],
+      "explication": "La couche Accès réseau de TCP/IP regroupe les couches **physique** et **liaison de données** d'OSI.",
+      "page": 1
+    },
+    {
+      "id": "td1-003",
+      "type": "unique",
+      "enonce": "Quelle est l'unité de données (PDU) de la couche **liaison de données**, et quel équipement y travaille ?",
+      "choix": ["Le paquet ; le routeur", "La trame ; le switch", "Le segment ; le hub", "Le bit ; le switch"],
+      "reponses": [1],
+      "explication": "Couche 2 : la **trame**, traitée par le **switch** grâce aux adresses MAC. Paquet et routeur : couche 3. Bit, hub et répéteur : couche 1.",
+      "page": 1
+    },
+    {
+      "id": "td1-004",
+      "type": "unique",
+      "exercice": "Exercice 3 du TD : relier chaque fonction à une couche OSI.",
+      "image": "fig-osi-fonctions.png",
+      "legende": "Fonctions (à gauche) et couches OSI (à droite)",
+      "enonce": "« **Standardise les formats de données entre les systèmes** » : quelle couche ?",
+      "choix": ["Application", "Présentation", "Session", "Transport"],
+      "reponses": [1],
+      "explication": "La couche **présentation** s'occupe du format des données (codage, compression, chiffrement) pour que deux systèmes se comprennent.",
+      "page": 2
+    },
+    {
+      "id": "td1-005",
+      "type": "unique",
+      "exercice": "Exercice 3 du TD : relier chaque fonction à une couche OSI.",
+      "image": "fig-osi-fonctions.png",
+      "legende": "Fonctions (à gauche) et couches OSI (à droite)",
+      "enonce": "« **Livraison de messages de bout en bout à travers le réseau** » : quelle couche ?",
+      "choix": ["Réseau", "Liaison de données", "Transport", "Session"],
+      "reponses": [2],
+      "explication": "Le **bout en bout** (d'une application à l'autre) est le rôle de la couche **transport**. La couche réseau achemine les paquets de routeur en routeur grâce à l'adresse réseau.",
+      "page": 2
+    },
+    {
+      "id": "td1-006",
+      "type": "unique",
+      "exercice": "Exercice 3 du TD : relier chaque fonction à une couche OSI.",
+      "image": "fig-osi-fonctions.png",
+      "legende": "Fonctions (à gauche) et couches OSI (à droite)",
+      "enonce": "« **Définit les procédures d'accès aux supports** » : quelle couche ?",
+      "choix": ["Physique", "Liaison de données", "Réseau", "Application"],
+      "reponses": [1],
+      "explication": "Le **contrôle d'accès au support** est une fonction de la couche **liaison de données** (sous-couche MAC). La couche physique, elle, gère « câble, tensions, bits et débit ».",
+      "page": 2
+    },
+    {
+      "id": "td1-007",
+      "type": "unique",
+      "exercice": "Exercice 3 du TD : relier chaque terme à sa définition.",
+      "image": "fig-termes.png",
+      "legende": "Termes (à gauche) et définitions (à droite)",
+      "enonce": "Quelle est la définition de l'**encapsulation** ?",
+      "choix": [
+        "Découpage du flux de données en morceaux adaptés à la transmission",
+        "Processus d'ajout d'informations ou d'étiquettes portant sur la couche, nécessaires pour transmettre les données",
+        "Méthode permettant de transmettre plusieurs flux sur un même canal",
+        "Règles formelles décrivant la structure et le processus de communication"
+      ],
+      "reponses": [1],
+      "explication": "Encapsulation = **ajout d'un en-tête** (et parfois d'une queue) à chaque couche. Le découpage, c'est la **segmentation** ; plusieurs flux sur un canal, le **multiplexage** ; les règles formelles, un **protocole**.",
+      "page": 2
+    },
+    {
+      "id": "td1-008",
+      "type": "unique",
+      "exercice": "Exercice 3 du TD : relier chaque terme à sa définition.",
+      "image": "fig-termes.png",
+      "legende": "Termes (à gauche) et définitions (à droite)",
+      "enonce": "« Méthode permettant de transmettre plusieurs flux de données sur un même canal de communication ou support réseau partagé » : de quel terme s'agit-il ?",
+      "choix": ["Segmentation", "Multiplexage", "QoS", "Protocole"],
+      "reponses": [1],
+      "explication": "C'est le **multiplexage**. Dans cet exercice, la **QoS** n'a pas de définition proposée : c'est la gestion des priorités pour transporter chaque trafic correctement.",
+      "page": 2
+    },
+    {
+      "id": "td1-009",
+      "type": "multiple",
+      "enonce": "Pourquoi les technologies à **commutation de circuits** ont-elles été abandonnées lors du développement d'Internet ?",
+      "choix": [
+        "Elles obligeaient à découper un message en blocs contenant des adresses",
+        "Les premiers réseaux à circuits n'établissaient pas automatiquement de circuit de secours en cas de panne",
+        "Elles gardaient un circuit ouvert même quand aucune donnée n'était transférée",
+        "Mettre en place de nombreux circuits ouverts simultanément est coûteux"
+      ],
+      "reponses": [1, 2, 3],
+      "explication": "Pas de circuit de secours, circuit occupé même en silence, coût de nombreux circuits. Le découpage en blocs avec adresses décrit au contraire la commutation de **paquets**.",
+      "page": 2
+    },
+    {
+      "id": "td1-010",
+      "type": "multiple",
+      "enonce": "Pourquoi a-t-on choisi la commutation de **paquets sans connexion** pour Internet ?",
+      "choix": [
+        "Elle s'adapte rapidement à la perte d'équipements",
+        "Elle exploite efficacement l'infrastructure du réseau",
+        "Les paquets peuvent suivre différents chemins simultanément",
+        "Les ressources physiques sont réservées pour la communication en cours"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "Tolérance aux pannes, utilisation efficace du réseau, chemins multiples. La **réservation** de ressources caractérise la commutation de **circuits**.",
+      "page": 3
+    },
+    {
+      "id": "td1-011",
+      "type": "unique",
+      "enonce": "Quel est le rôle de la qualité de service (QoS) dans un réseau convergent ?",
+      "choix": [
+        "Abandonner tout trafic dépassant la bande passante disponible",
+        "Établir les priorités de livraison des différents messages",
+        "Fixer une priorité identique pour toutes les communications",
+        "Partager la bande passante inutilisée entre les services de l'entreprise"
+      ],
+      "reponses": [1],
+      "explication": "La QoS **classe** le trafic et lui donne des **priorités** (par exemple, la voix avant le web) grâce aux files d'attente.",
+      "page": 3
+    },
+    {
+      "id": "td1-012",
+      "type": "unique",
+      "enonce": "Un serveur répond à une requête web. Après le formatage de la page et la création des segments TCP, quelle est l'opération suivante ?",
+      "choix": [
+        "Le client désencapsule le segment et ouvre la page",
+        "Le serveur convertit les données en bits",
+        "Le serveur ajoute les adresses IP source et destination à chaque segment",
+        "Le serveur ajoute les adresses physiques (MAC) à chaque paquet"
+      ],
+      "reponses": [2],
+      "explication": "On descend la pile dans l'ordre : segment → **paquet (adresses IP)** → trame (adresses MAC) → bits. Juste après les segments TCP viennent donc les adresses IP.",
+      "page": 3
+    },
+    {
+      "id": "td1-013",
+      "type": "multiple",
+      "enonce": "Quels protocoles appartiennent à la couche **4** du modèle OSI ?",
+      "choix": ["IP", "TCP", "FTP", "UDP"],
+      "reponses": [1, 3],
+      "explication": "Couche transport : **TCP** et **UDP**. IP est en couche 3, FTP (et TFTP) en couche application.",
+      "page": 4
+    },
+    {
+      "id": "td1-014",
+      "type": "unique",
+      "exercice": "On transmet une vidéo numérique : images de **480 × 640 pixels**, chaque pixel prend une valeur parmi **32 intensités**, **25 images** par seconde.",
+      "enonce": "Combien de bits faut-il pour coder un pixel ?",
+      "choix": ["4 bits", "5 bits", "8 bits", "32 bits"],
+      "reponses": [1],
+      "explication": "Il faut n bits avec $2^n \\geq 32$ : $2^5 = 32$, donc **5 bits**. Le piège est de répondre 32 (le nombre de valeurs, pas de bits).",
+      "page": 4
+    },
+    {
+      "id": "td1-015",
+      "type": "unique",
+      "exercice": "On transmet une vidéo numérique : images de **480 × 640 pixels**, chaque pixel prend une valeur parmi **32 intensités**, **25 images** par seconde.",
+      "enonce": "Quelle est la quantité d'information Q d'une image ?",
+      "choix": ["307 200 bits", "1 536 000 bits", "9 830 400 bits", "38 400 000 bits"],
+      "reponses": [1],
+      "explication": "$Q = 480 \\times 640 \\times 5 = 307\\,200 \\times 5 = 1\\,536\\,000$ bits. 307 200, c'est le nombre de pixels ; 9 830 400 correspondrait à 32 bits par pixel.",
+      "page": 4
+    },
+    {
+      "id": "td1-016",
+      "type": "unique",
+      "exercice": "On transmet une vidéo numérique : images de **480 × 640 pixels**, chaque pixel prend une valeur parmi **32 intensités**, **25 images** par seconde.",
+      "enonce": "Quelle est la vitesse de transmission de l'émetteur ?",
+      "choix": ["1,536 Mbit/s", "7,68 Mbit/s", "38,4 Mbit/s", "245,76 Mbit/s"],
+      "reponses": [2],
+      "explication": "$D = Q \\times 25 = 1\\,536\\,000 \\times 25 = 38\\,400\\,000$ bit/s = **38,4 Mbit/s**.",
+      "page": 4
+    },
+    {
+      "id": "td1-017",
+      "type": "unique",
+      "exercice": "Un Ethernet en bus a un débit de **10 Mbit/s** et mesure **800 m**. Les signaux se propagent à **200 m/µs**. Une trame de données fait **256 bits** ; la station qui la reçoit renvoie aussitôt un acquittement de **32 bits**.",
+      "enonce": "Quel est le temps de propagation ?",
+      "choix": ["0,25 µs", "4 µs", "25,6 µs", "160 µs"],
+      "reponses": [1],
+      "explication": "$T_p = \\dfrac{800}{200} = 4$ µs. Il est le même pour la trame de données et pour l'acquittement.",
+      "page": 4
+    },
+    {
+      "id": "td1-018",
+      "type": "unique",
+      "exercice": "Un Ethernet en bus a un débit de **10 Mbit/s** et mesure **800 m**. Les signaux se propagent à **200 m/µs**. Une trame de données fait **256 bits** ; la station qui la reçoit renvoie aussitôt un acquittement de **32 bits**.",
+      "enonce": "Quel est le délai d'acheminement de la **trame de données** ?",
+      "choix": ["4 µs", "25,6 µs", "29,6 µs", "33,6 µs"],
+      "reponses": [2],
+      "explication": "$T_e = \\dfrac{256}{10^7} = 25{,}6$ µs (à 10 Mbit/s, on émet 10 bits par µs). $DA = T_e + T_p = 25{,}6 + 4 = 29{,}6$ µs.",
+      "page": 4
+    },
+    {
+      "id": "td1-019",
+      "type": "unique",
+      "exercice": "Un Ethernet en bus a un débit de **10 Mbit/s** et mesure **800 m**. Les signaux se propagent à **200 m/µs**. Une trame de données fait **256 bits** ; la station qui la reçoit renvoie aussitôt un acquittement de **32 bits**.",
+      "enonce": "Quel est le délai d'acheminement de la **trame d'acquittement** ?",
+      "choix": ["3,2 µs", "7,2 µs", "29,6 µs", "36,8 µs"],
+      "reponses": [1],
+      "explication": "$T_e = \\dfrac{32}{10^7} = 3{,}2$ µs, puis $DA = 3{,}2 + 4 = 7{,}2$ µs. 36,8 µs serait la somme des deux délais, ce qui n'est pas demandé.",
+      "page": 4
+    }
+  ]
+}

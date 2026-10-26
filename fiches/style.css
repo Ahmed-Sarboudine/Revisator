@@ -230,3 +230,44 @@ pre {
   color: #2a4bd7;
   font-weight: 700;
 }
+
+/* Corrigés de TD */
+
+.question-td {
+  margin: 7px 0 2px;
+  font-weight: 650;
+  break-after: avoid;
+}
+
+.reponse {
+  margin: 2px 0 8px;
+  padding: 5px 9px;
+  background: #f3faf5;
+  border-left: 3px solid #18763f;
+  border-radius: 0 6px 6px 0;
+  break-inside: avoid;
+}
+
+.reponse > :last-child {
+  margin-bottom: 0;
+}
+
+.reponse .verdict {
+  color: #18763f;
+  font-weight: 700;
+}
+
+img.figure {
+  display: block;
+  max-width: 100%;
+  margin: 4px auto 6px;
+  border: 1px solid #e4e0d7;
+  border-radius: 5px;
+  break-inside: avoid;
+}
+
+.octets td,
+.octets th {
+  font-family: Consolas, "Cascadia Mono", monospace;
+  text-align: center;
+}

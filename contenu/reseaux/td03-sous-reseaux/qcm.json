@@ -1,0 +1,219 @@
+{
+  "matiere": "Réseaux",
+  "document": "td",
+  "titre": "TD 3 : classes, masques et sous-réseaux",
+  "cours": "cours03-couche-reseau",
+  "questions": [
+    {
+      "id": "td3-001",
+      "type": "unique",
+      "exercice": "Adresse **172.161.210.50/19**.",
+      "enonce": "Quelle est l'adresse du réseau ?",
+      "choix": ["172.161.0.0", "172.161.192.0", "172.161.208.0", "172.161.210.0"],
+      "reponses": [1],
+      "explication": "/19 = 16 + 3 → masque 255.255.**224**.0, bloc 256 − 224 = **32** sur le 3<sup>e</sup> octet. Multiples de 32 : 160, **192**, 224 → 210 est dans le bloc qui commence à 192.",
+      "page": 1
+    },
+    {
+      "id": "td3-002",
+      "type": "unique",
+      "exercice": "Adresse **172.161.210.50/19**.",
+      "enonce": "Combien de machines peut contenir ce réseau, et quelle est son adresse de diffusion ?",
+      "choix": [
+        "8190 machines ; 172.161.223.255",
+        "8192 machines ; 172.161.223.255",
+        "8190 machines ; 172.161.255.255",
+        "254 machines ; 172.161.210.255"
+      ],
+      "reponses": [0],
+      "explication": "Bits d'hôte : 32 − 19 = 13 → $2^{13} - 2 = 8190$ machines (on retire le réseau et la diffusion). Diffusion = bloc suivant (224) − 1 = 223, suivi de .255 : **172.161.223.255**.",
+      "page": 1
+    },
+    {
+      "id": "td3-003",
+      "type": "unique",
+      "enonce": "Quelle est l'adresse de diffusion de **192.168.1.200/28** ?",
+      "choix": ["192.168.1.255", "192.168.1.207", "192.168.1.215", "192.168.1.192"],
+      "reponses": [1],
+      "explication": "/28 → masque .240, bloc **16**. $200 / 16 = 12{,}5$ → réseau $12 \\times 16 = 192$, diffusion $208 - 1 = $ **207** ; 14 machines.",
+      "page": 1
+    },
+    {
+      "id": "td3-004",
+      "type": "unique",
+      "exercice": "ID réseau **114.0.0.0**, on veut **7 sous-réseaux**.",
+      "enonce": "Quel est le masque de sous-réseau ?",
+      "choix": ["255.192.0.0", "255.224.0.0", "255.240.0.0", "255.255.224.0"],
+      "reponses": [1],
+      "explication": "114 → classe A (/8). $2^3 = 8 \\geq 7$ → **3 bits** empruntés → /11 → 2<sup>e</sup> octet `11100000` = **224** : masque 255.224.0.0, avec $2^{21} - 2 = 2\\,097\\,150$ hôtes par sous-réseau.",
+      "page": 1
+    },
+    {
+      "id": "td3-005",
+      "type": "unique",
+      "exercice": "ID réseau **192.168.69.0**, on veut **5 sous-réseaux**.",
+      "enonce": "Quel est le masque, et combien d'hôtes par sous-réseau ?",
+      "choix": [
+        "255.255.255.192 ; 62 hôtes",
+        "255.255.255.224 ; 30 hôtes",
+        "255.255.255.240 ; 14 hôtes",
+        "255.255.255.224 ; 32 hôtes"
+      ],
+      "reponses": [1],
+      "explication": "Classe C (/24). $2^2 = 4 < 5$, donc il faut $2^3 = 8$ : **3 bits** → /27 = 255.255.255.**224**. Il reste 5 bits d'hôte : $2^5 - 2 = 30$.",
+      "page": 1
+    },
+    {
+      "id": "td3-006",
+      "type": "unique",
+      "exercice": "ID réseau **172.16.0.0**, on veut **12 sous-réseaux**.",
+      "enonce": "Combien d'hôtes par sous-réseau ?",
+      "choix": ["2046", "4094", "4096", "8190"],
+      "reponses": [1],
+      "explication": "Classe B (/16). $2^4 = 16 \\geq 12$ → 4 bits → /20 (masque 255.255.240.0). Bits d'hôte : 12 → $2^{12} - 2 = $ **4094**.",
+      "page": 1
+    },
+    {
+      "id": "td3-007",
+      "type": "unique",
+      "exercice": "Réseau **126.122.27.0 /24**. On a besoin de **12 sous-réseaux de 12 nœuds**.",
+      "enonce": "Quel masque utiliser ?",
+      "choix": ["255.255.255.192", "255.255.255.224", "255.255.255.240", "255.255.255.248"],
+      "reponses": [2],
+      "explication": "12 sous-réseaux : $2^4 = 16 \\geq 12$ → **4 bits**. Il reste 4 bits d'hôte : $2^4 - 2 = 14 \\geq 12$, ça suffit. Masque /28 = **255.255.255.240**. Avec .248, il ne resterait que 6 hôtes par sous-réseau.",
+      "page": 2
+    },
+    {
+      "id": "td3-008",
+      "type": "unique",
+      "exercice": "Réseau **126.122.27.0**, masque **255.255.255.240**. Les sous-réseaux sont numérotés de 1 à 12, et le numéro n correspond à la valeur n des 4 bits de sous-réseau (n° 9 = `1001`).",
+      "enonce": "Quelle est l'adresse de la machine n° 3 du sous-réseau n° 9 ?",
+      "choix": ["126.122.27.131", "126.122.27.147", "126.122.27.39", "126.122.27.153"],
+      "reponses": [1],
+      "explication": "Sous-réseau 9 : `1001` sur les 4 bits de poids fort → `1001 0000` = 144. Machine 3 : `0011` sur les 4 bits de poids faible → `1001 0011` = **147**. (126.122.27.131 correspondrait à une numérotation qui commence à `0000`.)",
+      "page": 2
+    },
+    {
+      "id": "td3-009",
+      "type": "unique",
+      "exercice": "Réseau **126.122.27.0**, masque **255.255.255.240**. Le schéma rappelle comment se lit le 4<sup>e</sup> octet, sur l'exemple de la machine 126.122.27.147.",
+      "image": "fig-decoupage-octet.svg",
+      "legende": "Exemple : 4 bits de sous-réseau + 4 bits d'hôte",
+      "enonce": "À quel sous-réseau appartient la machine **126.122.27.123** ?",
+      "choix": ["126.122.27.96", "126.122.27.112", "126.122.27.120", "126.122.27.128"],
+      "reponses": [1],
+      "explication": "Bloc 16 : $123 / 16 = 7{,}7$ → $7 \\times 16 = 112$. Le sous-réseau est **126.122.27.112** (de .112 à .127). En binaire : 123 = `0111 1011` → sous-réseau `0111` = 7.",
+      "page": 2
+    },
+    {
+      "id": "td3-010",
+      "type": "unique",
+      "exercice": "On découpe **129.178.0.0** (classe B) en **60 sous-réseaux**.",
+      "enonce": "Combien de machines au maximum par sous-réseau, et quel masque ?",
+      "choix": [
+        "1022 machines ; 255.255.252.0",
+        "1024 machines ; 255.255.252.0",
+        "510 machines ; 255.255.254.0",
+        "2046 machines ; 255.255.248.0"
+      ],
+      "reponses": [0],
+      "explication": "$2^6 = 64 \\geq 60$ → **6 bits** → /22 = 255.255.**252**.0. Bits d'hôte : 10 → $2^{10} - 2 = $ **1022**.",
+      "page": 2
+    },
+    {
+      "id": "td3-011",
+      "type": "multiple",
+      "exercice": "Masque **255.255.248.0**. Trois stations : 129.148.208.26, 129.148.216.145 et 129.148.210.32.",
+      "enonce": "Quelles affirmations sont vraies ?",
+      "choix": [
+        "129.148.208.26 et 129.148.210.32 sont dans le même sous-réseau",
+        "Les trois stations sont dans le même sous-réseau",
+        "129.148.216.145 est dans le sous-réseau 129.148.216.0",
+        "129.148.210.32 est dans le sous-réseau 129.148.210.0"
+      ],
+      "reponses": [0, 2],
+      "explication": "248 → bloc **8** sur le 3<sup>e</sup> octet. 208 → 208 ; 210 → 208 (entre 208 et 215) ; 216 → 216. Donc .208.26 et .210.32 sont dans **129.148.208.0**, et .216.145 dans **129.148.216.0**.",
+      "page": 2
+    },
+    {
+      "id": "td3-012",
+      "type": "unique",
+      "exercice": "Réseau **10.0.128.0/17**.",
+      "enonce": "Quelle est son adresse de diffusion, et combien de machines peut-il contenir ?",
+      "choix": [
+        "10.0.255.255 ; 32 766",
+        "10.0.128.255 ; 254",
+        "10.0.255.255 ; 32 768",
+        "10.127.255.255 ; 8 388 606"
+      ],
+      "reponses": [0],
+      "explication": "/17 → 3<sup>e</sup> octet = 128, bloc 128 → le réseau va de 10.0.128.0 à **10.0.255.255**. Bits d'hôte : 15 → $2^{15} - 2 = 32\\,766$.",
+      "page": 2
+    },
+    {
+      "id": "td3-013",
+      "type": "unique",
+      "enonce": "Quelle est la **dernière adresse disponible** du réseau **10.0.0.0/9** ?",
+      "choix": ["10.0.255.254", "10.127.255.254", "10.127.255.255", "10.255.255.254"],
+      "reponses": [1],
+      "explication": "/9 → 2<sup>e</sup> octet = 128, bloc 128 → de 10.0.0.0 à 10.127.255.255 (diffusion). La dernière adresse utilisable est la diffusion − 1 : **10.127.255.254**.",
+      "page": 2
+    },
+    {
+      "id": "td3-014",
+      "type": "unique",
+      "exercice": "On découpe **202.255.0.128** (masque 255.255.255.128) en **5 sous-réseaux**.",
+      "enonce": "Quel est le nouveau masque, et quelle est l'adresse du 3<sup>e</sup> sous-réseau ?",
+      "choix": [
+        "255.255.255.240 ; 202.255.0.160",
+        "255.255.255.224 ; 202.255.0.192",
+        "255.255.255.240 ; 202.255.0.32",
+        "255.255.255.248 ; 202.255.0.144"
+      ],
+      "reponses": [0],
+      "explication": "/25 + 3 bits ($2^3 = 8 \\geq 5$) = /28 → **255.255.255.240**, bloc 16, 14 machines. On part de **.128** : .128, .144, **.160**, .176, .192.",
+      "page": 2
+    },
+    {
+      "id": "td3-015",
+      "type": "unique",
+      "exercice": "On découpe **162.216.0.0** (masque 255.255.254.0) en **6 sous-réseaux**.",
+      "enonce": "Quelle est l'adresse du **5<sup>e</sup>** sous-réseau ?",
+      "choix": ["162.216.0.256", "162.216.1.0", "162.216.4.0", "162.216.0.240"],
+      "reponses": [1],
+      "explication": "/23 + 3 bits = /26 → masque 255.255.255.192, bloc **64** dans le 4<sup>e</sup> octet : 0.0, 0.64, 0.128, 0.192, puis on passe à l'octet suivant : **162.216.1.0** (puis 1.64). 0.256 n'existe pas, un octet s'arrête à 255.",
+      "page": 2
+    },
+    {
+      "id": "td3-016",
+      "type": "multiple",
+      "exercice": "On découpe **112.32.0.0** (masque 255.224.0.0) en **4 sous-réseaux**.",
+      "enonce": "Quelles affirmations sont vraies ?",
+      "choix": [
+        "Le nouveau masque est 255.248.0.0",
+        "Le 2<sup>e</sup> sous-réseau est 112.40.0.0",
+        "La diffusion du 1<sup>er</sup> sous-réseau est 112.39.255.255",
+        "Chaque sous-réseau contient 254 machines"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "/11 + 2 bits = /13 → **255.248.0.0**, bloc 8 sur le 2<sup>e</sup> octet : 112.32, **112.40**, 112.48, 112.56. Le 1<sup>er</sup> va jusqu'à **112.39.255.255**. Hôtes : $2^{19} - 2 = 524\\,286$.",
+      "page": 2
+    },
+    {
+      "id": "td3-017",
+      "type": "multiple",
+      "image": "fig-decoupage-octet.svg",
+      "legende": "Découpage du 4e octet de 126.122.27.0 /28",
+      "enonce": "D'après ce découpage, quelles affirmations sont vraies ?",
+      "choix": [
+        "Chaque sous-réseau peut contenir 14 machines",
+        "On peut créer 16 sous-réseaux",
+        "La taille d'un bloc (écart entre deux sous-réseaux) est 16",
+        "Chaque sous-réseau peut contenir 16 machines"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "4 bits de sous-réseau → $2^4 = 16$ sous-réseaux. 4 bits d'hôte → $2^4 - 2 = 14$ machines (on retire l'adresse du sous-réseau et la diffusion). Le bit de sous-réseau de poids faible vaut 16 : les sous-réseaux sont espacés de **16**.",
+      "page": 2
+    }
+  ]
+}

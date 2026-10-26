@@ -1,5 +1,6 @@
 // Convertit les fiches HTML de fiches/<matiere>/<dossier>.html en PDF
 // dans contenu/<matiere>/<dossier>/fiche.pdf, avec Chrome (ou Edge) en mode headless.
+// Les corrigés de TD (fiches/<matiere>/<dossier>.corrige.html) donnent corrige.pdf.
 // Usage : node scripts/build-fiches.js [motif]   (ex. node scripts/build-fiches.js cours03)
 // Variable d'environnement CHROME_PATH pour forcer le navigateur.
 
@@ -32,17 +33,26 @@ const fiches = readdirSync(dossierFiches)
   .flatMap((matiere) =>
     readdirSync(join(dossierFiches, matiere))
       .filter((f) => f.endsWith(".html") && f.includes(motif))
-      .map((f) => ({ matiere, dossier: basename(f, ".html"), source: join(dossierFiches, matiere, f) }))
+      .map((f) => {
+        const nom = basename(f, ".html");
+        const corrige = nom.endsWith(".corrige");
+        return {
+          matiere,
+          dossier: corrige ? nom.slice(0, -".corrige".length) : nom,
+          sortie: corrige ? "corrige.pdf" : "fiche.pdf",
+          source: join(dossierFiches, matiere, f),
+        };
+      })
   );
 
-for (const { matiere, dossier, source } of fiches) {
+for (const { matiere, dossier, sortie, source } of fiches) {
   const destination = join(racine, "contenu", matiere, dossier);
   if (!existsSync(destination)) {
     console.warn(`ignorée : contenu/${matiere}/${dossier}/ n'existe pas`);
     continue;
   }
   mkdirSync(destination, { recursive: true });
-  const pdf = join(destination, "fiche.pdf");
+  const pdf = join(destination, sortie);
   execFileSync(chrome, [
     "--headless=new",
     "--disable-gpu",
@@ -51,5 +61,5 @@ for (const { matiere, dossier, source } of fiches) {
     `--print-to-pdf=${pdf}`,
     pathToFileURL(source).href,
   ], { stdio: "ignore" });
-  console.log(`contenu/${matiere}/${dossier}/fiche.pdf`);
+  console.log(`contenu/${matiere}/${dossier}/${sortie}`);
 }

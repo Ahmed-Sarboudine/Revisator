@@ -1,0 +1,255 @@
+{
+  "matiere": "Réseaux",
+  "document": "td",
+  "titre": "TD 4 : analyse de trame, DNS, HTTP",
+  "cours": "cours05-couche-application",
+  "questions": [
+    {
+      "id": "td4-001",
+      "type": "multiple",
+      "image": "fig-capture-wireshark.png",
+      "legende": "Capture Wireshark : demande d'adresse IP d'un PC",
+      "enonce": "Pour la trame n° 49 (DHCP Discover), quelles affirmations sont vraies ?",
+      "choix": [
+        "La source est 0.0.0.0 car le PC n'a pas encore d'adresse IP",
+        "La destination 255.255.255.255 est une diffusion à tout le réseau local",
+        "Le serveur DHCP a l'adresse 192.168.1.143",
+        "Les 4 trames DHCP suivent l'ordre Discover, Offer, Request, ACK"
+      ],
+      "reponses": [0, 1, 3],
+      "explication": "Le PC sans adresse (0.0.0.0) cherche un serveur en **diffusion**. Le serveur DHCP est **192.168.1.1** (il envoie Offer et ACK) ; 192.168.1.143 est l'adresse attribuée au PC, qui répond ensuite aux pings. On retrouve l'ordre **DORA**.",
+      "page": 1
+    },
+    {
+      "id": "td4-002",
+      "type": "unique",
+      "image": "fig-trame-hexa.png",
+      "legende": "Début de la trame n° 49 (sans préambule)",
+      "enonce": "Quelle est l'adresse MAC **source** de cette trame ?",
+      "choix": ["ff:ff:ff:ff:ff:ff", "00:24:e8:ca:dd:de", "08:00:45:00:01:48", "00:00:00:00:00:00"],
+      "reponses": [1],
+      "explication": "Octets 1 à 6 : MAC destination `ff:ff:ff:ff:ff:ff` (broadcast). Octets 7 à 12 : **MAC source 00:24:e8:ca:dd:de**, l'adresse du PC.",
+      "page": 1
+    },
+    {
+      "id": "td4-003",
+      "type": "unique",
+      "image": "fig-trame-hexa.png",
+      "legende": "Début de la trame n° 49",
+      "enonce": "Quel protocole de couche 3 reçoit les données de cette trame ?",
+      "choix": ["ARP (0x0806)", "IPv4 (0x0800)", "IPv6 (0x86DD)", "RARP (0x8035)"],
+      "reponses": [1],
+      "explication": "Octets 13-14 (champ type) : `08 00` → **IPv4**. L'en-tête Ethernet complet fait 14 octets : `ff ff ff ff ff ff 00 24 e8 ca dd de 08 00`.",
+      "page": 1
+    },
+    {
+      "id": "td4-004",
+      "type": "unique",
+      "exercice": "Le paquet IPv4 commence juste après l'en-tête Ethernet, par l'octet `45`.",
+      "image": "fig-entete-ipv4.png",
+      "legende": "Format de l'en-tête IPv4",
+      "enonce": "Que nous apprend l'octet `45` ?",
+      "choix": [
+        "Version 4, en-tête de 5 octets",
+        "Version 4, en-tête de 20 octets",
+        "Version 5, en-tête de 4 octets",
+        "Le paquet fait 45 octets"
+      ],
+      "reponses": [1],
+      "explication": "1<sup>er</sup> chiffre hexa = **version 4**. 2<sup>e</sup> = IHL = 5 **mots de 32 bits** = $5 \\times 4$ = **20 octets** : l'en-tête n'a pas d'options.",
+      "page": 2
+    },
+    {
+      "id": "td4-005",
+      "type": "unique",
+      "exercice": "En-tête IPv4 de la trame :\n\n```\n45 00 01 48 00 f1 00 00 80 11 38 b5 00 00 00 00 ff ff ff ff\n```",
+      "image": "fig-entete-ipv4.png",
+      "legende": "Format de l'en-tête IPv4",
+      "enonce": "Quelle est la longueur totale du paquet ?",
+      "choix": ["148 octets", "256 octets", "328 octets", "0x148 bits"],
+      "reponses": [2],
+      "explication": "Octets 3-4 : `01 48` = $1 \\times 256 + 4 \\times 16 + 8$ = **328 octets** (en-tête compris).",
+      "page": 2
+    },
+    {
+      "id": "td4-006",
+      "type": "multiple",
+      "exercice": "En-tête IPv4 de la trame :\n\n```\n45 00 01 48 00 f1 00 00 80 11 38 b5 00 00 00 00 ff ff ff ff\n```",
+      "image": "fig-entete-ipv4.png",
+      "legende": "Format de l'en-tête IPv4",
+      "enonce": "Quelles affirmations sont vraies ?",
+      "choix": [
+        "L'identification vaut 0x00F1, soit 241",
+        "Le paquet n'a pas été fragmenté (flags et offset à 0)",
+        "Le TTL vaut 128",
+        "Le type de service vaut 0x45"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "Identification `00 f1` = 15 × 16 + 1 = **241**. Flags et offset `00 00` : DF = 0, MF = 0, offset 0 → **pas de fragmentation**. TTL `80` = **128**. Le type de service est l'octet `00` (valeur par défaut) ; `45` est version + IHL.",
+      "page": 2
+    },
+    {
+      "id": "td4-007",
+      "type": "unique",
+      "exercice": "En-tête IPv4 de la trame :\n\n```\n45 00 01 48 00 f1 00 00 80 11 38 b5 00 00 00 00 ff ff ff ff\n```",
+      "enonce": "Quel protocole le paquet transporte-t-il ?",
+      "choix": ["ICMP (1)", "TCP (6)", "UDP (17)", "Il n'est pas indiqué"],
+      "reponses": [2],
+      "explication": "10<sup>e</sup> octet, champ protocole : `11` en hexa = $16 + 1$ = **17 → UDP**. Normal : DHCP fonctionne sur UDP. Attention à ne pas lire « 11 » en décimal.",
+      "page": 2
+    },
+    {
+      "id": "td4-008",
+      "type": "unique",
+      "exercice": "Début de l'en-tête UDP (juste après l'en-tête IP) :\n\n```\n00 44 00 43 01 34 1d d6\n```",
+      "image": "fig-tcp-udp.png",
+      "legende": "Format des en-têtes TCP et UDP",
+      "enonce": "Quels sont les ports source et destination, et que veulent dire bootpc et bootps ?",
+      "choix": [
+        "68 → 67 ; « c » = client, « s » = serveur",
+        "67 → 68 ; « c » = client, « s » = serveur",
+        "44 → 43 ; « c » = connexion, « s » = session",
+        "68 → 67 ; « c » = contrôle, « s » = sécurisé"
+      ],
+      "reponses": [0],
+      "explication": "`00 44` = 4 × 16 + 4 = **68** (bootp**c**, le **client**) ; `00 43` = **67** (bootp**s**, le **serveur**). Ce sont les ports de DHCP.",
+      "page": 3
+    },
+    {
+      "id": "td4-009",
+      "type": "unique",
+      "exercice": "En-tête UDP : `00 44 00 43 01 34 1d d6`. Le paquet IP fait 328 octets, dont 20 octets d'en-tête.",
+      "enonce": "Quelle est la longueur du datagramme UDP ?",
+      "choix": ["8 octets", "300 octets", "308 octets", "328 octets"],
+      "reponses": [2],
+      "explication": "Champ longueur `01 34` = 256 + 3 × 16 + 4 = **308 octets** (8 d'en-tête + 300 de données). Vérification : 328 − 20 = 308.",
+      "page": 3
+    },
+    {
+      "id": "td4-010",
+      "type": "unique",
+      "exercice": "Temporisateurs d'une zone DNS :\n\n```\n21600  ; Refresh\n3600   ; Retry\n604800 ; Expire\n172800 ; Time to Live\n```",
+      "enonce": "À quoi correspond le **Refresh** de 21 600 s ?",
+      "choix": [
+        "Toutes les 6 h, le serveur secondaire vérifie si la zone du primaire a changé",
+        "Toutes les 6 h, le cache des clients est vidé",
+        "Au bout de 6 h sans réponse, la zone expire",
+        "Le primaire renvoie sa zone toutes les 6 h"
+      ],
+      "reponses": [0],
+      "explication": "21 600 s = **6 h** : c'est l'intervalle au bout duquel le **secondaire** compare le numéro de série de la zone avec celui du primaire. En cas d'échec, il réessaie après le **Retry** (3600 s = 1 h).",
+      "page": 3
+    },
+    {
+      "id": "td4-011",
+      "type": "multiple",
+      "exercice": "Temporisateurs d'une zone DNS :\n\n```\n21600  ; Refresh\n3600   ; Retry\n604800 ; Expire\n172800 ; Time to Live\n```",
+      "enonce": "Quelles affirmations sont vraies ?",
+      "choix": [
+        "Expire = 7 jours : sans contact avec le primaire, le secondaire cesse de répondre pour la zone",
+        "Time to Live = 2 jours : durée de conservation des enregistrements dans les caches",
+        "Retry = 1 h : délai avant de réessayer une mise à jour qui a échoué",
+        "Expire = 7 jours : les enregistrements sont supprimés du primaire"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "604 800 s = **7 jours** (Expire, côté secondaire) ; 172 800 s = **2 jours** (TTL des caches) ; 3600 s = **1 h** (Retry). Le primaire ne supprime rien.",
+      "page": 3
+    },
+    {
+      "id": "td4-012",
+      "type": "unique",
+      "exercice": "Fichier de zone :\n\n```\n@  IN SOA  my.domain. root.my.domain. (\n          961230   ; Serial\n          3600     ; Refresh\n          300      ; Retry\n          3600000  ; Expire\n          3600 )   ; Minimum\n   IN NS   curly.my.domain.\ncurly.my.domain.   IN A   192.168.1.1\nlarry.my.domain.   IN A   192.168.1.2\nmoe.my.domain.     IN A   192.168.1.3\nshemp.my.domain.   IN A   192.168.1.4\n```",
+      "enonce": "Quel est le serveur de noms du domaine, et son adresse IP ?",
+      "choix": [
+        "my.domain, 192.168.1.0",
+        "curly.my.domain, 192.168.1.1",
+        "root.my.domain, 192.168.1.1",
+        "shemp.my.domain, 192.168.1.4"
+      ],
+      "reponses": [1],
+      "explication": "L'enregistrement **NS** désigne **curly.my.domain**, et l'enregistrement **A** de curly donne **192.168.1.1**. `root.my.domain.` dans le SOA est l'adresse e-mail de l'administrateur (root@my.domain).",
+      "page": 3
+    },
+    {
+      "id": "td4-013",
+      "type": "unique",
+      "enonce": "Dans le fichier de zone, l'Expire vaut **3 600 000 s**. Au bout de combien de temps la validité des enregistrements expire-t-elle ?",
+      "choix": ["1 heure", "1000 heures, soit environ 41,7 jours", "36 jours", "100 jours"],
+      "reponses": [1],
+      "explication": "3 600 000 / 3600 = **1000 h** ; 1000 / 24 ≈ **41,7 jours** (41 jours et 16 h).",
+      "page": 4
+    },
+    {
+      "id": "td4-014",
+      "type": "unique",
+      "exercice": "Zone de résolution inverse :\n\n```\n$ORIGIN 1.168.192.IN-ADDR.ARPA\n      IN NS   curly.my.domain.\n1     IN PTR  curly.my.domain.\n2     IN PTR  larry.my.domain.\n3     IN PTR  moe.my.domain.\n4     IN PTR  shemp.my.domain.\n```",
+      "enonce": "Quel enregistrement répond à une requête sur l'adresse IP **192.168.1.4** ?",
+      "choix": [
+        "`shemp.my.domain. IN A 192.168.1.4`",
+        "`4 IN PTR shemp.my.domain.`",
+        "`IN NS curly.my.domain.`",
+        "`4 IN CNAME shemp.my.domain.`"
+      ],
+      "reponses": [1],
+      "explication": "Une requête « IP → nom » est une **résolution inverse** : c'est l'enregistrement **PTR** de 4.1.168.192.in-addr.arpa qui répond **shemp.my.domain**. L'enregistrement A sert dans l'autre sens (nom → IP).",
+      "page": 4
+    },
+    {
+      "id": "td4-015",
+      "type": "multiple",
+      "enonce": "Pour ajouter une machine **mail** (192.168.1.10) qui sera le serveur de messagerie de **my.domain**, que faut-il faire ?",
+      "choix": [
+        "Ajouter `mail.my.domain. IN A 192.168.1.10`",
+        "Ajouter `my.domain. IN MX 10 mail.my.domain.`",
+        "Ajouter `10 IN PTR mail.my.domain.` dans la zone inverse",
+        "Augmenter le numéro de série (Serial) de la zone"
+      ],
+      "reponses": [0, 1, 2, 3],
+      "explication": "Il faut un **A** (nom → IP), un **MX** (serveur de messagerie du domaine), un **PTR** pour la résolution inverse, et **augmenter le Serial** pour que les serveurs secondaires voient le changement.",
+      "page": 4
+    },
+    {
+      "id": "td4-016",
+      "type": "unique",
+      "enonce": "Quelle ligne crée un alias **smtp** vers le serveur mail ?",
+      "choix": [
+        "`smtp.my.domain. IN A mail.my.domain.`",
+        "`smtp.my.domain. IN CNAME mail.my.domain.`",
+        "`smtp.my.domain. IN MX mail.my.domain.`",
+        "`mail.my.domain. IN PTR smtp.my.domain.`"
+      ],
+      "reponses": [1],
+      "explication": "Un alias se crée avec **CNAME** (*canonical name*) : smtp.my.domain devient un autre nom de mail.my.domain. Un enregistrement A pointe vers une **adresse IP**, pas vers un nom.",
+      "page": 4
+    },
+    {
+      "id": "td4-017",
+      "type": "unique",
+      "enonce": "Dans une URL comme `http://www.exemple.fr/index.html`, à quoi sert « :// » ?",
+      "choix": [
+        "À séparer le protocole (schéma) du reste, le « // » annonçant le nom de l'hôte",
+        "À indiquer le port par défaut",
+        "À chiffrer la connexion",
+        "À séparer le nom de domaine du chemin"
+      ],
+      "reponses": [0],
+      "explication": "Le « : » termine le nom du **protocole** et le « // » indique que la suite commence par l'**hôte** (le serveur). Le chemin est séparé par « / », le port par « : » après l'hôte.",
+      "page": 4
+    },
+    {
+      "id": "td4-018",
+      "type": "multiple",
+      "exercice": "Requête HTTP :\n\n```\nGET / http/1.1\nHost: www.exemple.fr\nUser-Agent: Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0\nAccept: text/html, application/xhtml+xml, application/xml\nAccept-Language: fr,en\nAccept-Encoding: gzip, deflate\nConnection: keep-alive\n```",
+      "enonce": "Quelles affirmations sur cette requête sont vraies ?",
+      "choix": [
+        "Elle demande la page d'accueil (la racine « / ») du site",
+        "`Host` indique le nom du serveur demandé",
+        "`Connection: keep-alive` demande de garder la connexion TCP ouverte pour les requêtes suivantes",
+        "Elle envoie des données de formulaire au serveur"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "**GET /** demande la racine du site en HTTP/1.1. **Host** donne le serveur (plusieurs sites peuvent partager une IP), **User-Agent** le navigateur (Firefox 5 sous Windows 7), **Accept-…** les formats, langues et compressions acceptés. Une requête GET n'a **pas de corps** : envoyer un formulaire se fait avec POST.",
+      "page": 4
+    }
+  ]
+}

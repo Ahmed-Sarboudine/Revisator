@@ -1,0 +1,218 @@
+{
+  "matiere": "Réseaux",
+  "document": "td",
+  "titre": "TD 2 : trames et ARP, CRC, ping, traceroute",
+  "cours": "cours02-physique-liaison",
+  "questions": [
+    {
+      "id": "td2-001",
+      "type": "unique",
+      "exercice": "Trame 1 (sans préambule ni CRC) :\n\n```\nFF FF FF FF FF FF 08 00 20 02 45 9E 08 06 00 01 08 00\n06 04 00 01 08 00 20 02 45 9E 81 68 FE 06 00 00 00 00\n00 00 81 68 FE 05\n```",
+      "image": "fig-trame-ethernet.png",
+      "legende": "Structure d'une trame Ethernet II (annexe du TD)",
+      "enonce": "Quel protocole est transporté dans cette trame, et à qui est-elle envoyée ?",
+      "choix": [
+        "IPv4, à la machine 08:00:20:02:45:9E",
+        "ARP, à toutes les machines du réseau local (broadcast)",
+        "ARP, à la machine 08:00:20:02:45:9E",
+        "IPv6, en broadcast"
+      ],
+      "reponses": [1],
+      "explication": "Les 6 premiers octets (MAC destination) sont `FF FF FF FF FF FF` : **broadcast**. Les 6 suivants sont la MAC source (08:00:20:02:45:9E). Le champ type, aux octets 13-14, vaut `08 06` : **ARP**.",
+      "page": 1
+    },
+    {
+      "id": "td2-002",
+      "type": "multiple",
+      "exercice": "Trame 1 (sans préambule ni CRC) :\n\n```\nFF FF FF FF FF FF 08 00 20 02 45 9E 08 06 00 01 08 00\n06 04 00 01 08 00 20 02 45 9E 81 68 FE 06 00 00 00 00\n00 00 81 68 FE 05\n```",
+      "image": "fig-paquet-arp.png",
+      "legende": "Structure d'un paquet ARP (annexe du TD)",
+      "enonce": "Que contient le paquet ARP de cette trame ?",
+      "choix": [
+        "C'est une requête (opération 00 01)",
+        "L'adresse IP de l'émetteur est 129.104.254.6",
+        "L'adresse IP recherchée est 129.104.254.5",
+        "C'est une réponse (opération 00 02)"
+      ],
+      "reponses": [0, 1, 2],
+      "explication": "Après `08 06` : hardware type `00 01`, protocol type `08 00`, HLEN `06`, PLEN `04`, **opération `00 01` = requête**. IP émetteur `81 68 FE 06` = 129.104.254.6 (0x81 = 8 × 16 + 1 = 129 ; 0x68 = 104 ; 0xFE = 254). La MAC cible est à 0 et l'IP cible est `81 68 FE 05` = **129.104.254.5**.",
+      "page": 1
+    },
+    {
+      "id": "td2-003",
+      "type": "unique",
+      "exercice": "Trame 2 :\n\n```\n08 00 20 02 45 9E 08 00 20 07 0B 94 08 06 00 01 08 00\n06 04 00 02 08 00 20 07 0B 94 81 68 FE 05 08 00 20 02\n45 9E 81 68 FE 06\n```",
+      "enonce": "Que représente cette trame, par rapport à la trame 1 (requête de 129.104.254.6 qui cherche 129.104.254.5) ?",
+      "choix": [
+        "Une nouvelle requête ARP de 129.104.254.5",
+        "La réponse ARP : 129.104.254.5 a la MAC 08:00:20:07:0B:94",
+        "La réponse ARP : 129.104.254.5 a la MAC 08:00:20:02:45:9E",
+        "Un paquet IPv4 de données"
+      ],
+      "reponses": [1],
+      "explication": "Opération `00 02` = **réponse**. L'émetteur est 08:00:20:07:0B:94 avec l'IP `81 68 FE 05` = 129.104.254.5, et la trame est envoyée directement (unicast) au demandeur 08:00:20:02:45:9E.",
+      "page": 1
+    },
+    {
+      "id": "td2-004",
+      "type": "unique",
+      "enonce": "Quelle adresse IP est codée en hexadécimal par `80 DE 0C 02` ?",
+      "choix": ["128.222.12.2", "80.222.12.2", "128.237.12.2", "128.222.192.2"],
+      "reponses": [0],
+      "explication": "On convertit chaque octet : 0x80 = 8 × 16 = **128** ; 0xDE = 13 × 16 + 14 = **222** ; 0x0C = **12** ; 0x02 = **2**.",
+      "page": 1
+    },
+    {
+      "id": "td2-005",
+      "type": "unique",
+      "exercice": "Requête ARP reçue :\n\n```\nFF FF FF FF FF FF 00 40 05 13 65 80 08 06 00 01 08 00\n06 04 00 01 00 40 05 13 65 80 80 DE 0C 01 00 00 00 00\n00 00 80 DE 0C 02\n```\n\nLa machine 128.222.12.2, de MAC `00 40 05 10 93 71`, répond.",
+      "image": "fig-paquet-arp.png",
+      "legende": "Structure d'un paquet ARP",
+      "enonce": "Comment commence la trame de réponse (MAC destination, MAC source, type, puis opération) ?",
+      "choix": [
+        "`FF FF FF FF FF FF  00 40 05 10 93 71  08 06 … 00 02`",
+        "`00 40 05 13 65 80  00 40 05 10 93 71  08 06 … 00 02`",
+        "`00 40 05 10 93 71  00 40 05 13 65 80  08 06 … 00 02`",
+        "`00 40 05 13 65 80  00 40 05 10 93 71  08 00 … 00 01`"
+      ],
+      "reponses": [1],
+      "explication": "La réponse part **en unicast vers le demandeur** (00 40 05 13 65 80), depuis la machine qui répond (00 40 05 10 93 71). Type toujours `08 06` (ARP), opération **`00 02`** (réponse). Dans le paquet ARP, émetteur et cible sont inversés.",
+      "page": 1
+    },
+    {
+      "id": "td2-006",
+      "type": "unique",
+      "exercice": "Message : `0011111101`. Polynôme générateur : $g(x) = x^2 + x + 1$.",
+      "enonce": "Quel est le message codé (message + CRC) ?",
+      "choix": ["`0011111101 00`", "`0011111101 01`", "`0011111101 11`", "`0011111101 10`"],
+      "reponses": [2],
+      "explication": "$g(x)$ → `111`, degré 2 : on ajoute **2 zéros** puis on fait des XOR successifs avec `111` sous chaque premier 1 : `001111110100` → `000001110100` → `000000000100` → `000000000011`. Le reste est **11**, donc le message codé est `001111110111`.",
+      "page": 1
+    },
+    {
+      "id": "td2-007",
+      "type": "unique",
+      "enonce": "Quel mot binaire correspond au polynôme $x^6 + x^4 + x + 1$ ?",
+      "choix": ["`101011`", "`1010011`", "`1001011`", "`1100101`"],
+      "reponses": [1],
+      "explication": "Un bit par puissance de $x^6$ à $x^0$ : $x^6$ = 1, $x^5$ = 0, $x^4$ = 1, $x^3$ = 0, $x^2$ = 0, $x^1$ = 1, $x^0$ = 1 → **`1010011`** (7 bits pour un degré 6).",
+      "page": 1
+    },
+    {
+      "id": "td2-008",
+      "type": "multiple",
+      "exercice": "On reçoit `101011000110`. Polynôme : $x^6 + x^4 + x + 1$ (`1010011`).",
+      "enonce": "Quelles affirmations sont vraies ?",
+      "choix": [
+        "Le reste de la division est nul : la transmission est correcte",
+        "Il faut ajouter 6 zéros au mot reçu avant de diviser",
+        "Le message émis est `101011`",
+        "Le CRC transmis est `000110`"
+      ],
+      "reponses": [0, 2, 3],
+      "explication": "À la réception, on divise le mot **tel quel** : `101011000110` → `000010100110` → `000000000000`, reste nul, donc **pas d'erreur**. Le CRC occupe les 6 derniers bits (`000110`), le message est le reste : `101011`.",
+      "page": 1
+    },
+    {
+      "id": "td2-009",
+      "type": "multiple",
+      "exercice": "```\nping -c1 193.93.28.7\n64 bytes from 193.93.28.7.  icmp_seq=0  ttl=255  time=0.7ms\n1 packet transmitted, 1 packet received, 0 % packet loss\n```",
+      "enonce": "Que peut-on déduire de ce résultat ?",
+      "choix": [
+        "La machine 193.93.28.7 est opérationnelle",
+        "Le délai de 0,7 ms indique une machine proche, sur le réseau local",
+        "Le paquet a traversé de nombreux routeurs",
+        "`icmp_seq=0` est le numéro de séquence de la première requête d'écho"
+      ],
+      "reponses": [0, 1, 3],
+      "explication": "1 paquet envoyé, 1 reçu : la machine répond. 0,7 ms aller-retour, c'est très court. **TTL = 255** (le maximum) n'a pas été décrémenté : **aucun routeur** n'a été traversé, chaque routeur retirant 1 au TTL.",
+      "page": 1
+    },
+    {
+      "id": "td2-010",
+      "type": "unique",
+      "enonce": "Sur quel principe repose l'outil **traceroute** ?",
+      "choix": [
+        "Il envoie des paquets avec un TTL de 1, puis 2, puis 3… et chaque routeur où le TTL tombe à 0 renvoie un message ICMP « temps dépassé »",
+        "Il demande à chaque routeur sa table de routage",
+        "Il envoie une requête ARP à chaque routeur",
+        "Il envoie un seul ping et lit la liste des routeurs dans la réponse"
+      ],
+      "reponses": [0],
+      "explication": "Le TTL croissant fait « mourir » le paquet un routeur plus loin à chaque fois. Le routeur concerné renvoie un **ICMP type 11** (temps dépassé), ce qui révèle son adresse et le délai.",
+      "page": 2
+    },
+    {
+      "id": "td2-011",
+      "type": "unique",
+      "exercice": "Extrait d'un traceroute :\n\n```\n 1  193.51.91.1      1 ms    1 ms    1 ms\n 7  193.48.53.49    39 ms   47 ms   44 ms\n 8  193.220.180.9   44 ms    *       *\n```",
+      "enonce": "Que signifient les astérisques de la ligne 8 ?",
+      "choix": [
+        "Le routeur est hors service",
+        "Aucune réponse n'a été reçue dans le délai imparti",
+        "Le paquet a atteint sa destination",
+        "Le délai dépasse 1000 ms"
+      ],
+      "reponses": [1],
+      "explication": "`*` = **pas de réponse dans le délai** (paquet ou réponse perdu, ou routeur qui filtre ou limite ses réponses ICMP). Le routeur répond d'ailleurs à la première tentative (44 ms) : il n'est pas en panne.",
+      "page": 2
+    },
+    {
+      "id": "td2-012",
+      "type": "unique",
+      "enonce": "Dans un traceroute, pourquoi la première ligne affiche-t-elle un délai d'au plus 1 ms ?",
+      "choix": [
+        "C'est le serveur de destination",
+        "C'est le premier routeur, la passerelle du réseau local, très proche",
+        "Les premiers paquets sont prioritaires",
+        "Le TTL de départ est très élevé"
+      ],
+      "reponses": [1],
+      "explication": "Le premier saut est la **passerelle par défaut**, sur le réseau local : l'aller-retour est donc très rapide.",
+      "page": 2
+    },
+    {
+      "id": "td2-013",
+      "type": "unique",
+      "exercice": "Adresses des routeurs du traceroute : 193.51.91.1 · 2.0.0.1 · 11.6.1.1 · 11.6.13.1 · 189.52.80.1 · 193.48.58.41 · 193.48.53.49 · 193.220.180.9 · 195.48.58.43 · 195.48.58.50 · 194.206.207.18 · 194.207.206.5",
+      "enonce": "En raisonnant par classes, combien de réseaux différents ont été traversés ?",
+      "choix": ["8", "10", "12", "13"],
+      "reponses": [1],
+      "explication": "12 routeurs, mais 11.6.1.1 et 11.6.13.1 sont dans le même réseau de classe A (11.0.0.0), et 195.48.58.43 et 195.48.58.50 dans le même réseau de classe C (195.48.58.0). Cela fait **10 réseaux**.",
+      "page": 2
+    },
+    {
+      "id": "td2-014",
+      "type": "unique",
+      "enonce": "Avec le masque par défaut de sa classe, quelle est l'adresse de diffusion de **124.12.23.71** ?",
+      "choix": ["124.12.23.255", "124.12.255.255", "124.255.255.255", "255.255.255.255"],
+      "reponses": [2],
+      "explication": "124 ≤ 127 : **classe A**, masque 255.0.0.0. Seul le premier octet est la partie réseau → réseau 124.0.0.0, diffusion **124.255.255.255**.",
+      "page": 2
+    },
+    {
+      "id": "td2-015",
+      "type": "unique",
+      "exercice": "Adresse **194.12.23.71**, masque **255.255.255.240**.",
+      "enonce": "Quelles sont l'adresse du sous-réseau et l'adresse de diffusion ?",
+      "choix": [
+        "194.12.23.0 et 194.12.23.255",
+        "194.12.23.64 et 194.12.23.79",
+        "194.12.23.70 et 194.12.23.85",
+        "194.12.23.64 et 194.12.23.127"
+      ],
+      "reponses": [1],
+      "explication": "Masque .240 → taille de bloc 256 − 240 = **16**. Multiples de 16 : 48, **64**, 80 → 71 est entre 64 et 79. Sous-réseau **.64**, diffusion **.79**.",
+      "page": 3
+    },
+    {
+      "id": "td2-016",
+      "type": "unique",
+      "enonce": "Adresse **124.12.23.71** avec le masque **255.255.255.0** : quelle est l'adresse du sous-réseau ?",
+      "choix": ["124.0.0.0", "124.12.0.0", "124.12.23.0", "124.12.23.64"],
+      "reponses": [2],
+      "explication": "Le masque /24 garde les 3 premiers octets : **124.12.23.0** (diffusion 124.12.23.255), même si l'adresse est de classe A.",
+      "page": 3
+    }
+  ]
+}

@@ -123,6 +123,8 @@ Revisator/
 | `questions[].id` | oui | Identifiant **unique et stable** (sert à mémoriser les erreurs ; ne pas le changer après coup). |
 | `questions[].type` | oui | `"unique"` (une seule bonne réponse) ou `"multiple"` (une ou plusieurs). |
 | `questions[].exercice` | non | Données / mise en situation d'un exercice, affichées au-dessus de l'énoncé. Plusieurs questions peuvent reprendre le même texte. |
+| `questions[].image` | non | Image placée dans le même dossier que le `qcm.json` (ex. `"fig-trame.png"`), affichée sous l'exercice ; un clic l'agrandit. |
+| `questions[].legende` | non | Légende de l'image (sert aussi de texte alternatif). |
 | `questions[].enonce` | oui | La question. |
 | `questions[].choix` | oui | Entre 2 et 6 propositions. |
 | `questions[].reponses` | oui | Indices des bonnes réponses dans `choix`, en commençant à **0**. Exactement un indice si `type` vaut `"unique"`. |
@@ -159,6 +161,8 @@ node scripts/build-fiches.js cours03    # seulement celles dont le nom contient 
 ```
 
 Les PDF générés sont commités : la GitHub Action ne les régénère pas.
+
+Les **corrigés de TD** suivent le même principe : `fiches/<matiere>/<dossier>.corrige.html` → `contenu/<matiere>/<dossier>/corrige.pdf`, ouvert par le bouton « Corrigé » du TD.
 
 ## Liste des exams
 

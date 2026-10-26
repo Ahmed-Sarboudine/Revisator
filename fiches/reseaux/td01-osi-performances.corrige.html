@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Corrigé — Réseaux, TD 1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Réseaux · Corrigé · TD 1</p>
+    <h1>Modèles OSI et TCP/IP, concepts, performances</h1>
+  </div>
+  <p class="source">Corrigé rédigé à partir des cours 1 et 2.<br>Les calculs ont été vérifiés.</p>
+</header>
+
+<h2>Exercice 1 : correspondance OSI et TCP/IP</h2>
+<table>
+  <tr><th>Couches du modèle OSI</th><th>Couche du modèle TCP/IP</th></tr>
+  <tr><td>7 Application · 6 Présentation · 5 Session</td><td><strong>Application</strong></td></tr>
+  <tr><td>4 Transport</td><td><strong>Transport</strong></td></tr>
+  <tr><td>3 Réseau</td><td><strong>Internet</strong></td></tr>
+  <tr><td>2 Liaison de données · 1 Physique</td><td><strong>Accès réseau</strong></td></tr>
+</table>
+
+<h2>Exercice 2 : les 7 couches du modèle OSI</h2>
+<table>
+  <tr><th>N°</th><th>Nom</th><th>Fonction principale</th><th>Exemples de protocoles et composants</th><th>PDU</th></tr>
+  <tr><td>7</td><td><strong>Application</strong></td><td>Interface avec les applications de l'utilisateur</td><td>HTTP, FTP, SMTP, DNS, DHCP ; passerelles applicatives</td><td>Données</td></tr>
+  <tr><td>6</td><td><strong>Présentation</strong></td><td>Format des données : codage, compression, chiffrement</td><td>JPEG, ASCII, SSL/TLS</td><td>Données</td></tr>
+  <tr><td>5</td><td><strong>Session</strong></td><td>Ouvre, gère et ferme les dialogues entre applications</td><td>RPC, NetBIOS</td><td>Données</td></tr>
+  <tr><td>4</td><td><strong>Transport</strong></td><td>Livraison de bout en bout, segmentation, ports</td><td>TCP, UDP</td><td>Segment (TCP) / datagramme (UDP)</td></tr>
+  <tr><td>3</td><td><strong>Réseau</strong></td><td>Adressage logique et routage (meilleur chemin)</td><td>IP, ICMP, RIP, OSPF ; <strong>routeur</strong></td><td>Paquet</td></tr>
+  <tr><td>2</td><td><strong>Liaison de données</strong></td><td>Trames, adressage physique (MAC), accès au support, détection d'erreurs</td><td>Ethernet, ARP ; <strong>switch</strong>, carte réseau</td><td>Trame</td></tr>
+  <tr><td>1</td><td><strong>Physique</strong></td><td>Transmission des bits sur le support (signaux, câbles, débit)</td><td>Câbles, fibre, Wi-Fi ; <strong>hub</strong>, <strong>répéteur</strong></td><td>Bit</td></tr>
+</table>
+
+<h2>Exercice 3 : concepts</h2>
+<div class="deux-colonnes">
+  <div>
+    <p class="question-td">1. Fonction → couche OSI</p>
+    <img class="figure" src="../../contenu/reseaux/td01-osi-performances/fig-osi-fonctions.png" alt="Énoncé : fonctions à relier aux couches OSI">
+    <div class="reponse">
+      <ul>
+        <li>Procédures d'accès aux supports → <strong>Liaison de données</strong></li>
+        <li>Standardise les formats de données → <strong>Présentation</strong></li>
+        <li>Achemine les paquets d'après une adresse réseau → <strong>Réseau</strong></li>
+        <li>Câble, tensions, bits et débit → <strong>Physique</strong></li>
+        <li>Gère les sessions et les dialogues → <strong>Session</strong></li>
+        <li>Interfaces entre les applications → <strong>Application</strong></li>
+        <li>Livraison de bout en bout → <strong>Transport</strong></li>
+      </ul>
+    </div>
+  </div>
+  <div>
+    <p class="question-td">2. Terme → définition</p>
+    <img class="figure" src="../../contenu/reseaux/td01-osi-performances/fig-termes.png" alt="Énoncé : termes à relier à leur définition">
+    <div class="reponse">
+      <ul>
+        <li><strong>Segmentation</strong> → découpage du flux de données en morceaux adaptés à la transmission</li>
+        <li><strong>Encapsulation</strong> → ajout d'informations ou d'étiquettes propres à la couche</li>
+        <li><strong>Multiplexage</strong> → plusieurs flux sur un même canal ou support partagé</li>
+        <li><strong>Protocole</strong> → règles formelles décrivant la structure et le processus de communication</li>
+        <li><strong>PDU</strong> → terme désignant un paquet de données (l'unité de données d'une couche)</li>
+        <li><strong>QoS</strong> → pas de définition proposée. D'après le cours : capacité à transporter un type de trafic dans de bonnes conditions (débit, délai, pertes) en donnant des priorités.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2>Exercice 4 : QCM</h2>
+<p class="question-td">1) Pourquoi a-t-on abandonné la commutation de circuits ? (3 réponses)</p>
+<div class="reponse"><span class="verdict">b, c, e.</span> Pas de circuit de secours automatique en cas de panne (b) ; circuit ouvert même quand aucune donnée ne passe (c) ; beaucoup de circuits simultanés coûtent cher (e). <em>a</em> décrit la commutation de <strong>paquets</strong> ; <em>d</em> est faux : un circuit réservé garantit justement la qualité.</div>
+
+<p class="question-td">2) Pourquoi la commutation de paquets sans connexion pour Internet ? (3 réponses)</p>
+<div class="reponse"><span class="verdict">a, b, c.</span> Elle s'adapte aux pannes, utilise efficacement l'infrastructure et les paquets peuvent prendre des chemins différents. <em>d</em> et <em>e</em> (ressources réservées, circuit établi avant l'envoi) décrivent la commutation de <strong>circuits</strong>.</div>
+
+<p class="question-td">3) Rôle de la QoS dans un réseau convergent</p>
+<div class="reponse"><span class="verdict">b.</span> Elle établit les <strong>priorités de livraison</strong> des différents messages (classement du trafic, files d'attente).</div>
+
+<div class="deux-colonnes">
+  <div>
+    <p class="question-td">4) Couche OSI de l'adressage IP</p>
+    <div class="reponse"><span class="verdict">c : couche 3</span> (réseau).</div>
+    <p class="question-td">5) Adressage de la couche 2</p>
+    <div class="reponse"><span class="verdict">b : physique</span> (adresse MAC). L'adressage logique (IP) est en couche 3.</div>
+  </div>
+  <div>
+    <p class="question-td">7) Protocoles de la couche 4</p>
+    <div class="reponse"><span class="verdict">b et e : TCP et UDP.</span> IP est en couche 3 ; FTP et TFTP en couche application.</div>
+  </div>
+</div>
+
+<p class="question-td">6) Étape suivante après le formatage de la page web et la création des segments TCP</p>
+<div class="reponse"><span class="verdict">d.</span> Le serveur ajoute les adresses <strong>IP</strong> source et destination (en-tête IP → paquet). L'ordre de l'encapsulation est segment → paquet (IP) → trame (MAC) → bits. <em>e</em> vient après, <em>c</em> encore après ; <em>a</em> et <em>b</em> concernent le client.</div>
+
+<h2>Exercice 5 : débit d'une vidéo numérique</h2>
+<div class="boite methode">
+  <span class="boite-titre">Méthode</span>
+  Nombre de bits par pixel : il faut n bits avec <strong>2<sup>n</sup> ≥ nombre de valeurs possibles</strong>. Puis Q = pixels × bits par pixel, et débit = Q × images par seconde.
+</div>
+<p class="question-td">1. Quantité d'information Q d'une image</p>
+<div class="reponse">32 intensités = 2<sup>5</sup> → <strong>5 bits par pixel</strong>.<br>
+Pixels : 480 × 640 = 307 200.<br>
+Q = 307 200 × 5 = <strong>1 536 000 bits</strong> (soit 192 000 octets).</div>
+<p class="question-td">2. Vitesse de transmission de l'émetteur</p>
+<div class="reponse">D = Q × 25 = 1 536 000 × 25 = <strong>38 400 000 bit/s = 38,4 Mbit/s</strong>.</div>
+
+<h2>Exercice 6 : délais sur un Ethernet en bus</h2>
+<p>Données : débit D = 10 Mbit/s, longueur 800 m, vitesse v = 200 m/µs, trame de données 256 bits, acquittement 32 bits.</p>
+<div class="boite methode">
+  <span class="boite-titre">Méthode</span>
+  T<sub>e</sub> = L / D ; T<sub>p</sub> = distance / vitesse ; DA = T<sub>e</sub> + T<sub>p</sub>. Astuce : 10 Mbit/s = 10 bits par µs, donc T<sub>e</sub> (en µs) = nombre de bits / 10.
+</div>
+<div class="deux-colonnes">
+  <div class="reponse">
+    <strong>Temps de propagation</strong> (le même pour les deux trames) :<br>
+    T<sub>p</sub> = 800 / 200 = <strong>4 µs</strong>
+  </div>
+  <div class="reponse">
+    <strong>Trame de données</strong> : T<sub>e</sub> = 256 / 10<sup>7</sup> = 25,6 µs<br>
+    DA = 25,6 + 4 = <strong>29,6 µs</strong><br>
+    <strong>Acquittement</strong> : T<sub>e</sub> = 32 / 10<sup>7</sup> = 3,2 µs<br>
+    DA = 3,2 + 4 = <strong>7,2 µs</strong>
+  </div>
+</div>
+<div class="boite piege"><span class="boite-titre">À remarquer</span>Sur un réseau local, le temps de propagation (4 µs) est faible devant le temps d'émission d'une trame de données. Pour une petite trame comme l'acquittement, les deux deviennent comparables.</div>
+
+</body>
+</html>
