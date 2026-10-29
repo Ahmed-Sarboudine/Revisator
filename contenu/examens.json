@@ -35,6 +35,7 @@
     },
     {
       "matiere": "Traitement de données",
+      "revision": "traitement-donnees",
       "epreuves": [
         { "nom": "Exam", "date": "2026-11-27", "poids": 50 },
         { "nom": "Projet", "date": "2026-12-06", "poids": 50 }

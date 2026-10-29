@@ -13,6 +13,28 @@ export function lancerQuiz(conteneur, options) {
   const { items } = options;
   let position = 0;
   let nbJustes = 0;
+  let formActuel = null;
+
+  // Raccourcis clavier : A-F ou 1-6 pour cocher, Entrée pour valider / passer à la suite.
+  function raccourcis(e) {
+    if (!formActuel?.isConnected) return document.removeEventListener("keydown", raccourcis);
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const bouton = formActuel.querySelector("button");
+    if (e.key === "Enter") {
+      if (e.target.closest?.("a, button")) return;
+      e.preventDefault();
+      if (!bouton.disabled) formActuel.requestSubmit();
+      return;
+    }
+    const touche = e.key.toUpperCase();
+    const rang = /^[1-6]$/.test(touche) ? Number(touche) - 1 : LETTRES.indexOf(touche);
+    const input = formActuel.querySelectorAll("input")[rang];
+    if (rang < 0 || !input || input.disabled) return;
+    e.preventDefault();
+    input.checked = input.type === "checkbox" ? !input.checked : true;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  document.addEventListener("keydown", raccourcis);
 
   function afficherQuestion() {
     const { q, matiere, doc } = items[position];
@@ -62,6 +84,7 @@ export function lancerQuiz(conteneur, options) {
           <div class="correction" hidden></div>
           <div class="barre-action">
             <button type="submit" class="btn principal" disabled>Valider</button>
+            <p class="aide-clavier" aria-hidden="true"><kbd>A</kbd>–<kbd>${LETTRES[q.choix.length - 1]}</kbd> répondre · <kbd>Entrée</kbd> valider</p>
           </div>
         </form>
       </article>`;
@@ -70,6 +93,7 @@ export function lancerQuiz(conteneur, options) {
     const bouton = form.querySelector("button");
     const inputs = [...form.querySelectorAll("input")];
     let corrige = false;
+    formActuel = form;
 
     form.addEventListener("change", () => {
       bouton.disabled = !inputs.some((input) => input.checked);

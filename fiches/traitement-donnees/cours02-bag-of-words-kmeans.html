@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Traitement de données, cours 2 : Sac de mots, TF-IDF et K-Means</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Traitement de données · Fiche de révision · Cours 2</p>
+    <h1>Sac de mots, TF-IDF et K-Means</h1>
+  </div>
+  <p class="source">Notebooks « Bag of words » et « K-Means » :<br>représenter des textes, puis les regrouper</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>Non supervisé</strong> : on ne connaît ni les classes ni leur nombre ; on regroupe par ressemblance (<em>clustering</em>).</li>
+    <li><strong>Sac-de-mots</strong> = histogramme des occurrences des mots du dictionnaire (vecteur de la taille du vocabulaire, <strong>creux</strong>). Ni ordre, ni syntaxe.</li>
+    <li>Vocabulaire <strong>appris sur le train</strong> (<code>fit</code>), test seulement <code>transform</code> : un mot hors vocabulaire est <strong>ignoré</strong>.</li>
+    <li><strong>TF</strong> = n(t,doc) / Card(doc) · <strong>IDF</strong> = log(M / nb de docs contenant t) : 0 si t est partout, log M s'il est dans un seul doc.</li>
+    <li>Plus gros gain : la <strong>suppression des stop words</strong> (precision@1 0,49 → 0,75). <strong>BM25</strong> &gt; TF-IDF ici (longueurs très variables).</li>
+    <li><strong>K-Means</strong> minimise <strong>J = ∑<sub>k</sub> ∑<sub>i∈C<sub>k</sub></sub> ‖x<sub>i</sub> − μ<sub>k</sub>‖²</strong> : affecter au centre le plus proche, puis centre = <strong>barycentre</strong>, jusqu'à stabilité.</li>
+    <li>Minimum <strong>local</strong> → plusieurs initialisations (<code>n_init</code>, k-means++). J <strong>décroît toujours</strong> avec K → choisir K par le <strong>coude</strong> ou la <strong>silhouette</strong>.</li>
+    <li>K-Means suppose des variables <strong>à la même échelle</strong> (<code>StandardScaler</code>) et des groupes <strong>convexes</strong> (échec sur cercles concentriques).</li>
+  </ul>
+</div>
+
+<h2>1. Du texte au vecteur : one-hot et sac-de-mots</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Donnée catégorielle à K valeurs</strong> → vecteur <strong>one-hot</strong> « 1 parmi K » plutôt qu'un entier 1…K :</p>
+    <ul>
+      <li>toutes les catégories sont <strong>à la même distance</strong> (pas d'ordre artificiel) ;</li>
+      <li>la <strong>moyenne</strong> de ces vecteurs donne la <strong>proportion</strong> de chaque catégorie.</li>
+    </ul>
+    <p><strong>Sac-de-mots</strong> (extension du one-hot) : composante <em>i</em> = nombre d'occurrences du <em>i</em>-ème mot du dictionnaire dans le document.</p>
+  </div>
+  <div>
+    <p><strong>Jeu de données</strong> : articles du <em>Monde</em> (MLSUM), <strong>6 rubriques × 2 000</strong> articles → train 9 600, test 2 400 (1 600 par catégorie dans le train).</p>
+    <p><strong>Vecteurs creux</strong> : très grands (≈ 107 000 mots bruts), presque tous nuls → problème de <strong>mémoire</strong> (géré par <code>scipy.sparse</code>) et de <strong>dimension</strong> (il faudrait beaucoup de données, sinon <strong>sur-apprentissage</strong>).</p>
+    <p><code>CountVectorizer</code> passe déjà tout en <strong>minuscules</strong> par défaut.</p>
+  </div>
+</div>
+
+<div class="boite methode">
+  <span class="boite-titre">Méthode : vecteur de comptage d'une phrase</span>
+  <ol>
+    <li>Tokeniser, minuscules, retirer les stop words.</li>
+    <li>Pour chaque mot <strong>du vocabulaire appris sur le train</strong> (ordre des colonnes), compter ses occurrences.</li>
+    <li>Les mots absents du vocabulaire sont <strong>ignorés</strong> (aucune colonne ajoutée).</li>
+  </ol>
+  <div class="exemple"><strong>Exemple</strong> : vocabulaire (chat, chien, mange, souris) · « Le chat mange la souris, puis le chat dort. »<br>
+    → chat 2, chien 0, mange 1, souris 1 : <strong>(2, 0, 1, 1)</strong> — « puis » et « dort » sont hors vocabulaire.</div>
+</div>
+
+<h2>2. fit sur le train, transform sur le test</h2>
+<div class="deux-colonnes">
+<pre>vec = CountVectorizer()
+vec.fit(train["text"])        # apprend le vocabulaire
+X = vec.transform(train["text"])
+X.shape   # (9600, 107457) = (nb docs, taille vocab)
+X_test = vec.transform(test["text"])  # vocab figé
+vec.vocabulary_               # dict mot -> colonne
+vec.get_feature_names_out()   # mots, dans l'ordre</pre>
+  <div>
+    <p><strong>Mots hors vocabulaire</strong> (<em>OOV</em>) : ≈ <strong>20 %</strong> du vocabulaire du test n'existe pas dans celui du train — surtout des <strong>noms propres</strong>.</p>
+    <p>Parade : <strong>méthodologique, en amont</strong> → un train <strong>le plus large et représentatif possible</strong>. Jamais apprendre le vocabulaire sur le test.</p>
+  </div>
+</div>
+
+<h2>3. Évaluer une représentation (sans classifieur supervisé)</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>precision@k</strong> : pour chaque article du test, ses <strong>k plus proches voisins dans le train</strong> (similarité <strong>cosinus</strong>) ; part de voisins de même catégorie, <strong>moyennée sur le test</strong>. Baseline aléatoire : <strong>1/6 ≈ 0,167</strong>.</p>
+    <p><strong>t-SNE</strong> : projection 2D qui préserve les voisinages, après <strong>SVD tronquée</strong>. Outil de <strong>visualisation</strong>, pas de clustering : il ne crée pas de groupes.</p>
+    <p>Sous-ensemble <strong>Difficile</strong> = International, Société, Politique : fort <strong>recouvrement lexical</strong>. Facile = Sport, Culture, Économie.</p>
+    <div class="exemple"><strong>precision@k</strong> : voisins Sport, Sport, Culture, Sport, Politique d'un article Sport → p@1 = <strong>1</strong>, p@5 = 3/5 = <strong>0,6</strong>.</div>
+  </div>
+  <div>
+    <div class="boite methode">
+      <span class="boite-titre">Cosinus vs euclidienne</span>
+      <span class="formule">cos(u, v) = u·v / (‖u‖ ‖v‖)</span>
+      <div class="exemple">a = (2,0,1,1), b = (1,0,0,1), c = 2a = (4,0,2,2)<br>
+        a·b = 3, ‖a‖ = √6, ‖b‖ = √2 → cos(a,b) = 3/√12 ≈ <strong>0,87</strong><br>
+        d(a,c) = ‖(2,0,1,1)‖ = √6 ≈ <strong>2,45</strong> mais cos(a,c) = <strong>1</strong></div>
+      <p style="margin-top:4px">Le cosinus <strong>ignore la longueur</strong> du document : même contenu doublé = similarité 1.</p>
+    </div>
+  </div>
+</div>
+
+<h2>4. Améliorations successives de la représentation</h2>
+<table>
+  <tr><th>Étape</th><th>Comment</th><th>Vocabulaire</th><th>p@1</th><th>p@5</th><th>p@10</th></tr>
+  <tr><td>1. Brut</td><td><code>CountVectorizer()</code></td><td>107 457</td><td>0,487</td><td>0,432</td><td>0,399</td></tr>
+  <tr><td>2. + stop words</td><td><code>stop_words=stwf</code> (157 mots NLTK)</td><td>107 330</td><td><strong>0,753</strong></td><td>0,710</td><td>0,683</td></tr>
+  <tr><td>3. + filtre numérique</td><td>tokenizer maison, <code>not t.isdigit()</code></td><td>105 749</td><td>0,757</td><td>0,709</td><td>0,683</td></tr>
+  <tr><td>4. + stemming</td><td><code>SnowballStemmer("french")</code>, <code>min_df=5</code></td><td>18 871</td><td>0,765</td><td>0,725</td><td>0,703</td></tr>
+  <tr><td>5. + TF-IDF</td><td><code>TfidfVectorizer(..., min_df=5)</code></td><td>18 871</td><td>0,749</td><td>0,722</td><td>0,708</td></tr>
+  <tr><td>6. BM25 (à la place)</td><td><code>CountVectorizer</code> + <code>BM25Transformer</code></td><td>18 871</td><td><strong>0,784</strong></td><td><strong>0,744</strong></td><td><strong>0,732</strong></td></tr>
+</table>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Stop words</strong> : articles, auxiliaires et leurs conjugaisons, mots de liaison (le, la, être, avoir, mais, sur…) : rôle grammatical, aucune information sur le sujet.</p>
+    <p><strong>Filtre numérique</strong> : dates, scores… n'ont pas de sens thématique. Le motif <code>\b\w\w+\b</code> ignore les tokens d'1 caractère ; <code>isdigit()</code> ne retire que les tokens <strong>purement</strong> numériques :<br>
+    « Les 2 buts du match à 19h, en 2019 » → <code>['buts', 'match', '19h']</code>.</p>
+    <p>Brancher sa fonction : <code>CountVectorizer(tokenizer=f, token_pattern=None)</code>.</p>
+  </div>
+  <table>
+    <tr><th></th><th>Lemmatisation</th><th>Racinisation (stemming)</th></tr>
+    <tr><td>Garde</td><td>la forme canonique (infinitif, singulier)</td><td>la racine, sans préfixes/suffixes</td></tr>
+    <tr><td>Mot réel ?</td><td>Oui</td><td>En général <strong>non</strong> (« étudiants » → « étudi »)</td></tr>
+    <tr><td>Exige</td><td>connaissance lexicale (verbe ou nom ?)</td><td>des règles (Porter, Snowball)</td></tr>
+    <tr><td>Cours</td><td>non utilisée</td><td><strong>utilisée</strong> : <code>SnowballStemmer</code></td></tr>
+  </table>
+</div>
+<div class="boite piege"><span class="boite-titre">Pièges</span><code>min_df=5</code> retire les termes présents dans <strong>moins de 5 documents</strong> du train (pas un pourcentage, pas une longueur de document). Conséquence : tous les termes présents dans exactement 5 documents sont <strong>ex-æquo à l'IDF maximal</strong> (8,38). Les IDF les plus faibles sont des mots génériques (« plus », « fait », « tout », « deux ») qui ont échappé aux stop words.</div>
+
+<h2>5. Pondération TF-IDF</h2>
+<p>
+  <span class="formule">TF : f(t, doc) = n(t, doc) / Card(doc)</span>
+  &nbsp;
+  <span class="formule">IDF(t) = log( M / Card{doc : t ∈ doc} )</span>
+  &nbsp;
+  <span class="formule">TF-IDF = f(t, doc) × IDF(t)</span>
+</p>
+<ul>
+  <li><strong>TF</strong> : normalise par la longueur → même comptage, document plus long = poids plus faible.</li>
+  <li><strong>IDF</strong> : compte les <strong>documents</strong> (pas les occurrences). Terme partout → IDF = log 1 = <strong>0</strong> ; dans un seul doc → <strong>log M</strong>. IDF élevé = terme <strong>rare, discriminant</strong>.</li>
+</ul>
+<div class="boite methode">
+  <span class="boite-titre">Méthode : calculer un TF-IDF à la main (log népérien)</span>
+  <p>Corpus M = 4 : d1 = « but match but équipe », d2 = « match équipe joueur », d3 = « vote match loi », d4 = « vote loi match député ».</p>
+<pre>terme    docs  IDF = ln(4/docs)   TF-IDF
+but       1    ln 4   = 1,386     d1 : 2/4 x 1,386 = 0,693
+match     4    ln 1   = 0         0 partout
+équipe    2    ln 2   = 0,693     d1 : 1/4 x 0,693 = 0,173   d2 : 1/3 x 0,693 = 0,231
+vote      2    ln 2   = 0,693     d3 : 1/3 x 0,693 = 0,231   d4 : 1/4 x 0,693 = 0,173</pre>
+  <p>Erreurs classiques : oublier de diviser par la longueur (but : 2,77), utiliser log<sub>10</sub> (0,30), compter les occurrences dans l'IDF.</p>
+</div>
+<div class="boite astuce"><span class="boite-titre">À savoir</span><code>TfidfVectorizer</code> de scikit-learn utilise en réalité une variante (IDF lissé ln((1+M)/(1+df)) + 1, comptages bruts puis normalisation L2 du vecteur) : c'est elle qui donne l'IDF max 8,38 = ln(9601/6) + 1. Pour un calcul à la main, prendre la <strong>formule du cours</strong>. Attribut des IDF appris : <code>vectorizer.idf_</code>.</div>
+
+<h2>6. BM25 : une pondération alternative</h2>
+<p><span class="formule">BM25(t,d) = IDF<sub>BM25</sub>(t) · tf·(k<sub>1</sub>+1) / ( tf + k<sub>1</sub>·(1 − b + b·|d| / avgdl) )</span>
+<span class="formule">IDF<sub>BM25</sub> = log(1 + (N − df + 0,5)/(df + 0,5))</span></p>
+<ul>
+  <li><strong>Saturation</strong> de la fréquence : passer de 1 à 2 occurrences compte plus que de 10 à 11 (TF-IDF est linéaire).</li>
+  <li><strong>Normalisation explicite par la longueur</strong> |d| / avgdl (longueur moyenne du train).</li>
+  <li>Hyperparamètres : <strong>k<sub>1</sub></strong> (saturation, 1,2–2,0) et <strong>b</strong> (poids de la longueur, ≈ 0,75). Référence d'Elasticsearch / Lucene.</li>
+  <li>Pas de <code>BM25Vectorizer</code> dans scikit-learn : le cours écrit un <code>BM25Transformer</code> branché après un <code>CountVectorizer</code> dans un <code>Pipeline</code>, <strong>même prétraitement</strong> que TF-IDF (alternative, pas cumul).</li>
+  <li>Gagne ici car les articles ont des <strong>longueurs très variables</strong> (300 à 45 000 caractères) ; sur des titres courts, aucun avantage → toujours <strong>mesurer</strong>.</li>
+</ul>
+
+<h2>7. L'algorithme des K-Moyennes (K-Means)</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Points de référence</strong> : on affecte chaque point à la référence <strong>la plus proche</strong>. Frontière entre deux références = droite <strong>équidistante</strong> (médiatrice) ; pour toutes les paires → <strong>diagramme de Voronoï</strong>.</p>
+    <p><strong>Critère (somme des inerties)</strong> :<br><span class="formule">J = ∑<sub>k=1..K</sub> ∑<sub>i∈C<sub>k</sub></sub> ‖x<sub>i</sub> − μ<sub>k</sub>‖²</span><br>Inertie d'un groupe faible = groupe compact.</p>
+    <p><strong>Paramètres</strong> appris : les <strong>centres</strong> μ<sub>k</sub> et l'<strong>assignation</strong> des points. <strong>Hyperparamètres</strong> : K, <code>n_init</code>.</p>
+  </div>
+  <div class="boite">
+    <span class="boite-titre">Algorithme</span>
+    <ol>
+      <li><strong>Initialisation</strong> : K observations tirées au hasard <strong>parmi les données</strong> (scikit-learn : <strong>k-means++</strong>, centres initiaux éloignés).</li>
+      <li><strong>Assignation</strong> : chaque point → centre le plus proche (Voronoï des centres).</li>
+      <li><strong>Mise à jour</strong> : μ<sub>k</sub> = <strong>moyenne</strong> des points du groupe.</li>
+      <li>Recommencer 2–3 jusqu'à ce que les <strong>centres</strong> ou <strong>J</strong> ne bougent plus significativement (seuil relatif).</li>
+    </ol>
+    <p><strong>Pourquoi la moyenne ?</strong> Groupes fixés : ∇<sub>μ<sub>k</sub></sub>J<sub>k</sub> = −2 ∑<sub>i∈C<sub>k</sub></sub>(x<sub>i</sub> − μ<sub>k</sub>) = 0 ⇒ μ<sub>k</sub> = (1/n<sub>k</sub>) ∑ x<sub>i</sub>.</p>
+  </div>
+</div>
+<div class="boite piege"><span class="boite-titre">Minimum local</span>J décroît à chaque itération, mais vers un minimum qui peut être <strong>local</strong> selon les centres initiaux. On relance <strong>plusieurs fois</strong> (<code>n_init</code>, dizaines à centaines) et on garde le <strong>J final minimal</strong>. <code>n_init</code> ≠ nombre d'itérations (<code>max_iter</code>).</div>
+
+<div class="boite methode">
+  <span class="boite-titre">Méthode : une itération de K-Means à la main</span>
+  <p>P1(0,0), P2(1,0), P3(0,2), P4(4,4), P5(5,4), P6(4,6) · K = 2 · centres initiaux μ1 = P1, μ2 = P3.</p>
+<pre>       d(.,mu1=(0,0)) d(.,mu2=(0,2)) groupe
+P1         0,00           2,00         1
+P2         1,00           2,24         1
+P3         2,00           0,00         2
+P4         5,66           4,47         2
+P5         6,40           5,39         2
+P6         7,21           5,66         2
+Mise à jour : mu1 = (0,5 ; 0)   mu2 = ((0+4+5+4)/4 ; (2+4+4+6)/4) = (3,25 ; 4)
+Itération 2 : P3 -> d(mu1) = 2,06 < d(mu2) = 3,82 : P3 passe dans le groupe 1
+              mu1 = (1/3 ; 2/3)   mu2 = (13/3 ; 14/3)   puis plus rien ne bouge
+Inertie finale : groupe 1 = 5/9 + 8/9 + 17/9 = 30/9 ; groupe 2 = 30/9 ; J = 60/9 = 6,67</pre>
+  <p>Pièges : oublier le <strong>carré</strong> (somme des distances = 6,13), oublier un point dans la moyenne.</p>
+</div>
+
+<h2>8. Choisir K et évaluer un clustering</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>J(K) décroît toujours</strong> avec K (J = 0 si K = nombre de points) : on ne minimise pas J pour choisir K.</p>
+    <p><strong>Méthode du coude</strong> : <span class="formule">Δ<sub>rel</sub>(K) = (J(K−1) − J(K)) / J(K−1)</span><br>Le coude = dernier K qui apporte une forte baisse ; au-delà, gain marginal.</p>
+    <div class="exemple">J(1..5) = 1000, 600, 150, 130, 120 → Δ<sub>rel</sub> = 0,40 ; <strong>0,75</strong> ; 0,13 ; 0,08 → coude à <strong>K = 3</strong>.</div>
+    <p style="margin-top:5px"><strong>Validation</strong> : ajuster les centres sur le train, comparer l'inertie <strong>moyenne par point</strong> sur train et validation (<code>-clust.score(X)/len(X)</code>) : courbes superposées = vraie structure, pas un hasard d'échantillonnage.</p>
+  </div>
+  <div>
+    <p><strong>Silhouette</strong> (sans vérité terrain) :<br><span class="formule">s(i) = (b(i) − a(i)) / max(a(i), b(i))</span></p>
+    <ul>
+      <li>a(i) : distance <strong>moyenne</strong> aux autres points de <strong>son</strong> cluster ;</li>
+      <li>b(i) : distance <strong>moyenne aux points</strong> du cluster voisin le plus proche (pas à son centre) ;</li>
+      <li>≈ 1 bien placé, ≈ 0 frontière, &lt; 0 mal affecté. Score global = moyenne. Non défini pour K = 1.</li>
+      <li>K trop grand (cluster coupé en deux) → silhouette <strong>baisse</strong>.</li>
+    </ul>
+    <div class="exemple">a = 0,8, b = 2,0 → s = 1,2/2 = <strong>0,6</strong> · a = 1,5, b = 1,0 → s = −0,5/1,5 = <strong>−0,33</strong></div>
+    <p style="margin-top:5px"><strong>ARI</strong> (avec vérité terrain) : 1 = partitions identiques à une renumérotation près, 0 = hasard. Seulement sur données synthétiques/étiquetées ; sur données réelles, la <strong>silhouette</strong> est la référence.</p>
+  </div>
+</div>
+
+<h2>9. Limites de K-Means</h2>
+<table>
+  <tr><th>Hypothèse implicite</th><th>Quand elle casse</th><th>Remède</th></tr>
+  <tr><td>Variables <strong>comparables</strong> (distance euclidienne)</td><td>Une variable ×30 sans information domine la distance : K-Means coupe selon elle (ARI ≈ 0)</td><td><code>StandardScaler</code> (moyenne 0, écart-type 1) → ARI ≈ 1</td></tr>
+  <tr><td>Groupes à peu près <strong>convexes</strong></td><td>Cercles concentriques (<code>make_circles</code>) : ARI ≈ 0, même avec un grand <code>n_init</code></td><td>Variable x² + y² (idée du kernel trick) ou <strong>clustering spectral</strong> (graphe de plus proches voisins)</td></tr>
+</table>
+<p>Autres familles évoquées : DBSCAN (densité), mélanges de gaussiennes, SVM à noyau (classification).</p>
+
+<h2>10. Mémo scikit-learn</h2>
+<ul>
+  <li><code>CountVectorizer</code> / <code>TfidfVectorizer</code> : <code>fit</code> apprend le vocabulaire, <code>transform</code> → matrice creuse (docs × vocab) ; <code>.vocabulary_</code>, <code>.idf_</code>. <code>cosine_similarity(A, B)</code>, <code>euclidean_distances(A)</code>.</li>
+  <li><code>KMeans(n_clusters=K, n_init=10).fit(X)</code> → <code>.labels_</code>, <code>.cluster_centers_</code>, <code>.inertia_</code> (J) ; <code>.fit_predict(X)</code> → labels ; <code>.score(X)</code> = <strong>−inertie</strong>. <code>silhouette_score(X, labels)</code>, <code>adjusted_rand_score(y_vrai, labels)</code>.</li>
+</ul>
+
+</body>
+</html>

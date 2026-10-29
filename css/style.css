@@ -1238,6 +1238,33 @@ a.nav-exam,
   width: 100%;
 }
 
+/* Rappel des raccourcis, seulement avec un clavier et une souris */
+.aide-clavier {
+  display: none;
+  margin: 8px 0 0;
+  font-size: 0.8125rem;
+  color: var(--texte-2);
+  text-align: center;
+}
+
+.aide-clavier kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 1px 5px;
+  border: 1px solid var(--bordure);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--surface);
+  font: 500 0.75rem/1.4 "Geist Mono", ui-monospace, monospace;
+  color: var(--texte);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .aide-clavier {
+    display: block;
+  }
+}
+
 /* ---------- Résultat ---------- */
 
 .resultat {
@@ -1361,6 +1388,36 @@ pre {
 pre code {
   background: none;
   padding: 0;
+}
+
+/* Tableaux Markdown (matrices de confusion, données d'exercice) : défilent sur petit écran */
+table {
+  display: block;
+  overflow-x: auto;
+  width: max-content;
+  max-width: 100%;
+  margin: 0.6em 0;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+th,
+td {
+  padding: 6px 10px;
+  border: 1px solid var(--bordure);
+  text-align: right;
+  white-space: nowrap;
+}
+
+th {
+  background: var(--surface-2);
+  font-weight: 600;
+}
+
+th:first-child,
+td:first-child {
+  text-align: left;
 }
 
 .katex-display {

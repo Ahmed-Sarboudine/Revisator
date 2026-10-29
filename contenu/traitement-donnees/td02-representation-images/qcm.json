@@ -1,0 +1,494 @@
+{
+  "matiere": "Traitement de données",
+  "document": "td",
+  "titre": "Représentation des images",
+  "cours": "cours02-bag-of-words-kmeans",
+  "questions": [
+    {
+      "id": "td2-001",
+      "type": "unique",
+      "exercice": "Dans le TD, `print(images[42].shape)` affiche `(192, 256, 3)`.",
+      "enonce": "À quoi correspondent ces trois dimensions, dans l'ordre ?",
+      "choix": [
+        "Largeur, hauteur, canaux R, G, B",
+        "Hauteur, largeur, canaux L, A, B",
+        "Hauteur, largeur, canaux R, G, B",
+        "Hauteur, largeur, canaux H, S, V"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Une image NumPy est un tableau **(hauteur, largeur, 3)** : 192 lignes, 256 colonnes, et les 3 canaux **RGB** (valeurs 0–255). Le LAB n'apparaît qu'après conversion avec `rgb2lab`."
+    },
+    {
+      "id": "td2-002",
+      "type": "unique",
+      "exercice": "`I = images[42]` est de forme `(192, 256, 3)`. On écrit `pixels = I.reshape((-1, 3))`.",
+      "enonce": "Quelle est la forme de `pixels` ?",
+      "choix": [
+        "`(49152, 3)`",
+        "`(147456,)`",
+        "`(192, 768)`",
+        "`(3, 49152)`"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "`reshape((-1, 3))` met l'image **à plat en liste de pixels** : une ligne par pixel, $192 \\times 256 = 49\\,152$ lignes, 3 colonnes (R, G, B). $147\\,456$ est le nombre total de valeurs, pas de lignes."
+    },
+    {
+      "id": "td2-003",
+      "type": "unique",
+      "exercice": "Les images sont codées en RGB sur 24 bits (3 canaux de 8 bits).",
+      "enonce": "Combien de couleurs différentes ce codage permet-il de représenter ?",
+      "choix": [
+        "768",
+        "16 777 216",
+        "16 581 375",
+        "4 294 967 296"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "$256^3 = 2^{24} = 16\\,777\\,216$ couleurs. Un histogramme sur toutes ces couleurs ferait un vecteur de 16 millions de dimensions, d'où le **dictionnaire de $P$ couleurs**. $768 = 3 \\times 256$ additionne les canaux au lieu de les combiner, et $255^3$ oublie la valeur 0."
+    },
+    {
+      "id": "td2-004",
+      "type": "unique",
+      "exercice": "Dans Holidays, le groupe se lit avec `int(f[1:4])` et une image est une requête si `f.endswith('00.jpg')`. Exemple : `100502.jpg` est dans le groupe 5.",
+      "enonce": "Que dire du fichier `112301.jpg` ?",
+      "choix": [
+        "Groupe 123, et c'est une requête",
+        "Groupe 112, et ce n'est pas une requête",
+        "Groupe 1230, et c'est une requête",
+        "Groupe 123, et ce n'est pas une requête"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "`f[1:4]` prend les caractères 1 à 3 : `\"123\"`, donc **groupe 123**. Le nom finit par `01.jpg` et non `00.jpg` : c'est la 2e image du groupe, **pas une requête** (seule la première de chaque groupe l'est)."
+    },
+    {
+      "id": "td2-005",
+      "type": "unique",
+      "exercice": "Holidays : 1491 images en 500 groupes, une requête par groupe. `evaluer_representation` calcule `dist = euclidean_distances(X_repr[queries, :], X_repr)`.",
+      "enonce": "Quelle est la forme de `dist` ?",
+      "choix": [
+        "`(500, 1491)`",
+        "`(1491, 1491)`",
+        "`(500, 991)`",
+        "`(1491, 500)`"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Une ligne par **requête** (500), une colonne par image de **toute la base** (1491, requêtes comprises). La requête elle-même est retirée plus tard, dans `score_map`, pas dans `dist`."
+    },
+    {
+      "id": "td2-006",
+      "type": "unique",
+      "exercice": "Paire A : $(35, 239, 234)$ et $(5, 239, 236)$. Paire B : $(3, 12, 70)$ et $(5, 36, 52)$.",
+      "enonce": "Que valent les distances euclidiennes en RGB de ces deux paires ?",
+      "choix": [
+        "32 pour A et 44 pour B",
+        "904 pour les deux paires",
+        "≈ 30,1 pour les deux paires",
+        "≈ 30,1 pour A et 44 pour B"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "A : $\\sqrt{30^2+0^2+2^2}=\\sqrt{904}$ ; B : $\\sqrt{2^2+24^2+18^2}=\\sqrt{904}$, soit **≈ 30,1** pour les deux. 32 et 44 sont les distances L1 (somme des écarts), 904 le carré oublié de la racine. Pourtant A est indiscernable à l'œil et B non."
+    },
+    {
+      "id": "td2-007",
+      "type": "multiple",
+      "enonce": "Pourquoi le TD construit-il le dictionnaire de couleurs dans l'espace LAB ?",
+      "choix": [
+        "La distance euclidienne en LAB approxime l'écart de couleur perçu",
+        "L'espace RGB n'est pas perceptuellement uniforme",
+        "Les écrans affichent directement les couleurs LAB",
+        "Une même distance RGB peut être invisible ou nette selon la zone",
+        "LAB n'a que 128 couleurs, ce qui évite le K-Means"
+      ],
+      "reponses": [
+        0,
+        1,
+        3
+      ],
+      "explication": "RGB n'est **pas perceptuellement uniforme** : 30 unités RGB peuvent être invisibles (paire A) ou nettes (paire B). LAB est construit pour que la **distance euclidienne suive l'écart perçu**. Un écran n'affiche que du RGB, d'où `lab2rgb` pour l'affichage."
+    },
+    {
+      "id": "td2-008",
+      "type": "unique",
+      "exercice": "`lab_samples = rgb2lab(rgb_samples.reshape(-1, 1, 3) / 255.0).reshape(-1, 3)`",
+      "enonce": "Pourquoi divise-t-on par `255.0` ?",
+      "choix": [
+        "Pour passer l'image en niveaux de gris",
+        "Car `rgb2lab` attend des valeurs entre 0 et 1",
+        "Pour que K-Means converge en moins d'itérations",
+        "Pour reconvertir les pixels en entiers 8 bits"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Les pixels sont entre 0 et 255, or **`rgb2lab` attend des valeurs dans [0, 1]**. Le `reshape(-1, 1, 3)` donne la forme (hauteur, largeur, 3) attendue, puis on revient en `(n, 3)`."
+    },
+    {
+      "id": "td2-009",
+      "type": "unique",
+      "exercice": "`palette_rgb = (lab2rgb(kms.cluster_centers_.reshape(-1, 1, 3)).reshape(-1, 3) * 255).clip(0, 255).astype(np.uint8)`",
+      "enonce": "Que contient `palette_rgb` ?",
+      "choix": [
+        "Les 128 pixels les plus fréquents de la base, en LAB",
+        "128 couleurs tirées au hasard dans `rgb_samples`",
+        "Les 128 centres K-Means, laissés en LAB",
+        "Les 128 centres K-Means, en RGB entre 0 et 255"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Ce sont les **centres des clusters** (calculés en LAB) **reconvertis en RGB** : `lab2rgb` renvoie des valeurs dans [0, 1], d'où `* 255`, `clip` puis `uint8`. Forme `(128, 3)`, utile pour afficher la palette et recolorer les images."
+    },
+    {
+      "id": "td2-010",
+      "type": "multiple",
+      "enonce": "Le TD présente l'histogramme couleur comme l'équivalent du sac-de-mots. Quelles correspondances sont justes ?",
+      "choix": [
+        "Un pixel de l'image ↔ un document entier du corpus",
+        "Le dictionnaire de couleurs ↔ le vocabulaire",
+        "Une image entière ↔ un seul mot du vocabulaire",
+        "L'histogramme d'une image ↔ le sac-de-mots",
+        "La racine carrée ↔ la racinisation (stemming)"
+      ],
+      "reponses": [
+        1,
+        3
+      ],
+      "explication": "Le **dictionnaire de couleurs joue le rôle du vocabulaire** et l'**histogramme celui du sac-de-mots** ; une image correspond donc à un document et un pixel à une occurrence de mot. La racine carrée est rapprochée de **BM25** (saturation), pas du stemming."
+    },
+    {
+      "id": "td2-011",
+      "type": "multiple",
+      "exercice": "`P = 128` puis `kms = KMeans(P, n_init=1, random_state=42)` et `kms.fit(lab_samples)`.",
+      "enonce": "Qu'est-ce qui est vrai ?",
+      "choix": [
+        "Chaque centre est forcément un pixel présent dans l'échantillon",
+        "Les 128 centres sont les 128 couleurs du dictionnaire",
+        "128 correspond au nombre de groupes de la base Holidays",
+        "Les centres sont des points de l'espace LAB"
+      ],
+      "reponses": [
+        1,
+        3
+      ],
+      "explication": "$K = P = 128$ **couleurs du dictionnaire**, apprises sur `lab_samples`, donc des **points LAB**. Un centre est une **moyenne** de pixels, pas forcément un pixel existant. Holidays a 500 groupes, sans lien avec $P$."
+    },
+    {
+      "id": "td2-012",
+      "type": "unique",
+      "enonce": "Que signifie `n_init=1` dans `KMeans(P, n_init=1, random_state=42)` ?",
+      "choix": [
+        "K-Means n'est lancé qu'une fois, depuis une seule initialisation",
+        "K-Means ne fait qu'une seule itération d'affectation",
+        "Un seul centre est tiré au hasard, les autres sont déduits",
+        "Le dictionnaire part d'une seule couleur et grandit à chaque étape"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "`n_init` = **nombre de lancements** avec des initialisations différentes ; on garde celui de **plus faible inertie**. Avec 1, on risque un minimum local, mais le TD reste rapide ; en pratique on prend une valeur plus grande. Le nombre d'itérations, lui, est `max_iter`."
+    },
+    {
+      "id": "td2-013",
+      "type": "multiple",
+      "enonce": "Pourquoi apprend-on le dictionnaire sur un échantillon de 100 000 pixels ?",
+      "choix": [
+        "Pour avoir le même nombre de pixels dans chaque groupe",
+        "Car `rgb2lab` refuse plus de 100 000 pixels à la fois",
+        "Car K-Means sur plus de 70 millions de pixels serait trop coûteux",
+        "Pour écarter les pixels noirs et blancs, peu informatifs"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "La base contient **plus de 70 millions de pixels** : un K-Means dessus serait très long. Un **tirage aléatoire** (`rng.choice(..., replace=False)`) de 100 000 pixels suffit à trouver les couleurs représentatives ; il ne filtre ni les couleurs ni les groupes."
+    },
+    {
+      "id": "td2-014",
+      "type": "unique",
+      "exercice": "Dictionnaire de $P = 5$ couleurs. Pour une image de 6 pixels, `kmeans.predict` renvoie `idx = [0, 2, 2, 3, 2, 0]`. On applique `compute_hist` (comptage avec `np.unique(idx, return_counts=True)`, puis division par la somme).",
+      "enonce": "Quel vecteur renvoie `compute_hist` ?",
+      "choix": [
+        "$[1/3,\\ 1/2,\\ 1/6]$",
+        "$[2,\\ 0,\\ 3,\\ 1,\\ 0]$",
+        "$[1/3,\\ 0,\\ 1/2,\\ 1/6,\\ 0]$",
+        "$[0{,}4,\\ 0,\\ 0{,}6,\\ 0{,}2,\\ 0]$"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Comptes $[2, 0, 3, 1, 0]$ placés par `x[idv] = v` dans un vecteur de taille $P = 5$, puis **divisés par le nombre de pixels (6)**. Sans `x[idv] = v` on perdrait les couleurs absentes (vecteur de taille 3) ; diviser par $P$ au lieu de 6 est l'erreur du dernier choix."
+    },
+    {
+      "id": "td2-015",
+      "type": "unique",
+      "exercice": "On calcule l'histogramme des 1491 images avec un dictionnaire de $P = 128$ couleurs et on les range dans `X`.",
+      "enonce": "Quelle est la forme de `X` ?",
+      "choix": [
+        "`(1491, 384)`",
+        "`(500, 128)`",
+        "`(1491, 16777216)`",
+        "`(1491, 128)`"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Une ligne par image, **une colonne par couleur du dictionnaire** : `(1491, 128)`. Chaque pixel est associé à **une** couleur du dictionnaire (pas un histogramme par canal, d'où pas $3 \\times 128 = 384$)."
+    },
+    {
+      "id": "td2-016",
+      "type": "unique",
+      "exercice": "Image A : 100 × 100 pixels, dont 2 500 associés à la couleur $k$. Image B : la même scène en 200 × 200, dont 10 000 pixels associés à $k$.",
+      "enonce": "Que valent $x_A(k)$ et $x_B(k)$ renvoyés par `compute_hist` ?",
+      "choix": [
+        "2 500 et 10 000",
+        "0,25 et 0,25",
+        "0,25 et 1",
+        "0,0025 et 0,01"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "`compute_hist` renvoie des **proportions** : $2500/10\\,000 = 10\\,000/40\\,000 = 0{,}25$. La **normalisation** rend l'histogramme indépendant de la taille de l'image, sinon deux versions d'une même photo seraient éloignées."
+    },
+    {
+      "id": "td2-017",
+      "type": "unique",
+      "exercice": "Dans un histogramme, la couleur du ciel occupe une proportion $0{,}64$ et une couleur rare $0{,}01$. On passe à `X_sqrt = np.sqrt(X)`.",
+      "enonce": "Comment évolue le rapport entre ces deux valeurs ?",
+      "choix": [
+        "Il passe de 64 à 8",
+        "Il passe de 64 à 32",
+        "Il passe de 8 à 64",
+        "Il passe de 64 à 4 096"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "$\\sqrt{0{,}64} = 0{,}8$ et $\\sqrt{0{,}01} = 0{,}1$ : le rapport passe de **64 à 8** (c'est $\\sqrt{64}$). La racine **écrase les couleurs dominantes** relativement aux autres ; 32 serait une simple division par 2, 4 096 un carré."
+    },
+    {
+      "id": "td2-018",
+      "type": "unique",
+      "exercice": "Requête $q = [0{,}8;\\ 0{,}1;\\ 0{,}1;\\ 0]$, image $A = [0{,}8;\\ 0;\\ 0;\\ 0{,}2]$, image $B = [0{,}5;\\ 0{,}1;\\ 0{,}1;\\ 0{,}3]$. Distance euclidienne.",
+      "enonce": "Quelle image est la plus proche de $q$, sur les histogrammes bruts puis après racine carrée ?",
+      "choix": [
+        "A avant, A après",
+        "B avant, B après",
+        "B avant, A après",
+        "A avant, B après"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Brut : $d(q,A) \\approx 0{,}245 < d(q,B) \\approx 0{,}424$, A gagne grâce à la **couleur dominante** commune. Après racine : $d(q,A) \\approx 0{,}632 > d(q,B) \\approx 0{,}579$, B gagne car elle partage les **couleurs secondaires**. C'est l'effet recherché par la racine."
+    },
+    {
+      "id": "td2-019",
+      "type": "multiple",
+      "enonce": "Pourquoi la racine carrée améliore-t-elle la recherche (mAP de 40 % à 55 %) ?",
+      "choix": [
+        "Elle limite le poids d'une couleur qui domine l'image",
+        "Elle donne plus de poids aux couleurs dominantes",
+        "Elle rend la distance perceptuellement uniforme",
+        "Elle annule les couleurs présentes dans toutes les images"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Comme **BM25** pour les mots répétés, la racine **sature les fortes valeurs** : un ciel qui remplit la moitié de la photo n'écrase plus les autres couleurs. L'uniformité perceptuelle vient du LAB, et le traitement des couleurs communes de l'IDF."
+    },
+    {
+      "id": "td2-020",
+      "type": "unique",
+      "exercice": "Trois images, trois couleurs : $X = \\begin{pmatrix} 0{,}5 & 0{,}5 & 0 \\\\ 0{,}6 & 0{,}2 & 0{,}2 \\\\ 0{,}4 & 0{,}3 & 0{,}3 \\end{pmatrix}$. On calcule `df = X.mean(axis=0)` et `idf = np.log(1.0 / df)`.",
+      "enonce": "Que vaut `idf` pour la couleur 0 (première colonne) ?",
+      "choix": [
+        "0,30",
+        "0,50",
+        "0,69",
+        "2,00"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "$df(0) = (0{,}5 + 0{,}6 + 0{,}4)/3 = 0{,}5$, donc $idf(0) = \\ln 2 \\approx 0{,}69$ (`np.log` est le **logarithme népérien**). 0,30 est $\\log_{10} 2$, 0,5 est le df et 2 oublie le log."
+    },
+    {
+      "id": "td2-021",
+      "type": "unique",
+      "exercice": "Le TD affiche : couleur la plus commune `idf=3.15`, couleur la plus rare `idf=8.36`, avec $idf(k) = \\ln(1/df(k))$.",
+      "enonce": "Quelle proportion moyenne des **pixels** d'une image la couleur la plus commune occupe-t-elle ?",
+      "choix": [
+        "≈ 0,07 %",
+        "≈ 4,3 %",
+        "≈ 32 %",
+        "≈ 0,02 %"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "$df = e^{-3{,}15} \\approx 0{,}043$, soit **≈ 4,3 %** des pixels en moyenne. 0,07 % vient de $10^{-3{,}15}$ (mauvais log), 32 % de $1/3{,}15$, et 0,02 % est $e^{-8{,}36}$, la couleur la plus rare."
+    },
+    {
+      "id": "td2-022",
+      "type": "multiple",
+      "exercice": "`df = X.mean(axis=0)` puis `idf = np.log(1.0 / (df + 1e-6))`, où chaque ligne de `X` est un histogramme normalisé.",
+      "enonce": "Quelles affirmations sont vraies ?",
+      "choix": [
+        "La somme des `df(k)` sur toutes les couleurs vaut 1",
+        "`df(k)` compte le nombre d'images contenant la couleur `k`",
+        "Le terme `1e-6` évite une division par zéro",
+        "Une couleur rare dans la base reçoit un idf faible",
+        "Une couleur qui remplirait toutes les images aurait un idf ≈ 0"
+      ],
+      "reponses": [
+        0,
+        2,
+        4
+      ],
+      "explication": "Chaque histogramme somme à 1, donc leur **moyenne aussi**. Pour les couleurs, df est une **proportion moyenne**, pas un nombre de documents comme pour le texte. `1e-6` protège d'un $df = 0$ ; $df = 1$ donne $\\ln 1 = 0$, et une couleur rare a au contraire un **idf élevé**."
+    },
+    {
+      "id": "td2-023",
+      "type": "multiple",
+      "exercice": "`X_sqrt` est de forme `(1491, 128)` et `idf` de forme `(128,)`. On veut multiplier la colonne `k` de chaque image par `idf[k]`.",
+      "enonce": "Quelles expressions donnent le bon résultat ?",
+      "choix": [
+        "`X_sqrt * idf[:, None]`",
+        "`X_sqrt * idf[None, :]`",
+        "`X_sqrt @ idf`",
+        "`X_sqrt * idf`",
+        "`X_sqrt * np.diag(idf)`"
+      ],
+      "reponses": [
+        1,
+        3
+      ],
+      "explication": "`idf[None, :]` est de forme `(1, 128)` : le **broadcasting** la recopie sur les 1491 lignes ; `X_sqrt * idf` fait la même chose implicitement. `idf[:, None]` `(128, 1)` et `np.diag(idf)` `(128, 128)` provoquent une erreur de forme, et `@ idf` renvoie un vecteur `(1491,)`."
+    },
+    {
+      "id": "td2-024",
+      "type": "unique",
+      "exercice": "`score_ap_from_ranks_1` : pour chaque bon résultat de rang `rank` (0 = premier), `ntp` bons résultats avant lui, on ajoute $\\frac{p_0 + p_1}{2} \\times \\frac{1}{nres}$ avec $p_0 = $ `ntp/rank` (1 si `rank == 0`) et $p_1 = $ `(ntp+1)/(rank+1)`. Requête avec `nres = 2` images pertinentes, trouvées aux rangs `[0, 2]`.",
+      "enonce": "Que vaut l'AP de cette requête ?",
+      "choix": [
+        "≈ 0,79",
+        "≈ 0,83",
+        "≈ 0,67",
+        "= 1,00"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Rang 0 : $p_0 = 1$, $p_1 = 1$ → $+0{,}5$. Rang 2 : $p_0 = 1/2$, $p_1 = 2/3$ → $(0{,}5 + 0{,}667)/2 \\times 0{,}5 \\approx 0{,}292$. **AP ≈ 0,79** (aire sous la courbe par trapèzes). 0,83 est l'AP « classique » $(1 + 2/3)/2$, 0,67 la précision à 3."
+    },
+    {
+      "id": "td2-025",
+      "type": "unique",
+      "exercice": "Même fonction `score_ap_from_ranks_1`. Une requête n'a qu'une image pertinente (`nres = 1`), trouvée en 2e position (`ranks = [1]`).",
+      "enonce": "Que vaut son AP ?",
+      "choix": [
+        "0,50",
+        "1,00",
+        "0,75",
+        "0,25"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "`ntp = 0`, `rank = 1` : $p_0 = 0/1 = 0$ et $p_1 = 1/2$, d'où $AP = \\frac{0 + 0{,}5}{2} \\times 1 = 0{,}25$. La moyenne des deux précisions (**trapèze**) pénalise plus que la précision seule (0,5)."
+    },
+    {
+      "id": "td2-026",
+      "type": "unique",
+      "enonce": "Dans `score_map`, pourquoi retire-t-on l'image requête des résultats (`queries_label != r`) ?",
+      "choix": [
+        "Elle n'appartient à aucun des 500 groupes",
+        "Elle n'a pas d'histogramme dans `X_repr`",
+        "À distance nulle, elle serait toujours 1re",
+        "`argsort` la classe toujours en dernier"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "La requête fait partie de la base (`dist` a 1491 colonnes) et serait **toujours trouvée en premier** (distance nulle). On l'exclut pour ne mesurer que la capacité à retrouver les **autres images de son groupe**."
+    },
+    {
+      "id": "td2-027",
+      "type": "multiple",
+      "exercice": "Résultats du TD : histogramme brut mAP = 40,43 % ; $\\sqrt{x}$ : 54,91 % ; $\\sqrt{x} \\times idf$ : 55,29 %.",
+      "enonce": "Quelles conclusions sont correctes ?",
+      "choix": [
+        "L'IDF apporte le plus gros gain de performance",
+        "La racine carrée apporte environ +14,5 points",
+        "Le mAP est la moyenne des AP sur les 500 requêtes",
+        "Le mAP de l'histogramme brut dépasse déjà 50 %"
+      ],
+      "reponses": [
+        1,
+        2
+      ],
+      "explication": "$54{,}91 - 40{,}43 \\approx 14{,}5$ points pour la **racine carrée**, contre $0{,}38$ point pour l'IDF par-dessus. Le **mAP** est la moyenne des AP des requêtes (×100 dans `score_map`)."
+    },
+    {
+      "id": "td2-028",
+      "type": "multiple",
+      "exercice": "`I_couleur_index = kms.predict(I_lab.reshape((-1, 3)))` puis `I_quantifiee = palette_rgb[I_couleur_index, :].reshape((I.shape[0], I.shape[1], 3))`.",
+      "enonce": "Qu'est-ce qui est vrai de `I_quantifiee` ?",
+      "choix": [
+        "Elle a la même forme `(hauteur, largeur, 3)` que `I`",
+        "Elle est codée en LAB et ne peut pas être affichée",
+        "Elle contient au plus 128 couleurs distinctes",
+        "Chaque pixel prend la couleur RGB la plus proche en RGB"
+      ],
+      "reponses": [
+        0,
+        2
+      ],
+      "explication": "Chaque pixel est remplacé par la couleur du dictionnaire la plus proche **au sens de la distance LAB** (`predict` travaille sur `I_lab`), puis on lit sa version **RGB** dans `palette_rgb` : au plus 128 couleurs, image affichable, même forme grâce au `reshape`."
+    },
+    {
+      "id": "td2-029",
+      "type": "unique",
+      "enonce": "Dans le diagramme polaire du dictionnaire (`plot_palette_hsv`), comment chaque couleur est-elle placée ?",
+      "choix": [
+        "Angle = saturation, rayon = teinte, taille = valeur",
+        "Angle = teinte, rayon = saturation, taille = valeur",
+        "Angle = teinte, rayon = valeur, taille = saturation",
+        "Angle = clarté L, rayon = a, taille = b"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "`theta = 2 * np.pi * h` : la **teinte** donne l'angle, la **saturation** `s` le rayon, et la taille du point vaut `60 + 200 * v` (**valeur**). Le diagramme utilise HSV, pas les coordonnées LAB."
+    },
+    {
+      "id": "td2-030",
+      "type": "unique",
+      "exercice": "Les images sont en `uint8`. On calcule `np.array([5], np.uint8) - np.array([35], np.uint8)`.",
+      "enonce": "Quel résultat obtient-on ?",
+      "choix": [
+        "`[226]`",
+        "`[-30]`",
+        "`[30]`",
+        "`[0]`"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "En `uint8` (0–255), le calcul **boucle modulo 256** : $5 - 35 = -30 \\equiv 226$. C'est pourquoi le TD convertit en réels (`astype(float)`, `astype(np.float64)`) avant de calculer des différences ou des distances."
+    }
+  ]
+}

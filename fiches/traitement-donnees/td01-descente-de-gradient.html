@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Traitement de données, TD 1 : Descente de gradient</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Traitement de données · Fiche de révision · TD 1</p>
+    <h1>Descente de gradient</h1>
+  </div>
+  <p class="source">Polynôme convexe, nombre d'or, gradient à pas fixe,<br>critères d'arrêt, cas multi-variable, pas optimal</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>Mise à jour</strong> : <span class="formule">x<sub>t+1</sub> = x<sub>t</sub> − μ · ∇f(x<sub>t</sub>)</span> — on va <strong>à l'opposé du gradient</strong> (le gradient pointe vers la montée). μ = <strong>pas</strong> (hyperparamètre, choisi à la main).</li>
+    <li><strong>Recalculer le gradient au nouveau point</strong> à chaque itération.</li>
+    <li><strong>Pas trop petit</strong> → convergence très lente. <strong>Pas trop grand</strong> → oscillations, puis <strong>divergence</strong>. Ici (f = 2x² − 4x + 5) : converge ⇔ <strong>0 &lt; μ &lt; 0,5</strong>.</li>
+    <li><strong>Critères d'arrêt</strong> : ‖∇f(x)‖ ≤ ε (convergence) · nombre max d'itérations · f ne diminue plus (divergence détectée).</li>
+    <li>Multi-variable : f(<b>x</b>) = <b>x</b><sup>T</sup>A<b>x</b> + <b>x</b><sup>T</sup><b>b</b> + c ⇒ <strong>∇f = (A + A<sup>T</sup>)<b>x</b> + <b>b</b></strong> (pas 2A<b>x</b> si A n'est pas symétrique).</li>
+    <li><strong>Pas optimal</strong> : à chaque itération, μ<sub>k</sub> = argmin g(μ) = f(<b>x</b><sub>k</sub> − μ∇f(<b>x</b><sub>k</sub>)), trouvé par la <strong>méthode du nombre d'or</strong> → 12 itérations au lieu de 144.</li>
+    <li><strong>Convexe</strong> ⇒ un seul minimum : x<sub>0</sub> ne change que le nombre d'itérations. <strong>Non convexe</strong> ⇒ risque de minimum local, résultat dépendant de x<sub>0</sub>.</li>
+  </ul>
+</div>
+
+<h2>1. Le problème : trouver un minimum</h2>
+<p>Au cours 1, apprendre un modèle = trouver <strong>μ* = argmin<sub>μ</sub> g(f<sub>μ,λ</sub>, {X, Y})</strong>. En général pas de formule fermée, fonction parfois non convexe, beaucoup de paramètres → il faut une <strong>méthode itérative</strong> : c'est l'objet du TD.</p>
+<div class="deux-colonnes">
+  <div>
+    <h3>Polynôme d'ordre 2 : f(x) = ax² + bx + c</h3>
+    <ul>
+      <li><strong>Convexe</strong> ⇔ f''(x) = 2a &gt; 0 ⇔ <strong>a &gt; 0</strong> (b et c quelconques).</li>
+      <li>Minimum où f'(x) = 2ax + b = 0 ⇒ <strong>x<sub>opt</sub> = −b / (2a)</strong>.</li>
+    </ul>
+  </div>
+  <div class="exemple"><strong>Le polynôme du TD</strong> : a = 2, b = −4, c = 5<br>
+    f(x) = 2x² − 4x + 5 · <strong>f'(x) = 4x − 4</strong> (<code>compute_df</code>)<br>
+    x<sub>opt</sub> = 4 / 4 = <strong>1</strong> · f(1) = 2 − 4 + 5 = <strong>3</strong> (et non c = 5)</div>
+</div>
+<div class="boite piege"><span class="boite-titre">Piège de notation</span>Dans le <strong>cours</strong>, μ désigne les <strong>paramètres du modèle</strong> (ce qu'on cherche). Dans le <strong>TD</strong>, μ est le <strong>pas</strong> de la descente (souvent noté η ou « learning rate » ailleurs). Le pas est un <strong>hyperparamètre</strong> : il n'est pas appris.</div>
+
+<h2>2. Méthode du nombre d'or (fonction à une variable)</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Conditions</strong> : f <strong>mono-variable</strong> et <strong>unimodale</strong> sur un intervalle (x<sub>1</sub>, x<sub>3</sub>) qui <strong>contient le minimum</strong>. Aucune dérivée, aucun pas : seulement des valeurs de f.</p>
+    <p><strong>Sondes</strong> (φ = (1 + √5)/2 ≈ 1,618 ; 1/φ ≈ 0,618) :</p>
+    <p class="formule">x<sub>2</sub> = x<sub>3</sub> − (x<sub>3</sub> − x<sub>1</sub>)/φ &nbsp;·&nbsp; x<sub>4</sub> = x<sub>1</sub> + (x<sub>3</sub> − x<sub>1</sub>)/φ</p>
+    <ul>
+      <li>Si <strong>f(x<sub>2</sub>) &lt; f(x<sub>4</sub>)</strong> : minimum dans (x<sub>1</sub>, x<sub>4</sub>) → <code>x_3 = x_4</code>.</li>
+      <li>Sinon : minimum dans (x<sub>2</sub>, x<sub>3</sub>) → <code>x_1 = x_2</code>.</li>
+      <li>Arrêt quand <strong>|x<sub>2</sub> − x<sub>4</sub>| ≤ ε</strong> ; on renvoie (x<sub>1</sub> + x<sub>3</sub>)/2.</li>
+      <li>L'intervalle est multiplié par <strong>0,618</strong> à chaque itération (comme une dichotomie, mais avec φ au lieu de 2).</li>
+    </ul>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Exemple du TD : intervalle (−100 ; 100)</span>
+<pre>(x3 − x1)/φ = 200 / 1,618 ≈ 123,6
+x2 = 100 − 123,6  = −23,6   f(x2) ≈ 1214
+x4 = −100 + 123,6 = +23,6   f(x4) ≈ 1025
+f(x2) &gt; f(x4)  →  x1 = x2
+nouvel intervalle : (−23,6 ; 100)
+nouvelles sondes  : 23,6 et 52,8</pre>
+    <p>Sortie de la correction (ε = 10<sup>−10</sup>) : <code>x_opt = 1.0000000104692428</code>.</p>
+  </div>
+</div>
+
+<h2>3. Algorithme du gradient</h2>
+<p>Il ne demande qu'un <strong>point de départ x<sub>0</sub></strong> (et un pas) et marche en dimension quelconque. Le nombre d'itérations n'est pas connu d'avance.</p>
+<div class="boite methode">
+  <span class="boite-titre">Méthode : faire un pas de descente de gradient à la main</span>
+  <ol>
+    <li><strong>Dériver</strong> f (ou calculer le vecteur gradient en multi-variable).</li>
+    <li><strong>Évaluer</strong> le gradient au point courant x<sub>t</sub>.</li>
+    <li><strong>Multiplier par le pas</strong> μ.</li>
+    <li><strong>Soustraire</strong> : x<sub>t+1</sub> = x<sub>t</sub> − μ · f'(x<sub>t</sub>). Gradient négatif ⇒ x augmente.</li>
+    <li><strong>Contrôler</strong> : f(x<sub>t+1</sub>) &lt; f(x<sub>t</sub>) ? Sinon le pas est trop grand (ou il y a une erreur de signe).</li>
+    <li>Pour le pas suivant, <strong>recalculer le gradient en x<sub>t+1</sub></strong>.</li>
+  </ol>
+  <div class="deux-colonnes">
+    <div class="exemple"><strong>1D</strong> : f = 2x² − 4x + 5, x<sub>0</sub> = 10, μ = 0,1
+<pre>f'(10)  = 4×10 − 4   = 36
+x1 = 10  − 0,1×36    = 6,4    f: 165 → 61,32
+f'(6,4) = 4×6,4 − 4  = 21,6
+x2 = 6,4 − 0,1×21,6  = 4,24   f: → 23,995</pre></div>
+    <div class="exemple"><strong>2D</strong> : f du TD, <b>x</b><sub>0</sub> = (−5, −5), μ = 0,05
+<pre>A + Aᵀ = [4 3 ; 3 8]
+∇f(x0) = (−35, −55) + (1, 2) = (−34, −53)
+x1 = (−5, −5) − 0,05×(−34, −53)
+   = (−5 + 1,7 ; −5 + 2,65)
+   = (−3,3 ; −2,35)       f: 212 → 61,135</pre></div>
+  </div>
+</div>
+<div class="boite piege"><span class="boite-titre">Erreurs typiques sur un pas</span>
+  <ul>
+    <li><strong>Signe +</strong> : 10 + 3,6 = 13,6 → on monte.</li>
+    <li><strong>Réutiliser l'ancien gradient</strong> : 6,4 − 0,1×36 = 2,8 au lieu de 4,24.</li>
+    <li><strong>Utiliser f au lieu de f'</strong> : 10 − 0,1×165 = −6,5.</li>
+    <li>En 2D : prendre <strong>2A<b>x</b> + <b>b</b></strong> (→ (−29, −58)) ou <strong>oublier <b>b</b></strong> (→ (−35, −55)).</li>
+  </ul>
+</div>
+
+<h2>4. Influence du pas μ (pas fixe)</h2>
+<p>Pour f = 2x² − 4x + 5 : x<sub>t+1</sub> − 1 = <strong>(1 − 4μ)</strong>(x<sub>t</sub> − 1). La distance au minimum est multipliée par 1 − 4μ à chaque pas ⇒ convergence ⇔ |1 − 4μ| &lt; 1 ⇔ <strong>0 &lt; μ &lt; 0,5</strong>. Départ x<sub>0</sub> = 10 (cellule de la correction) :</p>
+<table>
+  <tr><th>μ</th><th>1 − 4μ</th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>10</sub></th><th>Comportement</th><th><code>algo_gradient2</code> (ε = 10<sup>−10</sup>)</th></tr>
+  <tr><td>0,0001</td><td>0,9996</td><td>9,9964</td><td>9,9928</td><td>9,964</td><td><strong>Trop lent</strong> : x a à peine bougé</td><td>41 672 itérations</td></tr>
+  <tr><td>0,1</td><td>0,6</td><td>6,4</td><td>4,24</td><td>1,054</td><td>Converge sans osciller</td><td>42 itérations</td></tr>
+  <tr><td>0,25</td><td>0</td><td>1</td><td>1</td><td>1</td><td>Minimum en <strong>un pas</strong> (μ = 1/f'')</td><td>1 itération</td></tr>
+  <tr><td>0,4</td><td>−0,6</td><td>−4,4</td><td>4,24</td><td>1,054</td><td>Converge en <strong>oscillant</strong> autour de 1</td><td>42 itérations</td></tr>
+  <tr><td>0,5</td><td>−1</td><td>−8</td><td>10</td><td>10</td><td>Oscille <strong>sans fin</strong> entre 10 et −8</td><td>arrêt après 1 pas : f(−8) = f(10) = 165</td></tr>
+  <tr><td>0,6</td><td>−1,4</td><td>−11,6</td><td>18,64</td><td>261,3</td><td><strong>Diverge</strong> en oscillant</td><td>arrêt après 1 pas (f augmente)</td></tr>
+</table>
+<div class="boite piege"><span class="boite-titre">Pièges sur le pas (learning rate)</span>
+  <ul>
+    <li><strong>Plus grand n'est pas plus rapide</strong> : μ = 0,1 et μ = 0,4 demandent toutes deux 42 itérations ; au-delà de 0,5 plus rien ne converge.</li>
+    <li><strong>Osciller ≠ diverger</strong> : μ = 0,4 oscille mais converge ; μ = 0,5 oscille sans converger ; μ = 0,6 diverge.</li>
+    <li><strong>Trop petit ne « casse » rien</strong> mais coûte énormément d'itérations (et peut buter sur <code>max_iter</code>).</li>
+    <li>La plage de bons pas <strong>dépend de la fonction</strong> (de sa courbure), pas du point de départ. En 2D (essais hors TD, x<sub>0</sub> = (−5, −5)) : μ = 0,05 → 144 itérations, 0,1 → 70, 0,2 → 244, 0,21 → divergence dès le 1<sup>er</sup> pas.</li>
+  </ul>
+</div>
+
+<h2>5. Critères d'arrêt et lecture du code</h2>
+<div class="deux-colonnes">
+<pre>def algo_gradient3(f, df, mu, x_0, epsilon, max_iter):
+    x = x_0; x_hist = [x]
+    fx = f(x); dfx = df(x); k = 0
+    while(np.linalg.norm(dfx) &gt; epsilon
+          and k &lt; max_iter):
+        x = x - mu*dfx           # pas de descente
+        x_hist.append(x)
+        if(f(x) &gt;= fx):          # f ne baisse plus
+            break                # → divergence
+        fx = f(x); dfx = df(x)   # gradient recalculé
+        k = k + 1
+    return x, x_hist</pre>
+  <table>
+    <tr><th>Test</th><th>Rôle</th></tr>
+    <tr><td><strong>‖∇f(x)‖ ≤ ε</strong><br>(1D : |f'(x)| ≤ ε)</td><td>Convergence : gradient quasi nul = minimum</td></tr>
+    <tr><td><strong>k &lt; max_iter</strong></td><td>Garantit que la boucle se termine (convergence lente, ε inatteignable)</td></tr>
+    <tr><td><strong>f(x) ≥ fx → break</strong></td><td>Détecte la divergence ; renvoie quand même le dernier point (pour le tracer)</td></tr>
+    <tr><td><code>n</code> fixé (<code>algo_gradient1</code>)</td><td>Pas de critère : n itérations, renvoie l'historique (<code>x_hist[-1]</code> = résultat)</td></tr>
+  </table>
+</div>
+<div class="boite astuce"><span class="boite-titre">Lire les sorties</span>Avec μ = 0,05, la correction affiche <code>compute_df2(x_opt_2) = [-4.6e-08 2.5e-08]</code> : la norme est <strong>au-dessus</strong> de ε = 10<sup>−10</sup> et seules 144 itérations ont tourné. C'est donc le test <strong>f(x) ≥ fx</strong> qui a arrêté la boucle : f ne baisse plus à la précision machine près. Ce n'est pas une divergence, x est bien à l'optimum (−0,087 ; −0,217).</div>
+
+<h2>6. Cas multi-variable</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Même règle, en vecteurs : <span class="formule"><b>x</b><sub>k+1</sub> = <b>x</b><sub>k</sub> − μ · ∇f(<b>x</b><sub>k</sub>)</span></p>
+    <p>f(<b>x</b>) = <b>x</b><sup>T</sup>A<b>x</b> + <b>x</b><sup>T</sup><b>b</b> + c, avec A = [2 1 ; 2 4] (<strong>non symétrique</strong>), <b>b</b> = (1, 2), c = 2.</p>
+    <ul>
+      <li><strong>∇f(<b>x</b>) = (A + A<sup>T</sup>)<b>x</b> + <b>b</b></strong>, avec A + A<sup>T</sup> = [4 3 ; 3 8].</li>
+      <li>Minimum : ∇f = 0 ⇔ <strong>(A + A<sup>T</sup>)<b>x</b> = −<b>b</b></strong> ⇒ <b>x</b><sub>opt</sub> = −(1/23)(2, 5) ≈ (−0,087 ; −0,217), f(<b>x</b><sub>opt</sub>) = 40/23 ≈ 1,739.</li>
+      <li><code>x</code> doit être un vecteur numpy <strong>1D de forme (2,)</strong> : <code>np.array((-5., -5.))</code>, <code>np.zeros(2)</code>. Pas <code>np.zeros((2,1))</code> (le gradient devient une matrice 2×2), pas une liste (pas de <code>.T</code>).</li>
+    </ul>
+  </div>
+  <div class="exemple"><strong>Valeurs en <b>x</b><sub>0</sub> = (−5, −5)</strong>
+<pre>xᵀAx = 25×(2+1+2+4) = 225
+xᵀb  = −5 − 10      = −15
+f(x0) = 225 − 15 + 2 = 212
+∇f(x0) = (−34, −53)</pre>
+    Erreurs : 242 (signe de <b>x</b><sup>T</sup><b>b</b>), 210 (oubli de c), 137 (diagonale seule).</div>
+</div>
+
+<div style="break-inside: avoid">
+<h2>7. Pas optimal</h2>
+<p>Le pas fixe demande beaucoup d'itérations et un bon μ est difficile à trouver. Idée : une fois la direction −∇f(<b>x</b><sub>k</sub>) connue, chercher <strong>jusqu'où descendre</strong> :</p>
+<p class="formule">μ<sub>k</sub> = argmin<sub>μ&gt;0</sub> g(μ), &nbsp; g(μ) = f(<b>x</b><sub>k</sub> − μ · ∇f(<b>x</b><sub>k</sub>))</p>
+<div class="deux-colonnes">
+<pre>ft = lambda mu : f(x - mu*dfx)   # g(μ), mono-variable
+mu_opt = mno(ft, 0, 100, 1e-10)  # nombre d'or
+x = x - mu_opt*dfx</pre>
+  <table>
+    <tr><th></th><th>Pas fixe μ = 0,05</th><th>Pas optimal</th></tr>
+    <tr><td>Itérations</td><td>144</td><td><strong>12</strong></td></tr>
+    <tr><td>Réglage de μ</td><td>à la main</td><td>aucun</td></tr>
+    <tr><td>Coût d'une itération</td><td>1 gradient</td><td>+ une recherche du nombre d'or (≈ 55 tours)</td></tr>
+    <tr><td>Résultat</td><td colspan="2">même optimum, f ≈ 1,7391 (fonction convexe)</td></tr>
+  </table>
+</div>
+</div>
+<p>1<sup>er</sup> pas optimal depuis (−5, −5) : μ<sub>0</sub> ≈ 0,105. En pratique, <code>scipy.optimize.minimize(compute_f2, x_0, jac=compute_df2, method='CG')</code> donne directement (−0,0870 ; −0,2174).</p>
+
+<h2>8. Convexité, minimum local et initialisation</h2>
+<table>
+  <tr><th></th><th>Fonction convexe (cas du TD)</th><th>Fonction non convexe</th></tr>
+  <tr><td>Minimums</td><td>Un seul : local = global</td><td>Plusieurs minimums locaux possibles</td></tr>
+  <tr><td>Gradient nul</td><td>⇒ minimum global</td><td>⇒ seulement un point critique (minimum local…)</td></tr>
+  <tr><td>Rôle de x<sub>0</sub></td><td>Change seulement le <strong>nombre d'itérations</strong></td><td>Change aussi le <strong>minimum atteint</strong></td></tr>
+  <tr><td>Règle de mise à jour</td><td colspan="2">Identique : x ← x − μ∇f(x). Seule la garantie d'optimum global disparaît.</td></tr>
+</table>
+
+</body>
+</html>

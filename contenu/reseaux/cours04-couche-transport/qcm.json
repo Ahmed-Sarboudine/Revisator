@@ -8,12 +8,12 @@
       "type": "unique",
       "enonce": "De quoi la couche transport est-elle responsable ?",
       "choix": [
-        "Des communications logiques entre les applications exécutées sur différents hôtes",
-        "Du choix du meilleur chemin entre deux réseaux",
-        "De la transmission des bits sur le câble",
-        "De l'adressage physique des cartes réseau"
+        "Du choix du meilleur chemin entre deux réseaux distants",
+        "De la transmission des bits sur le support physique",
+        "Du dialogue logique entre applications d'hôtes distants",
+        "De l'adressage physique des cartes réseau (adresses MAC)"
       ],
-      "reponses": [0],
+      "reponses": [2],
       "explication": "La couche transport fait le lien entre la couche application et les couches inférieures : elle gère les communications **entre applications**. Le choix du chemin relève de la couche réseau, l'adressage physique de la couche liaison.",
       "page": 3
     },
@@ -22,12 +22,12 @@
       "type": "multiple",
       "enonce": "Quels sont les rôles de la couche transport ?",
       "choix": [
-        "Segmenter les données des applications et les réassembler dans le bon ordre",
-        "Identifier les applications grâce aux numéros de port",
-        "Proposer différents modes de transport selon les besoins (TCP ou UDP)",
-        "Déterminer l'adresse MAC du destinataire"
+        "Déterminer l'adresse MAC du prochain équipement",
+        "Segmenter les données et les réassembler dans l'ordre",
+        "Identifier les applications par les numéros de port",
+        "Offrir plusieurs modes de transport (TCP ou UDP)"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [1, 2, 3],
       "explication": "Les trois rôles : **segmentation** (et réassemblage), **identification des applications** par les ports, et **options de transport** (TCP fiable ou UDP rapide). L'adresse MAC est trouvée par ARP, en couche 2.",
       "page": 4
     },
@@ -35,8 +35,8 @@
       "id": "c4-003",
       "type": "unique",
       "enonce": "Comment la couche transport sait-elle à quelle application remettre les données reçues ?",
-      "choix": ["Grâce à l'adresse IP", "Grâce au numéro de port", "Grâce à l'adresse MAC", "Grâce au TTL"],
-      "reponses": [1],
+      "choix": ["Grâce au numéro de port", "Grâce à l'adresse IP", "Grâce au champ Protocole", "Grâce à l'adresse MAC"],
+      "reponses": [0],
       "explication": "Chaque application ou processus reçoit un **numéro de port**, placé dans l'en-tête de transport : port source pour l'application d'origine, port de destination pour l'application distante.",
       "page": 6
     },
@@ -46,11 +46,11 @@
       "enonce": "Comment le numéro de port d'un processus **client** est-il généralement attribué ?",
       "choix": [
         "Statiquement, configuré par défaut",
-        "Dynamiquement, généré aléatoirement",
+        "Il est identique au port du serveur",
         "Par l'IANA pour chaque ordinateur",
-        "Il est identique au port du serveur"
+        "Dynamiquement, généré aléatoirement"
       ],
-      "reponses": [1],
+      "reponses": [3],
       "explication": "Côté **client**, le port est **dynamique** (aléatoire) et sert d'identifiant de retour. Côté **serveur**, il est **statique** : configuré par défaut ou à la main (80 pour HTTP, par exemple).",
       "page": 7
     },
@@ -58,8 +58,8 @@
       "id": "c4-005",
       "type": "unique",
       "enonce": "Dans quelle plage se trouvent les **ports connus** (*well-known ports*), réservés aux applications standards ?",
-      "choix": ["0 à 1023", "1024 à 49151", "49152 à 65535", "0 à 65535"],
-      "reponses": [0],
+      "choix": ["0 à 65535", "0 à 1023", "49152 à 65535", "1024 à 49151"],
+      "reponses": [1],
       "explication": "IANA : **0 à 1023** ports connus (HTTP 80, DNS 53, SMTP 25), **1024 à 49151** ports enregistrés (applications moins courantes), **49152 à 65535** ports dynamiques ou privés (clients).",
       "page": 8
     },
@@ -67,8 +67,8 @@
       "id": "c4-006",
       "type": "unique",
       "enonce": "Quel service utilise le port **443** ?",
-      "choix": ["HTTP", "HTTPS", "SSH", "DNS"],
-      "reponses": [1],
+      "choix": ["DNS", "HTTP", "HTTPS", "Telnet"],
+      "reponses": [2],
       "explication": "443 : **HTTPS** (TCP). Pour mémoire : HTTP 80, SSH 22, DNS 53, FTP 20 (données) et 21 (contrôle), SMTP 25, Telnet 23.",
       "page": 9
     },
@@ -76,9 +76,9 @@
       "id": "c4-007",
       "type": "multiple",
       "enonce": "Parmi ces services, lesquels utilisent **UDP** d'après le tableau des ports du cours ?",
-      "choix": ["DHCP (67, 68)", "TFTP (69)", "SSH (22)", "SNMP (161)"],
-      "reponses": [0, 1, 3],
-      "explication": "DHCP (67/68), TFTP (69) et SNMP (161) utilisent **UDP**. SSH (22) utilise **TCP**. DNS (53) utilise les deux.",
+      "choix": ["Telnet (23)", "DHCP (67/68)", "TFTP (69)", "SNMP (161)"],
+      "reponses": [1, 2, 3],
+      "explication": "DHCP (67/68), TFTP (69) et SNMP (161) utilisent **UDP**. Telnet (23) utilise **TCP**. DNS (53) utilise les deux.",
       "page": 9
     },
     {
@@ -86,12 +86,12 @@
       "type": "multiple",
       "enonce": "Quelles affirmations sur **TCP** sont vraies ?",
       "choix": [
-        "Il assure un acheminement fiable : toutes les données arrivent",
-        "Il utilise des accusés de réception",
+        "Il assure un acheminement fiable des données",
         "Il sollicite davantage le réseau qu'UDP",
-        "Son en-tête fait 8 octets"
+        "Son en-tête fixe ne fait que 8 octets",
+        "Il utilise des accusés de réception"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [0, 1, 3],
       "explication": "TCP est **fiable** grâce aux accusés de réception et autres mécanismes, mais il **charge plus** le réseau. Son en-tête fait **20 octets** ; c'est celui d'UDP qui fait 8 octets.",
       "page": 10
     },
@@ -99,8 +99,13 @@
       "id": "c4-009",
       "type": "unique",
       "enonce": "Quelle application a plutôt besoin de **TCP** ?",
-      "choix": ["La voix sur IP", "La résolution DNS", "La consultation d'une page web (HTTP/HTTPS)", "Le streaming vidéo en direct"],
-      "reponses": [2],
+      "choix": [
+        "La résolution de noms DNS",
+        "Le streaming vidéo en direct",
+        "La voix sur IP (VoIP)",
+        "La consultation d'une page web"
+      ],
+      "reponses": [3],
       "explication": "Le web et l'e-mail (HTTP/HTTPS, SMTP/IMAP) ont besoin de **fiabilité** : accusés de réception, renvoi des données perdues, ordre. La VoIP, le DNS et le streaming en direct privilégient la **rapidité** : UDP.",
       "page": 11
     },
@@ -111,8 +116,8 @@
       "choix": [
         "À identifier l'application de destination",
         "À remettre les données dans le bon ordre à la réception",
-        "À indiquer combien d'octets peuvent être envoyés sans accusé",
-        "À vérifier les erreurs d'en-tête"
+        "À vérifier l'absence d'erreurs dans l'en-tête",
+        "À indiquer combien d'octets peuvent être envoyés sans accusé"
       ],
       "reponses": [1],
       "explication": "Le **numéro d'ordre** est incrémenté du nombre d'octets transmis : il permet au destinataire de **réassembler** les segments dans le bon ordre. La quantité d'octets envoyables sans accusé, c'est la **fenêtre**.",
@@ -123,8 +128,8 @@
       "type": "unique",
       "exercice": "Un client envoie un segment TCP de **500 octets** dont le numéro d'ordre est **1001**.",
       "enonce": "Quel sera le numéro d'ordre du segment suivant ?",
-      "choix": ["1002", "1500", "1501", "2001"],
-      "reponses": [2],
+      "choix": ["1501", "1002", "2001", "1500"],
+      "reponses": [0],
       "explication": "Le segment couvre les octets 1001 à 1500. Le suivant commence donc à l'octet **1501** : 1001 + 500.",
       "page": 14
     },
@@ -133,12 +138,12 @@
       "type": "unique",
       "enonce": "Un récepteur TCP envoie un **numéro de reçu** (accusé de réception) égal à 1001. Qu'est-ce que cela signifie ?",
       "choix": [
-        "Il a reçu 1001 segments",
-        "Il a reçu tous les octets jusqu'au 1000ᵉ et attend l'octet 1001",
-        "Il a reçu l'octet 1001 et attend le 1002",
-        "Il demande de renvoyer les 1001 premiers octets"
+        "Il demande le renvoi des 1001 premiers octets",
+        "Il a reçu 1001 segments depuis l'ouverture",
+        "Il a reçu l'octet 1001 et attend maintenant le 1002ᵉ",
+        "Il attend l'octet 1001 : il a reçu jusqu'au 1000ᵉ"
       ],
-      "reponses": [1],
+      "reponses": [3],
       "explication": "Le numéro de reçu est le **prochain octet attendu** : 1001 confirme la bonne réception de tous les octets **jusqu'à 1000**.",
       "page": 15
     },
@@ -146,8 +151,8 @@
       "id": "c4-013",
       "type": "multiple",
       "enonce": "Quel indicateur (flag) TCP signale qu'un hôte n'a plus de données à envoyer et veut fermer la session ?",
-      "choix": ["SYN", "FIN", "RST", "PSH"],
-      "reponses": [1],
+      "choix": ["RST", "SYN", "FIN", "PSH"],
+      "reponses": [2],
       "explication": "**FIN** : plus de données, fin de session. **SYN** synchronise les numéros de séquence à l'ouverture, **RST** réinitialise la connexion en cas d'erreur, **PSH** fait passer les données immédiatement à l'application.",
       "page": 19
     },
@@ -156,12 +161,12 @@
       "type": "unique",
       "enonce": "Quel est l'ordre des segments lors de l'**ouverture** d'une connexion TCP entre un client A et un serveur B ?",
       "choix": [
-        "A → B : SYN ; B → A : SYN+ACK ; A → B : ACK",
-        "A → B : SYN ; B → A : ACK ; A → B : FIN",
         "A → B : ACK ; B → A : SYN ; A → B : SYN+ACK",
-        "A → B : SYN+ACK ; B → A : ACK"
+        "A → B : SYN ; B → A : SYN+ACK ; A → B : ACK",
+        "A → B : SYN ; B → A : SYN+ACK ; A → B : FIN",
+        "A → B : SYN ; B → A : ACK ; A → B : FIN"
       ],
-      "reponses": [0],
+      "reponses": [1],
       "explication": "C'est le **three-way handshake** : SYN, puis SYN+ACK, puis ACK.",
       "page": 21
     },
@@ -169,7 +174,7 @@
       "id": "c4-015",
       "type": "unique",
       "enonce": "En combien d'étapes se fait la **fermeture** d'une connexion TCP ?",
-      "choix": ["2 étapes", "3 étapes", "4 étapes", "Aucune, il suffit d'arrêter d'envoyer"],
+      "choix": ["Aucune, il suffit d'arrêter d'envoyer", "2 étapes", "4 étapes", "3 étapes"],
       "reponses": [2],
       "explication": "Fermeture en **4 étapes** : A envoie FIN, B répond ACK, B envoie son propre FIN, A répond ACK. Chaque côté ferme son sens de communication.",
       "page": 22
@@ -179,12 +184,12 @@
       "type": "unique",
       "enonce": "Que détermine la **taille de fenêtre** TCP ?",
       "choix": [
-        "La taille maximale d'un paquet IP",
-        "Le nombre d'octets qui peuvent être envoyés avant d'attendre un accusé de réception",
-        "Le nombre de connexions simultanées",
-        "La durée de vie d'un segment"
+        "Le nombre d'octets envoyés avant d'attendre un reçu",
+        "La durée de vie maximale d'un segment sur le réseau",
+        "La taille maximale d'un paquet IP (MTU)",
+        "Le nombre de connexions TCP simultanées autorisées"
       ],
-      "reponses": [1],
+      "reponses": [0],
       "explication": "La fenêtre (16 bits) indique **combien d'octets** l'expéditeur peut envoyer avant d'attendre un reçu. C'est le mécanisme de **contrôle de flux** de TCP.",
       "page": 26
     },
@@ -193,8 +198,8 @@
       "type": "unique",
       "exercice": "Taille de fenêtre : **3000 octets**. L'expéditeur envoie deux segments de 1500 octets, avec les numéros d'ordre 1 et 1501. Le récepteur les reçoit tous les deux.",
       "enonce": "Quel numéro de reçu le récepteur renvoie-t-il ?",
-      "choix": ["1500", "1501", "3000", "3001"],
-      "reponses": [3],
+      "choix": ["1500", "3000", "3001", "1501"],
+      "reponses": [2],
       "explication": "Le récepteur a reçu les octets 1 à 3000 : il attend l'octet **3001**, qui est donc le numéro du reçu.",
       "page": 26
     },
@@ -204,12 +209,12 @@
       "exercice": "Taille de fenêtre : 3000 octets. Après un premier reçu 3001, l'expéditeur envoie les segments 3001 (1500 octets) et 4501 (1500 octets). Le segment 3001 est **perdu** à cause d'un encombrement ; le segment 4501 arrive.",
       "enonce": "Que fait le récepteur ?",
       "choix": [
-        "Il renvoie un reçu numéro 3001",
-        "Il réduit la taille de fenêtre (par exemple à 1500)",
         "Il renvoie un reçu numéro 6001",
+        "Il renvoie un reçu numéro 3001",
+        "Il réduit sa taille de fenêtre",
         "Il ferme la connexion avec FIN"
       ],
-      "reponses": [0, 1],
+      "reponses": [1, 2],
       "explication": "Le récepteur accuse réception du **dernier segment reçu dans l'ordre** : reçu **3001**, ce qui provoque le renvoi. Comme les pertes sont dues à l'encombrement, il **réduit la fenêtre** pour imposer des reçus plus fréquents : la fenêtre est **dynamique**.",
       "page": 27
     },
@@ -219,9 +224,9 @@
       "enonce": "Quelles affirmations sur **UDP** sont vraies ?",
       "choix": [
         "C'est un protocole simple et sans connexion",
-        "Son en-tête fait 8 octets",
+        "Ses PDU s'appellent des datagrammes",
         "Il retransmet les datagrammes perdus",
-        "Ses PDU s'appellent des datagrammes"
+        "Son en-tête fait 8 octets"
       ],
       "reponses": [0, 1, 3],
       "explication": "UDP est **sans connexion**, avec un en-tête de **8 octets** et des **datagrammes** envoyés au mieux : **pas** de retransmission, ni de séquençage, ni de contrôle de flux.",
@@ -232,12 +237,12 @@
       "type": "multiple",
       "enonce": "Quels types d'applications utilisent UDP ?",
       "choix": [
-        "La vidéo et le multimédia en direct, qui tolèrent quelques pertes mais pas de délai",
-        "Les applications simples de demande-réponse, comme DNS ou DHCP",
-        "Les applications qui gèrent elles-mêmes la fiabilité, comme TFTP ou SNMP",
-        "Le transfert de fichiers par FTP"
+        "Les applications à fiabilité propre (TFTP, SNMP)",
+        "Le transfert de fichiers par FTP (ports 20 et 21)",
+        "Les échanges simples de requête-réponse (DNS, DHCP)",
+        "La vidéo en direct, qui tolère quelques pertes"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [0, 2, 3],
       "explication": "UDP convient au **temps réel** (VoIP, streaming), aux **requêtes simples** (DNS, DHCP) et aux applications qui gèrent **leur propre fiabilité** (TFTP, SNMP). **FTP** (ports 20/21) utilise TCP.",
       "page": 29
     },
@@ -246,12 +251,12 @@
       "type": "multiple",
       "enonce": "Quels sont les **inconvénients** d'UDP ?",
       "choix": [
-        "Aucune garantie que les paquets arrivent",
-        "Pas de contrôle de flux, ce qui peut surcharger le réseau",
-        "Un en-tête plus lourd que TCP",
-        "Une connexion longue à établir"
+        "Pas de contrôle de flux (risque de surcharge)",
+        "Une connexion longue à établir avant l'envoi",
+        "Un en-tête plus lourd que celui de TCP",
+        "Aucune garantie que les paquets arrivent"
       ],
-      "reponses": [0, 1],
+      "reponses": [0, 3],
       "explication": "UDP n'offre **aucune fiabilité** et **pas de contrôle de flux**. Ses avantages sont justement un en-tête **léger** (8 octets) et l'**absence** de connexion à établir, d'où sa rapidité.",
       "page": 30
     }

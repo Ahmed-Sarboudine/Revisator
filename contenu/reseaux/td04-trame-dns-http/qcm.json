@@ -11,9 +11,9 @@
       "legende": "Capture Wireshark : demande d'adresse IP d'un PC",
       "enonce": "Pour la trame n° 49 (DHCP Discover), quelles affirmations sont vraies ?",
       "choix": [
-        "La source est 0.0.0.0 car le PC n'a pas encore d'adresse IP",
-        "La destination 255.255.255.255 est une diffusion à tout le réseau local",
-        "Le serveur DHCP a l'adresse 192.168.1.143",
+        "La source est 0.0.0.0 : le PC n'a pas encore d'IP",
+        "La destination 255.255.255.255 est une diffusion",
+        "Le serveur DHCP est la machine d'adresse 192.168.1.143",
         "Les 4 trames DHCP suivent l'ordre Discover, Offer, Request, ACK"
       ],
       "reponses": [0, 1, 3],
@@ -53,7 +53,7 @@
         "Version 4, en-tête de 5 octets",
         "Version 4, en-tête de 20 octets",
         "Version 5, en-tête de 4 octets",
-        "Le paquet fait 45 octets"
+        "Le paquet fait 45 octets au total"
       ],
       "reponses": [1],
       "explication": "1<sup>er</sup> chiffre hexa = **version 4**. 2<sup>e</sup> = IHL = 5 **mots de 32 bits** = $5 \\times 4$ = **20 octets** : l'en-tête n'a pas d'options.",
@@ -80,9 +80,9 @@
       "enonce": "Quelles affirmations sont vraies ?",
       "choix": [
         "L'identification vaut 0x00F1, soit 241",
-        "Le paquet n'a pas été fragmenté (flags et offset à 0)",
-        "Le TTL vaut 128",
-        "Le type de service vaut 0x45"
+        "Paquet non fragmenté (flags et offset à 0)",
+        "Le TTL vaut 0x80, soit 128",
+        "Le type de service (TOS) vaut 0x45"
       ],
       "reponses": [0, 1, 2],
       "explication": "Identification `00 f1` = 15 × 16 + 1 = **241**. Flags et offset `00 00` : DF = 0, MF = 0, offset 0 → **pas de fragmentation**. TTL `80` = **128**. Le type de service est l'octet `00` (valeur par défaut) ; `45` est version + IHL.",
@@ -131,10 +131,10 @@
       "exercice": "Temporisateurs d'une zone DNS :\n\n```\n21600  ; Refresh\n3600   ; Retry\n604800 ; Expire\n172800 ; Time to Live\n```",
       "enonce": "À quoi correspond le **Refresh** de 21 600 s ?",
       "choix": [
-        "Toutes les 6 h, le serveur secondaire vérifie si la zone du primaire a changé",
-        "Toutes les 6 h, le cache des clients est vidé",
-        "Au bout de 6 h sans réponse, la zone expire",
-        "Le primaire renvoie sa zone toutes les 6 h"
+        "Toutes les 6 h, le secondaire vérifie si la zone a changé",
+        "Toutes les 6 h, les caches des résolveurs sont vidés",
+        "Au bout de 6 h sans contact du primaire, la zone expire",
+        "Toutes les 6 h, le primaire envoie sa zone aux secondaires"
       ],
       "reponses": [0],
       "explication": "21 600 s = **6 h** : c'est l'intervalle au bout duquel le **secondaire** compare le numéro de série de la zone avec celui du primaire. En cas d'échec, il réessaie après le **Retry** (3600 s = 1 h).",
@@ -146,9 +146,9 @@
       "exercice": "Temporisateurs d'une zone DNS :\n\n```\n21600  ; Refresh\n3600   ; Retry\n604800 ; Expire\n172800 ; Time to Live\n```",
       "enonce": "Quelles affirmations sont vraies ?",
       "choix": [
-        "Expire = 7 jours : sans contact avec le primaire, le secondaire cesse de répondre pour la zone",
-        "Time to Live = 2 jours : durée de conservation des enregistrements dans les caches",
-        "Retry = 1 h : délai avant de réessayer une mise à jour qui a échoué",
+        "Expire = 7 jours : coupé du primaire, le secondaire cesse de répondre",
+        "Time to Live = 2 jours : durée de conservation dans les caches",
+        "Retry = 1 h : délai avant de réessayer une mise à jour échouée",
         "Expire = 7 jours : les enregistrements sont supprimés du primaire"
       ],
       "reponses": [0, 1, 2],
@@ -174,7 +174,7 @@
       "id": "td4-013",
       "type": "unique",
       "enonce": "Dans le fichier de zone, l'Expire vaut **3 600 000 s**. Au bout de combien de temps la validité des enregistrements expire-t-elle ?",
-      "choix": ["1 heure", "1000 heures, soit environ 41,7 jours", "36 jours", "100 jours"],
+      "choix": ["1 heure (3600 s)", "≈ 41,7 jours (1000 h)", "≈ 150 jours (3600 h)", "≈ 416,7 jours (10000 h)"],
       "reponses": [1],
       "explication": "3 600 000 / 3600 = **1000 h** ; 1000 / 24 ≈ **41,7 jours** (41 jours et 16 h).",
       "page": 4
@@ -215,7 +215,7 @@
       "choix": [
         "`smtp.my.domain. IN A mail.my.domain.`",
         "`smtp.my.domain. IN CNAME mail.my.domain.`",
-        "`smtp.my.domain. IN MX mail.my.domain.`",
+        "`smtp.my.domain. IN MX 10 mail.my.domain.`",
         "`mail.my.domain. IN PTR smtp.my.domain.`"
       ],
       "reponses": [1],
@@ -227,10 +227,10 @@
       "type": "unique",
       "enonce": "Dans une URL comme `http://www.exemple.fr/index.html`, à quoi sert « :// » ?",
       "choix": [
-        "À séparer le protocole (schéma) du reste, le « // » annonçant le nom de l'hôte",
-        "À indiquer le port par défaut",
-        "À chiffrer la connexion",
-        "À séparer le nom de domaine du chemin"
+        "À séparer le protocole (schéma) du nom de l'hôte",
+        "À indiquer que le port par défaut (80) est utilisé",
+        "À demander une connexion chiffrée au serveur",
+        "À séparer le nom de domaine du chemin vers la ressource"
       ],
       "reponses": [0],
       "explication": "Le « : » termine le nom du **protocole** et le « // » indique que la suite commence par l'**hôte** (le serveur). Le chemin est séparé par « / », le port par « : » après l'hôte.",
@@ -242,10 +242,10 @@
       "exercice": "Requête HTTP :\n\n```\nGET / http/1.1\nHost: www.exemple.fr\nUser-Agent: Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0\nAccept: text/html, application/xhtml+xml, application/xml\nAccept-Language: fr,en\nAccept-Encoding: gzip, deflate\nConnection: keep-alive\n```",
       "enonce": "Quelles affirmations sur cette requête sont vraies ?",
       "choix": [
-        "Elle demande la page d'accueil (la racine « / ») du site",
+        "Elle demande la page d'accueil (la racine « / »)",
         "`Host` indique le nom du serveur demandé",
-        "`Connection: keep-alive` demande de garder la connexion TCP ouverte pour les requêtes suivantes",
-        "Elle envoie des données de formulaire au serveur"
+        "`Connection: keep-alive` demande de garder la connexion TCP ouverte",
+        "Elle envoie des données de formulaire au serveur web"
       ],
       "reponses": [0, 1, 2],
       "explication": "**GET /** demande la racine du site en HTTP/1.1. **Host** donne le serveur (plusieurs sites peuvent partager une IP), **User-Agent** le navigateur (Firefox 5 sous Windows 7), **Accept-…** les formats, langues et compressions acceptés. Une requête GET n'a **pas de corps** : envoyer un formulaire se fait avec POST.",

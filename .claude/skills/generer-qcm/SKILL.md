@@ -42,6 +42,7 @@ Règles :
 - Environ **un tiers de `"multiple"`**, dont une ou deux qui n'ont qu'une seule bonne réponse (pour que « Plusieurs réponses » ne soit pas un indice).
 - **Exercices** : quand le document contient un exercice ou un exemple chiffré, créer des questions avec le champ `exercice` (les données) et l'`enonce` (ce qu'on demande). Pour un TD, c'est l'essentiel des questions.
 - **Mauvaises réponses plausibles** : confusions entre notions proches du cours (hub/switch, segment/datagramme, LAN/MAN…), pas de réponses absurdes.
+- **La bonne réponse ne se devine pas à sa forme** : tous les choix ont une longueur et un niveau de détail comparables (la bonne ne doit être la plus longue qu'environ une fois sur quatre), choix courts (< 80 caractères), pas de « toujours / jamais / uniquement » réservés aux fausses ni de nuance réservée à la bonne. Vérifier avec le script ci-dessous (étape 5).
 - **Explication** : justifier la bonne réponse avec le cours, et dire pourquoi le piège principal est faux.
 - **`page`** : numéro de page du PDF (index du fichier, à partir de 1), pas un numéro imprimé s'il diffère.
 - **Rester fidèle au cours** : ne pas faire de question sur une affirmation du cours qui est fausse ou discutable ; la signaler à l'utilisateur à la place.
@@ -52,9 +53,10 @@ Règles :
 
 ```bash
 node scripts/build-index.js
+node scripts/biais-qcm.js contenu/<matiere>/<dossier>/qcm.json
 ```
 
-Corriger jusqu'à ce que le script passe.
+Corriger jusqu'à ce que le premier script passe et que le second donne « bonne = plus longue » proche du hasard et un rapport de longueur entre 0,9 et 1,1.
 
 ## Images dans les questions
 

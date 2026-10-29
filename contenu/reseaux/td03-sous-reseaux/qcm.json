@@ -23,7 +23,7 @@
         "8190 machines ; 172.161.223.255",
         "8192 machines ; 172.161.223.255",
         "8190 machines ; 172.161.255.255",
-        "254 machines ; 172.161.210.255"
+        "65534 machines ; 172.161.255.255"
       ],
       "reponses": [0],
       "explication": "Bits d'hôte : 32 − 19 = 13 → $2^{13} - 2 = 8190$ machines (on retire le réseau et la diffusion). Diffusion = bloc suivant (224) − 1 = 223, suivi de .255 : **172.161.223.255**.",
@@ -127,7 +127,7 @@
       "enonce": "Quelles affirmations sont vraies ?",
       "choix": [
         "129.148.208.26 et 129.148.210.32 sont dans le même sous-réseau",
-        "Les trois stations sont dans le même sous-réseau",
+        "Les trois stations sont dans le même sous-réseau 129.148.208.0",
         "129.148.216.145 est dans le sous-réseau 129.148.216.0",
         "129.148.210.32 est dans le sous-réseau 129.148.210.0"
       ],
@@ -193,7 +193,7 @@
         "Le nouveau masque est 255.248.0.0",
         "Le 2<sup>e</sup> sous-réseau est 112.40.0.0",
         "La diffusion du 1<sup>er</sup> sous-réseau est 112.39.255.255",
-        "Chaque sous-réseau contient 254 machines"
+        "Chaque sous-réseau contient 2 097 150 machines"
       ],
       "reponses": [0, 1, 2],
       "explication": "/11 + 2 bits = /13 → **255.248.0.0**, bloc 8 sur le 2<sup>e</sup> octet : 112.32, **112.40**, 112.48, 112.56. Le 1<sup>er</sup> va jusqu'à **112.39.255.255**. Hôtes : $2^{19} - 2 = 524\\,286$.",

@@ -8,12 +8,12 @@
       "type": "multiple",
       "enonce": "Quelles sont les fonctions de la couche réseau (couche 3) ?",
       "choix": [
-        "L'adressage logique des périphériques finaux",
-        "L'encapsulation des PDU de la couche 4 en paquets",
+        "La détection des erreurs avec le CRC de la trame",
         "Le routage des paquets vers leur destination",
-        "La détection des erreurs avec le CRC de la trame"
+        "L'encapsulation des PDU de la couche 4 en paquets",
+        "L'adressage logique des périphériques finaux"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [1, 2, 3],
       "explication": "La couche 3 assure l'**adressage logique**, l'**encapsulation** en paquets, le **routage** et la désencapsulation à l'arrivée. Le CRC (champ FCS) est vérifié par la couche **liaison** (2).",
       "page": 3
     },
@@ -22,10 +22,10 @@
       "type": "unique",
       "enonce": "Quel est le format d'une adresse IPv4 ?",
       "choix": [
-        "32 bits, écrits en 4 nombres décimaux de 0 à 255 séparés par des points",
-        "48 bits, écrits en 12 chiffres hexadécimaux",
-        "128 bits, écrits en 8 blocs hexadécimaux",
-        "32 bits, écrits en 8 blocs hexadécimaux"
+        "32 bits : 4 nombres décimaux de 0 à 255 séparés par des points",
+        "128 bits : 8 blocs hexadécimaux séparés par « : »",
+        "32 bits : 8 blocs hexadécimaux séparés par des points",
+        "48 bits : 12 chiffres hexadécimaux séparés par des tirets"
       ],
       "reponses": [0],
       "explication": "IPv4 : **4 octets = 32 bits**, en notation décimale pointée. 48 bits, c'est une adresse MAC ; 128 bits, une adresse IPv6.",
@@ -35,8 +35,8 @@
       "id": "c3-003",
       "type": "unique",
       "enonce": "Qu'est-ce qui permet de déterminer où se termine la partie réseau (Network-ID) d'une adresse IP et où commence la partie hôte (Host-ID) ?",
-      "choix": ["L'adresse MAC", "Le masque", "La passerelle par défaut", "Le TTL"],
-      "reponses": [1],
+      "choix": ["L'adresse MAC", "La passerelle par défaut", "Le masque", "Le TTL"],
+      "reponses": [2],
       "explication": "Le **masque** a le même format qu'une adresse IP : ses bits à **1** désignent la partie réseau (et sous-réseau), ses bits à **0** la partie hôte.",
       "page": 8
     },
@@ -44,8 +44,8 @@
       "id": "c3-004",
       "type": "unique",
       "enonce": "Quelle opération entre l'adresse IP et le masque donne l'adresse du réseau ?",
-      "choix": ["OR (OU)", "XOR (OU exclusif)", "AND (ET)", "Une addition"],
-      "reponses": [2],
+      "choix": ["OR (OU)", "Une addition", "XOR (OU exclusif)", "AND (ET)"],
+      "reponses": [3],
       "explication": "On fait un **ET logique (AND)** bit à bit : 192.168.10.10 AND 255.255.255.0 = **192.168.10.0**.",
       "page": 9
     },
@@ -53,7 +53,12 @@
       "id": "c3-005",
       "type": "unique",
       "enonce": "À quelle classe appartient l'adresse **172.10.10.172**, et quel est son masque par défaut ?",
-      "choix": ["Classe A, 255.0.0.0 (/8)", "Classe B, 255.255.0.0 (/16)", "Classe C, 255.255.255.0 (/24)", "Classe B, 255.255.255.0 (/24)"],
+      "choix": [
+        "Classe A, 255.0.0.0 (/8)",
+        "Classe B, 255.255.0.0 (/16)",
+        "Classe B, 255.255.255.0 (/24)",
+        "Classe C, 255.255.255.0 (/24)"
+      ],
       "reponses": [1],
       "explication": "Le premier octet (172) est entre 128 et 191 : **classe B**, masque par défaut **255.255.0.0 (/16)**. Classe A : 0 à 127 (/8) ; classe C : 192 à 223 (/24).",
       "page": 10
@@ -78,12 +83,12 @@
       "type": "unique",
       "enonce": "En notation CIDR, que désigne le nombre après le « / », par exemple /26 ?",
       "choix": [
-        "Le nombre de bits de la partie machine",
-        "Le nombre de bits de la partie réseau",
+        "Le nombre de machines du réseau",
         "Le nombre de sous-réseaux",
-        "Le nombre de machines du réseau"
+        "Le nombre de bits de la partie machine",
+        "Le nombre de bits de la partie réseau"
       ],
-      "reponses": [1],
+      "reponses": [3],
       "explication": "Le « / » indique le **nombre de bits à 1 du masque**, c'est-à-dire la partie réseau. /26 laisse 32 − 26 = 6 bits pour les machines. CIDR n'utilise plus la notion de classe.",
       "page": 11
     },
@@ -92,8 +97,8 @@
       "type": "unique",
       "exercice": "Une machine a l'adresse **192.44.10.105 /26**.",
       "enonce": "Quelle est l'adresse du réseau ?",
-      "choix": ["192.44.10.0", "192.44.10.64", "192.44.10.96", "192.44.10.105"],
-      "reponses": [1],
+      "choix": ["192.44.10.64", "192.44.10.0", "192.44.10.105", "192.44.10.96"],
+      "reponses": [0],
       "explication": "/26 donne le masque **255.255.255.192**. Dernier octet : 105 = `01101001`, AND `11000000` = `01000000` = **64**. Le réseau est 192.44.10.64.",
       "page": 12
     },
@@ -102,7 +107,7 @@
       "type": "unique",
       "exercice": "Une machine a l'adresse **192.44.10.105 /26**.",
       "enonce": "Quelle est l'adresse de diffusion (broadcast) de son réseau ?",
-      "choix": ["192.44.10.255", "192.44.10.127", "192.44.10.128", "192.44.10.63"],
+      "choix": ["192.44.10.128", "192.44.10.127", "192.44.10.63", "192.44.10.255"],
       "reponses": [1],
       "explication": "Le réseau est 192.44.10.64 et il reste 6 bits pour les hôtes : on les met tous à 1 → 64 + 63 = **127**. Le broadcast est 192.44.10.127.",
       "page": 13
@@ -112,12 +117,12 @@
       "type": "multiple",
       "enonce": "Quelles affirmations sur les adresses spéciales sont vraies ?",
       "choix": [
-        "L'adresse réseau a sa partie machine entièrement à 0",
         "L'adresse de diffusion a sa partie machine entièrement à 1",
-        "127.0.0.1 est l'adresse de bouclage, utilisée par un hôte pour s'envoyer du trafic",
-        "L'adresse de diffusion est la première adresse de la plage"
+        "L'adresse de diffusion est la première adresse de la plage",
+        "127.0.0.1 est l'adresse de bouclage (loopback) de l'hôte",
+        "L'adresse réseau a sa partie machine entièrement à 0"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [0, 2, 3],
       "explication": "Adresse réseau = partie machine à 0 (**première** adresse de la plage). Diffusion = partie machine à 1 (**dernière** adresse). 127.0.0.1 (loopback) sert par exemple à vérifier que TCP/IP fonctionne.",
       "page": 13
     },
@@ -126,12 +131,12 @@
       "type": "multiple",
       "enonce": "Quelles affirmations sur les adresses IP **privées** sont vraies ?",
       "choix": [
-        "Elles ne sont utilisables qu'au niveau du réseau local",
+        "Deux LAN différents peuvent utiliser la même adresse privée",
+        "Elles sont acheminées entre les routeurs des FAI",
         "Elles ne sont pas routables sur Internet",
-        "Deux réseaux locaux différents peuvent utiliser la même adresse privée",
-        "Elles sont acheminées entre les routeurs des fournisseurs d'accès"
+        "Elles ne sont utilisables qu'au niveau du réseau local"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [0, 2, 3],
       "explication": "Les adresses privées restent dans le réseau local et ne sont **pas routables** : on peut donc les réutiliser d'un réseau à l'autre. Ce sont les adresses **publiques** qui sont acheminées entre les routeurs des FAI.",
       "page": 14
     },
@@ -140,12 +145,12 @@
       "type": "unique",
       "enonce": "Comment crée-t-on des sous-réseaux ?",
       "choix": [
-        "En empruntant des bits à la partie réseau",
-        "En empruntant des bits à la partie machine et en allongeant le masque",
-        "En changeant la classe de l'adresse",
-        "En ajoutant un octet à l'adresse IP"
+        "En empruntant des bits à la partie machine (masque allongé)",
+        "En empruntant des bits à la partie réseau (masque raccourci)",
+        "En changeant la classe de l'adresse (A → B → C)",
+        "En ajoutant un cinquième octet à l'adresse IP"
       ],
-      "reponses": [1],
+      "reponses": [0],
       "explication": "On **emprunte des bits à la partie machine** pour coder l'ID de sous-réseau, et on met ces bits à 1 dans le masque : <ID réseau><ID sous-réseau><ID machine>.",
       "page": 15
     },
@@ -154,7 +159,7 @@
       "type": "unique",
       "exercice": "On découpe le réseau de classe B **183.1.0.0 /16** en **4 sous-réseaux**.",
       "enonce": "Quel est le nouveau masque ?",
-      "choix": ["255.255.128.0 (/17)", "255.255.192.0 (/18)", "255.255.240.0 (/20)", "255.255.255.192 (/26)"],
+      "choix": ["255.255.240.0 (/20)", "255.255.192.0 (/18)", "255.255.128.0 (/17)", "255.255.255.192 (/26)"],
       "reponses": [1],
       "explication": "4 ≤ $2^2$ : on emprunte **2 bits** à la partie machine. /16 + 2 = **/18**, soit 255.255.`11000000`.0 = **255.255.192.0**.",
       "page": 16
@@ -165,12 +170,12 @@
       "exercice": "On découpe le réseau de classe B **183.1.0.0 /16** en **4 sous-réseaux** avec le masque /18.",
       "enonce": "Quelle est la plage d'adresses utilisables du 2ᵉ sous-réseau (183.1.64.0) ?",
       "choix": [
-        "183.1.64.1 à 183.1.127.254",
-        "183.1.64.0 à 183.1.127.255",
         "183.1.64.1 à 183.1.128.254",
+        "183.1.64.0 à 183.1.127.255",
+        "183.1.64.1 à 183.1.127.254",
         "183.1.64.1 à 183.1.95.254"
       ],
-      "reponses": [0],
+      "reponses": [2],
       "explication": "Le 2ᵉ sous-réseau va de 183.1.64.0 (adresse réseau) à **183.1.127.255** (broadcast). Les adresses utilisables sont entre les deux : **183.1.64.1 à 183.1.127.254**.",
       "page": 19
     },
@@ -179,8 +184,8 @@
       "type": "unique",
       "exercice": "On découpe le réseau **128.99.0.0 /16** en sous-réseaux pouvant contenir chacun **1000 hôtes**.",
       "enonce": "Quel est le masque des sous-réseaux ?",
-      "choix": ["255.255.255.0", "255.255.248.0", "255.255.252.0", "255.255.254.0"],
-      "reponses": [2],
+      "choix": ["255.255.248.0", "255.255.255.0", "255.255.254.0", "255.255.252.0"],
+      "reponses": [3],
       "explication": "Il faut 10 bits pour l'hôte ($2^{10} = 1024 \\geq 1000$), donc 32 − 10 = **22 bits** pour le réseau : 255.255.`11111100`.0 = **255.255.252.0**.",
       "page": 20
     },
@@ -191,9 +196,9 @@
       "enonce": "Combien de sous-réseaux peut-on créer au maximum, et quel est le broadcast du sous-réseau 2 (128.99.4.0) ?",
       "choix": [
         "64 sous-réseaux ; 128.99.7.255",
-        "64 sous-réseaux ; 128.99.4.255",
+        "1024 sous-réseaux ; 128.99.5.255",
         "6 sous-réseaux ; 128.99.7.255",
-        "1024 sous-réseaux ; 128.99.5.255"
+        "64 sous-réseaux ; 128.99.4.255"
       ],
       "reponses": [0],
       "explication": "ID de sous-réseau : 22 − 16 = 6 bits, donc $2^6$ = **64** sous-réseaux. Le sous-réseau 2 couvre les troisièmes octets 4 à 7 : broadcast **128.99.7.255**.",
@@ -203,8 +208,13 @@
       "id": "c3-017",
       "type": "multiple",
       "enonce": "Quelles sont les principales caractéristiques du protocole IP ?",
-      "choix": ["Sans connexion", "Acheminement au mieux (peu fiable)", "Indépendant du support", "Garantit la réception de tous les paquets"],
-      "reponses": [0, 1, 2],
+      "choix": [
+        "Fonctionnement sans connexion",
+        "Acheminement au mieux (best effort)",
+        "Livraison garantie des paquets",
+        "Indépendance vis-à-vis du support"
+      ],
+      "reponses": [0, 1, 3],
       "explication": "IP est **sans connexion**, fonctionne **au mieux** (des paquets peuvent être perdus) et est **indépendant du support**. La fiabilité, si nécessaire, est assurée par la couche transport (TCP).",
       "page": 22
     },
@@ -212,8 +222,8 @@
       "id": "c3-018",
       "type": "unique",
       "enonce": "« La fibre optique, les satellites et le sans-fil peuvent être utilisés pour acheminer le même paquet. » À quelle caractéristique d'IP cette phrase correspond-elle ?",
-      "choix": ["Sans connexion", "Acheminement au mieux", "Indépendant du support", "Fragmentation obligatoire"],
-      "reponses": [2],
+      "choix": ["Fragmentation obligatoire", "Acheminement au mieux", "Sans connexion", "Indépendant du support"],
+      "reponses": [3],
       "explication": "C'est l'**indépendance vis-à-vis du support**. « Aucun contact n'est établi avec la destination avant l'envoi » correspond à *sans connexion* ; « la livraison n'est pas garantie », à *acheminement au mieux*.",
       "page": 25
     },
@@ -221,8 +231,8 @@
       "id": "c3-019",
       "type": "unique",
       "enonce": "Le champ **IHL** d'un paquet IPv4 vaut 5. Quelle est la taille de l'en-tête ?",
-      "choix": ["5 octets", "20 octets", "40 octets", "60 octets"],
-      "reponses": [1],
+      "choix": ["5 octets", "40 octets", "20 octets", "60 octets"],
+      "reponses": [2],
       "explication": "IHL compte des mots de 32 bits : $5 \\times 32 = 160$ bits = **20 octets** (valeur minimale). La valeur maximale, 15, donne 60 octets.",
       "page": 28
     },
@@ -230,7 +240,7 @@
       "id": "c3-020",
       "type": "unique",
       "enonce": "Quelle est la taille minimale et maximale d'un paquet IPv4 (champ Total Length) ?",
-      "choix": ["20 et 1500 octets", "20 et 65 535 octets", "46 et 1500 octets", "0 et 65 536 octets"],
+      "choix": ["0 et 65 536 octets", "20 et 65 535 octets", "20 et 1500 octets", "46 et 1500 octets"],
       "reponses": [1],
       "explication": "Total Length (16 bits) compte l'en-tête et les données : minimum **20 octets** (en-tête seul), maximum $2^{16} - 1$ = **65 535 octets**. 1500 octets, c'est la MTU d'Ethernet.",
       "page": 31
@@ -240,12 +250,12 @@
       "type": "unique",
       "enonce": "Dans les flags d'un fragment IPv4, que signifie **MF = 0** ?",
       "choix": [
+        "C'est le dernier fragment du paquet",
+        "Le fragment est endommagé et rejeté",
         "Le paquet ne doit pas être fragmenté",
-        "C'est le dernier fragment du paquet d'origine",
-        "D'autres fragments suivent",
-        "Le fragment est endommagé"
+        "D'autres fragments suivent celui-ci"
       ],
-      "reponses": [1],
+      "reponses": [0],
       "explication": "MF (*More Fragments*) = 0 indique le **dernier fragment**. MF = 1 signifie que d'autres fragments suivent. Interdire la fragmentation, c'est le rôle du bit **DF** (*Don't Fragment*).",
       "page": 33
     },
@@ -253,7 +263,7 @@
       "id": "c3-022",
       "type": "unique",
       "enonce": "En quelle unité est exprimé le champ **Fragment Offset** ?",
-      "choix": ["En octets", "En bits", "En mots de 8 octets", "En mots de 32 bits"],
+      "choix": ["En nombre d'octets de données", "En mots de 32 bits", "En mots de 8 octets", "En mots de 16 bits"],
       "reponses": [2],
       "explication": "Le champ ne fait que 13 bits : on compte en **blocs de 8 octets** (65 536 / 8 192 = 8). Une valeur de 16 correspond donc à un décalage de 128 octets. C'est pourquoi les données de chaque fragment doivent faire un multiple de 8 octets.",
       "page": 44
@@ -263,12 +273,12 @@
       "type": "multiple",
       "enonce": "Quel est le rôle du champ **TTL** d'un paquet IPv4 ?",
       "choix": [
-        "Il est décrémenté à chaque routeur traversé, et le paquet est supprimé quand il atteint 0",
-        "Il indique la durée de validité d'une entrée du cache ARP",
+        "Il identifie les fragments d'un même paquet d'origine",
         "Il donne la priorité du paquet pour la qualité de service",
-        "Il identifie les fragments d'un même paquet"
+        "Il baisse à chaque routeur ; à 0, le paquet est supprimé",
+        "Il indique la durée de validité d'une entrée du cache ARP"
       ],
-      "reponses": [0],
+      "reponses": [2],
       "explication": "Le **TTL** (*Time To Live*) baisse de 1 à chaque saut ; à 0, le routeur supprime le paquet. Cela évite les **boucles de routage**. La priorité relève du champ Services différenciés, l'identification des fragments du champ Identification.",
       "page": 35
     },
@@ -276,7 +286,7 @@
       "id": "c3-024",
       "type": "unique",
       "enonce": "Le champ **Protocole** d'un paquet IPv4 vaut 6. Que transporte ce paquet ?",
-      "choix": ["Un message ICMP", "Un segment TCP", "Un datagramme UDP", "Un message ARP"],
+      "choix": ["Un message ICMP", "Un segment TCP", "Un message ARP", "Un datagramme UDP"],
       "reponses": [1],
       "explication": "Champ Protocole : **1 = ICMP**, **6 = TCP**, **17 = UDP**. ARP n'est pas transporté dans IP (EtherType 0x0806 directement dans la trame).",
       "page": 36
@@ -286,12 +296,12 @@
       "type": "unique",
       "enonce": "Que vérifie le champ **Header Checksum** d'un paquet IPv4 ?",
       "choix": [
-        "L'intégrité de tout le paquet, données comprises",
-        "L'intégrité de l'en-tête uniquement",
         "L'ordre des fragments",
-        "L'adresse MAC du destinataire"
+        "L'adresse MAC du destinataire",
+        "L'intégrité de tout le paquet, données comprises",
+        "L'intégrité de l'en-tête uniquement"
       ],
-      "reponses": [1],
+      "reponses": [3],
       "explication": "C'est une somme de contrôle de l'**en-tête seulement** : elle vérifie qu'il n'a pas été altéré pendant la transmission.",
       "page": 37
     },
@@ -300,12 +310,12 @@
       "type": "unique",
       "enonce": "Qu'est-ce que la **MTU** d'un réseau ?",
       "choix": [
-        "Le débit maximal du réseau",
-        "La taille du plus grand paquet qui peut être transféré sur ce réseau",
+        "La taille maximale d'un paquet transmissible sur ce réseau",
         "Le nombre maximal de routeurs traversés",
-        "La taille minimale d'une trame"
+        "La taille minimale d'une trame sur le support",
+        "Le débit maximal autorisé sur le réseau"
       ],
-      "reponses": [1],
+      "reponses": [0],
       "explication": "La **MTU** (*Maximum Transmission Unit*) est la taille maximale d'un paquet sur un réseau, par exemple **1500 octets** pour Ethernet. Un paquet plus grand doit être **fragmenté**.",
       "page": 42
     },
@@ -313,8 +323,8 @@
       "id": "c3-027",
       "type": "multiple",
       "enonce": "Lors de la fragmentation, quels champs de l'en-tête **changent** d'un fragment à l'autre par rapport au paquet d'origine ?",
-      "choix": ["La longueur totale", "Le bit More Fragments", "Le Fragment Offset", "L'Identification"],
-      "reponses": [0, 1, 2],
+      "choix": ["Le champ Fragment Offset", "Le champ Identification", "Le bit More Fragments", "Le champ Total Length"],
+      "reponses": [0, 2, 3],
       "explication": "Changent : la **longueur**, le bit **MF**, le **Fragment Offset** et le Header Checksum. L'**Identification** reste la même pour tous les fragments : c'est elle qui permet de les regrouper.",
       "page": 43
     },
@@ -323,8 +333,8 @@
       "type": "unique",
       "exercice": "Un paquet IP de **576 octets** (en-tête de 20 octets) doit traverser un réseau A de **MTU 150 octets**.",
       "enonce": "Quelle est la charge utile (données) maximale d'un fragment ?",
-      "choix": ["130 octets", "128 octets", "150 octets", "136 octets"],
-      "reponses": [1],
+      "choix": ["150 octets", "130 octets", "128 octets", "136 octets"],
+      "reponses": [2],
       "explication": "150 − 20 = 130 octets disponibles, mais les données doivent être un **multiple de 8** : on descend à **128 octets**. Chaque fragment fait donc 128 + 20 = 148 octets.",
       "page": 46
     },
@@ -333,7 +343,12 @@
       "type": "unique",
       "exercice": "Un paquet IP de **576 octets** (en-tête de 20 octets) doit traverser un réseau A de **MTU 150 octets**. Chaque fragment transporte au plus 128 octets de données.",
       "enonce": "En combien de fragments le paquet est-il découpé, et combien de données transporte le dernier ?",
-      "choix": ["4 fragments ; 128 octets", "5 fragments ; 44 octets", "5 fragments ; 64 octets", "4 fragments ; 64 octets"],
+      "choix": [
+        "4 fragments ; 64 octets",
+        "5 fragments ; 44 octets",
+        "5 fragments ; 64 octets",
+        "4 fragments ; 128 octets"
+      ],
       "reponses": [1],
       "explication": "Données à transporter : 576 − 20 = 556 octets. $556 / 128 \\approx 4{,}3$ → **5 fragments**. Le dernier contient $556 - 4 \\times 128$ = **44 octets**.",
       "page": 46
@@ -343,13 +358,8 @@
       "type": "unique",
       "exercice": "Un paquet IP de **576 octets** (en-tête de 20 octets) est découpé en 5 fragments transportant chacun au plus 128 octets de données.",
       "enonce": "Quelles sont les valeurs du champ Fragment Offset des 5 fragments ?",
-      "choix": [
-        "0, 128, 256, 384, 512",
-        "0, 16, 32, 48, 64",
-        "0, 148, 296, 444, 592",
-        "1, 2, 3, 4, 5"
-      ],
-      "reponses": [1],
+      "choix": ["0, 128, 256, 384, 512", "0, 148, 296, 444, 592", "1, 2, 3, 4, 5", "0, 16, 32, 48, 64"],
+      "reponses": [3],
       "explication": "Les décalages en octets sont 0, 128, 256, 384, 512, mais le champ compte en **blocs de 8 octets** : 0, **16**, **32**, **48**, **64**. Seul le dernier a MF = 0.",
       "page": 46
     },
@@ -357,8 +367,8 @@
       "id": "c3-031",
       "type": "unique",
       "enonce": "Quelle est la taille d'une adresse IPv6 ?",
-      "choix": ["32 bits", "48 bits", "64 bits", "128 bits"],
-      "reponses": [3],
+      "choix": ["48 bits", "32 bits", "128 bits", "256 bits"],
+      "reponses": [2],
       "explication": "Une adresse IPv6 fait **128 bits** (16 octets), soit environ $340 \\times 10^{36}$ adresses, contre 32 bits (environ 4,3 milliards d'adresses) en IPv4.",
       "page": 48
     },
@@ -367,12 +377,12 @@
       "type": "multiple",
       "enonce": "Quels sont les apports d'IPv6 par rapport à IPv4 ?",
       "choix": [
-        "Les broadcasts sont remplacés par du multicast",
+        "L'en-tête contient davantage de champs",
         "IPsec doit obligatoirement être supporté",
-        "Le NAT n'est plus nécessaire",
-        "L'en-tête contient davantage de champs"
+        "Les broadcasts sont remplacés par du multicast",
+        "Le NAT n'est plus nécessaire"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [1, 2, 3],
       "explication": "IPv6 remplace le broadcast par le **multicast**, intègre **IPsec**, rend le **NAT** inutile et propose l'auto-configuration. Son en-tête est au contraire **simplifié**, avec moins de champs.",
       "page": 50
     },
@@ -380,8 +390,8 @@
       "id": "c3-033",
       "type": "unique",
       "enonce": "Laquelle de ces techniques n'est **pas** une méthode de coexistence IPv4 / IPv6 citée dans le cours ?",
-      "choix": ["La double pile (dual-stack)", "Le tunneling", "Le NAT64", "Le sous-adressage"],
-      "reponses": [3],
+      "choix": ["Le sous-adressage", "Le tunneling", "La double pile (dual-stack)", "Le NAT64"],
+      "reponses": [0],
       "explication": "Les trois techniques de migration sont la **double pile**, le **tunneling** et la **traduction NAT64**. Le sous-adressage sert à découper un réseau en sous-réseaux.",
       "page": 51
     },
@@ -390,12 +400,12 @@
       "type": "unique",
       "enonce": "Comment s'écrit une adresse IPv6 ?",
       "choix": [
-        "4 nombres décimaux séparés par des points",
-        "8 blocs de 16 bits en hexadécimal, séparés par « : »",
-        "6 octets en hexadécimal séparés par « - »",
-        "16 nombres décimaux séparés par « : »"
+        "6 octets en hexadécimal séparés par des tirets",
+        "4 nombres décimaux de 8 bits séparés par des points",
+        "16 nombres décimaux de 8 bits séparés par « : »",
+        "8 blocs de 16 bits en hexadécimal, séparés par « : »"
       ],
-      "reponses": [1],
+      "reponses": [3],
       "explication": "IPv6 : **8 blocs de 16 bits** en hexadécimal séparés par « : », par exemple `2001:0db8:0000:0000:0101:abcd:0000:1234`, qu'on peut simplifier en `2001:db8:0:0:101:abcd:0:1234`.",
       "page": 52
     },
@@ -404,12 +414,12 @@
       "type": "multiple",
       "enonce": "Quelles correspondances entre les champs IPv4 et IPv6 sont correctes ?",
       "choix": [
-        "Hop Limit (IPv6) remplace le TTL (IPv4)",
         "Next Header (IPv6) remplace le champ Protocole (IPv4)",
-        "Traffic Class (IPv6) remplace le champ Services différenciés (IPv4)",
-        "Flow Label (IPv6) remplace le Header Checksum (IPv4)"
+        "Hop Limit (IPv6) remplace le TTL (IPv4)",
+        "Flow Label (IPv6) remplace le Header Checksum (IPv4)",
+        "Traffic Class (IPv6) remplace le champ Services différenciés (IPv4)"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [0, 1, 3],
       "explication": "Hop Limit ↔ TTL, Next Header ↔ Protocole, Traffic Class ↔ DS. Le **Flow Label** est un champ **nouveau** qui identifie des flux nécessitant un traitement particulier (vidéo, VoIP). L'en-tête IPv6 a une taille fixe de 40 octets.",
       "page": 55
     },
@@ -418,10 +428,10 @@
       "type": "unique",
       "enonce": "Quel est le rôle du protocole **ICMP** ?",
       "choix": [
-        "Trouver l'adresse MAC à partir de l'adresse IP",
-        "Contrôler les erreurs de transmission et envoyer des messages de contrôle",
-        "Attribuer les adresses IP automatiquement",
-        "Échanger les tables de routage entre routeurs"
+        "Échanger les tables de routage entre routeurs voisins",
+        "Signaler les erreurs et transmettre des messages de contrôle",
+        "Trouver l'adresse MAC d'un hôte à partir de son adresse IP",
+        "Attribuer automatiquement les adresses IP aux hôtes du réseau"
       ],
       "reponses": [1],
       "explication": "**ICMP** (*Internet Control Message Protocol*), protocole de couche 3, sert au **contrôle des erreurs** de transmission. Un message ICMPv4 est encapsulé dans un paquet IPv4 (champ Protocole = 1).",
@@ -431,8 +441,13 @@
       "id": "c3-037",
       "type": "multiple",
       "enonce": "La commande `ping` utilise quels types de messages ICMP ?",
-      "choix": ["Type 8 : requête d'écho", "Type 0 : réponse d'écho", "Type 3 : destination inaccessible", "Type 11 : temps dépassé"],
-      "reponses": [0, 1],
+      "choix": [
+        "Type 0 : réponse d'écho",
+        "Type 11 : temps dépassé",
+        "Type 8 : requête d'écho",
+        "Type 3 : destination inaccessible"
+      ],
+      "reponses": [0, 2],
       "explication": "`ping` envoie des **requêtes d'écho (type 8)** et attend des **réponses d'écho (type 0)** pour tester l'accessibilité d'un hôte. Les types 3 et 11 signalent des erreurs.",
       "page": 62
     },
@@ -440,8 +455,13 @@
       "id": "c3-038",
       "type": "unique",
       "enonce": "Un routeur reçoit un paquet dont le TTL tombe à 0. Quel message ICMP renvoie-t-il à l'émetteur ?",
-      "choix": ["Type 0 : réponse d'écho", "Type 3 : destination inaccessible", "Type 5 : redirection", "Type 11 : temps dépassé"],
-      "reponses": [3],
+      "choix": [
+        "Type 11 : temps dépassé",
+        "Type 3 : destination inaccessible",
+        "Type 0 : réponse d'écho",
+        "Type 5 : redirection"
+      ],
+      "reponses": [0],
       "explication": "Le **type 11** (*Time Exceeded*) est envoyé quand la durée de vie d'un datagramme, ou le temps de réassemblage de ses fragments, est dépassée.",
       "page": 64
     },
@@ -451,10 +471,10 @@
       "exercice": "Table de routage de PC1 (adresse 192.168.10.10, passerelle 192.168.10.1) :\n\n```\nDestination      Masque           Passerelle     Interface\n0.0.0.0          0.0.0.0          192.168.10.1   192.168.10.10\n127.0.0.0        255.0.0.0        On-link        127.0.0.1\n192.168.10.0     255.255.255.0    On-link        192.168.10.10\n```",
       "enonce": "PC1 veut envoyer un paquet à **10.10.10.10**. Que fait-il ?",
       "choix": [
-        "Il l'envoie directement à 10.10.10.10, qui est « on-link »",
-        "Il utilise la route par défaut 0.0.0.0 et transmet le paquet à la passerelle 192.168.10.1",
-        "Il l'envoie sur l'interface de bouclage 127.0.0.1",
-        "Il supprime le paquet car la destination n'est pas dans la table"
+        "Il supprime le paquet car 10.10.10.10 n'est pas dans sa table",
+        "Il l'envoie à la passerelle 192.168.10.1 (route par défaut)",
+        "Il l'envoie directement à 10.10.10.10, considéré comme « on-link »",
+        "Il l'envoie via l'interface de bouclage 127.0.0.1 (route 127.0.0.0)"
       ],
       "reponses": [1],
       "explication": "Aucune entrée ne correspond exactement à 10.10.10.10 : PC1 utilise la **route par défaut (0.0.0.0)** et envoie le paquet à sa **passerelle** 192.168.10.1, qui choisira la suite du chemin. Pour 192.168.10.20, il aurait envoyé directement (on-link).",
@@ -465,12 +485,12 @@
       "type": "unique",
       "enonce": "Dans une table de routage, à quoi sert la **métrique** ?",
       "choix": [
-        "Elle indique le coût de la route : plus elle est faible, plus la route est intéressante",
-        "Elle indique le nombre d'hôtes du réseau de destination",
-        "Elle détermine la partie réseau de l'adresse IP",
-        "Elle donne l'adresse du prochain routeur"
+        "Le nombre d'hôtes joignables dans le réseau de destination",
+        "La longueur de la partie réseau de l'adresse de destination",
+        "L'adresse IP du prochain routeur sur le chemin",
+        "Le coût de la route : la plus faible est préférée"
       ],
-      "reponses": [0],
+      "reponses": [3],
       "explication": "La **métrique** est le coût d'un itinéraire : la plus **basse** est préférée. Le masque détermine la partie réseau, la passerelle donne le prochain routeur.",
       "page": 75
     },
@@ -479,12 +499,12 @@
       "type": "multiple",
       "enonce": "Quelles affirmations sur le routage statique sont vraies ?",
       "choix": [
-        "Les routes sont configurées manuellement par l'administrateur",
-        "Il ne consomme pas de bande passante pour des mises à jour de routage",
+        "Il est peu évolutif pour un réseau de milliers de routes",
         "Il s'adapte automatiquement aux changements de topologie",
-        "Il est peu évolutif pour un réseau de milliers de routes"
+        "Les routes sont configurées manuellement par l'administrateur",
+        "Il ne consomme pas de bande passante en mises à jour"
       ],
-      "reponses": [0, 1, 3],
+      "reponses": [0, 2, 3],
       "explication": "Statique : simple, sécurisé, sans trafic de mise à jour, mais il faut **tout modifier à la main** à chaque changement, avec un risque d'erreur, et c'est peu évolutif. L'adaptation automatique est l'avantage du routage **dynamique**.",
       "page": 90
     },
@@ -492,8 +512,8 @@
       "id": "c3-042",
       "type": "multiple",
       "enonce": "Lesquels de ces protocoles de routage sont à **état de lien** ?",
-      "choix": ["RIPv2", "OSPF", "IS-IS", "EIGRP"],
-      "reponses": [1, 2],
+      "choix": ["OSPF", "RIPv2", "IS-IS", "EIGRP"],
+      "reponses": [0, 2],
       "explication": "État de lien : **OSPF** et **IS-IS** (chaque routeur construit une topologie complète et n'envoie une mise à jour qu'en cas de changement). RIPv1, RIPv2, IGRP et EIGRP sont à **vecteur de distance**.",
       "page": 81
     },
@@ -502,12 +522,12 @@
       "type": "multiple",
       "enonce": "Quelles affirmations sur RIP sont vraies ?",
       "choix": [
-        "Sa métrique est le nombre de sauts",
         "Une destination à 16 sauts est considérée comme injoignable",
-        "Il envoie ses mises à jour toutes les 30 secondes par défaut",
-        "Il converge très rapidement, même sur de grands réseaux"
+        "Sa métrique est le nombre de sauts",
+        "Il converge très rapidement, même sur de grands réseaux",
+        "Il envoie ses mises à jour toutes les 30 secondes par défaut"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [0, 1, 3],
       "explication": "RIP compte les **sauts** (15 maximum, 16 = injoignable) et envoie ses tables toutes les **30 s**. Ses limites : inadapté aux grands réseaux, **convergence lente** et risque de boucles de routage.",
       "page": 84
     },
@@ -516,12 +536,12 @@
       "type": "unique",
       "enonce": "Quelle est la différence entre RIPv1 et RIPv2 ?",
       "choix": [
-        "RIPv2 supporte le VLSM, utilise le multicast 224.0.0.9 et l'authentification ; RIPv1 non",
-        "RIPv1 supporte le VLSM et RIPv2 non",
-        "RIPv2 est réservé à IPv6",
-        "RIPv2 est un protocole à état de lien"
+        "RIPv2 est à état de lien, RIPv1 à vecteur de distance",
+        "RIPv1 gère le VLSM et le multicast, pas RIPv2",
+        "RIPv2 gère le VLSM, le multicast et l'authentification, pas RIPv1",
+        "RIPv2 est la version de RIP réservée à IPv6"
       ],
-      "reponses": [0],
+      "reponses": [2],
       "explication": "RIPv1 : pas de VLSM, mises à jour en broadcast, pas d'authentification. **RIPv2** : VLSM, **multicast 224.0.0.9**, authentification. La version pour IPv6 est **RIPng**.",
       "page": 85
     },
@@ -530,12 +550,12 @@
       "type": "unique",
       "enonce": "Une même destination est apprise par RIP et par OSPF. Quelle route le routeur choisit-il ?",
       "choix": [
+        "Celle qui a la métrique la plus faible, quel que soit le protocole",
         "Celle de RIP, car sa distance administrative (120) est plus faible",
         "Celle d'OSPF, car sa distance administrative (110) est plus faible",
-        "Celle qui a la métrique la plus faible, quel que soit le protocole",
-        "Les deux, en alternance"
+        "Les deux, en répartissant la charge entre elles"
       ],
-      "reponses": [1],
+      "reponses": [2],
       "explication": "Entre protocoles différents, c'est la **distance administrative** la plus faible qui l'emporte, avant la métrique : OSPF (**110**) bat RIP (**120**). Pour référence : connecté 0, statique 1.",
       "page": 88
     }

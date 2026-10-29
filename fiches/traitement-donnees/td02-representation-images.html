@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Traitement de données, TD 2 : Représentation des images</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Traitement de données · Fiche de révision · TD 2</p>
+    <h1>Représentation des images</h1>
+  </div>
+  <p class="source">RGB vs LAB, dictionnaire K-Means,<br>histogramme, mAP, √x, IDF</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li>Une image = tableau <strong>(hauteur, largeur, 3)</strong> en <code>uint8</code> (0–255). <code>I.reshape((-1, 3))</code> → liste de pixels <strong>(H×W, 3)</strong>.</li>
+    <li>RGB 24 bits = <strong>256<sup>3</sup> = 16 777 216</strong> couleurs : trop pour un histogramme → <strong>dictionnaire de P = 128 couleurs</strong> appris par <strong>K-Means</strong>.</li>
+    <li>RGB n'est <strong>pas perceptuellement uniforme</strong> ; en <strong>LAB</strong>, la distance euclidienne ≈ écart de couleur perçu → clustering et distances en LAB.</li>
+    <li><strong>Histogramme couleur</strong> = proportion de pixels associés à chaque couleur du dictionnaire (vecteur de taille <strong>P</strong>, somme 1). C'est le <strong>sac-de-mots</strong> des images.</li>
+    <li>Évaluation sur Holidays (1491 images, 500 groupes, 500 requêtes) par le <strong>mAP</strong> : brut <strong>40,43 %</strong> → √x <strong>54,91 %</strong> → √x × idf <strong>55,29 %</strong>.</li>
+    <li><strong>√x</strong> sature les couleurs dominantes (comme BM25) ; <strong>idf(k) = ln(1 / df(k))</strong> avec df(k) = <strong>proportion moyenne</strong> de la couleur k.</li>
+  </ul>
+</div>
+
+<h2>1. Une image en NumPy</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><code>images[42].shape</code> → <code>(192, 256, 3)</code> : <strong>192 lignes (hauteur)</strong>, <strong>256 colonnes (largeur)</strong>, <strong>3 canaux R, G, B</strong>, chacun en <code>uint8</code> entre 0 et 255.</p>
+    <table>
+      <tr><th>Opération</th><th>Forme obtenue</th></tr>
+      <tr><td><code>I</code></td><td>(192, 256, 3)</td></tr>
+      <tr><td><code>I.reshape((-1, 3))</code></td><td>(49 152, 3) : un pixel par ligne</td></tr>
+      <tr><td><code>I.size</code></td><td>147 456 valeurs (= 49 152 × 3)</td></tr>
+      <tr><td><code>rgb_samples</code> (échantillon)</td><td>(100 000, 3)</td></tr>
+    </table>
+  </div>
+  <div class="boite piege"><span class="boite-titre">Piège : le uint8 boucle</span>
+    En <code>uint8</code>, les calculs se font <strong>modulo 256</strong> : <code>5 − 35</code> donne <strong>226</strong>, pas −30. D'où les <code>astype(float)</code> / <code>astype(np.float64)</code> avant tout calcul de différence ou de distance.
+    <br>Et l'ordre est <strong>hauteur puis largeur</strong> (lignes, colonnes), pas l'inverse.
+  </div>
+</div>
+
+<h2>2. Pourquoi l'espace LAB plutôt que RGB</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Pour construire le dictionnaire il faut une <strong>distance entre couleurs</strong>. La distance euclidienne en RGB ne suit pas l'écart <strong>perçu par l'œil</strong> : une même distance peut être invisible dans une zone de l'espace et nette dans une autre.</p>
+    <p><strong>CIE LAB</strong> est construit pour que la <strong>distance euclidienne approxime la différence perçue</strong> partout. On fait donc K-Means et <code>predict</code> en LAB.</p>
+    <ul>
+      <li><code>rgb2lab</code> attend des valeurs dans <strong>[0, 1]</strong> et une forme <strong>(h, w, 3)</strong> → <code>rgb.reshape(-1, 1, 3) / 255.0</code>, puis <code>.reshape(-1, 3)</code>.</li>
+      <li><code>lab2rgb</code> sert à <strong>afficher</strong> (un écran n'affiche que du RGB) ; il renvoie [0, 1] → <code>* 255</code>, <code>clip(0, 255)</code>, <code>astype(np.uint8)</code>.</li>
+    </ul>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Exemple du TD : même distance RGB</span>
+<pre>Paire A (cyans)  : (35,239,234) / (5,239,236)
+  écarts (30, 0, -2)
+  d = √(900 + 0 + 4)    = √904 ≈ 30,1
+Paire B (bleus)  : (3,12,70) / (5,36,52)
+  écarts (-2, -24, 18)
+  d = √(4 + 576 + 324)  = √904 ≈ 30,1</pre>
+    <p>Même d<sub>RGB</sub> ≈ 30,1, mais A est <strong>indiscernable</strong> à l'œil et B <strong>nettement différente</strong> : RGB n'est pas perceptuellement uniforme.</p>
+  </div>
+</div>
+
+<h2>3. Le dictionnaire de couleurs (K-Means)</h2>
+<div class="deux-colonnes">
+  <div>
+    <ol>
+      <li><strong>Échantillon</strong> : 100 000 pixels tirés au hasard (sans remise) parmi plus de <strong>70 millions</strong> — K-Means sur tout serait trop coûteux.</li>
+      <li><strong>Conversion</strong> en LAB → <code>lab_samples</code> (100 000, 3).</li>
+      <li><code>KMeans(P=128, n_init=1, random_state=42).fit(lab_samples)</code> : les <strong>128 centres</strong> (<code>cluster_centers_</code>, points LAB, moyennes de pixels) = les <strong>128 couleurs du dictionnaire</strong>.</li>
+      <li><code>palette_rgb</code> : centres reconvertis en RGB 0–255, forme (128, 3).</li>
+      <li><strong>Quantification</strong> : <code>kms.predict</code> associe chaque pixel (en LAB) à la couleur la plus proche ; <code>palette_rgb[idx].reshape(H, W, 3)</code> redonne une image d'au plus 128 couleurs.</li>
+    </ol>
+    <p><code>n_init</code> = nombre de <strong>lancements</strong> de K-Means avec des initialisations différentes (on garde la plus faible inertie). 1 pour aller vite ; en pratique plus.</p>
+  </div>
+  <div>
+    <table>
+      <tr><th>Texte (sac-de-mots)</th><th>Images (TD 2)</th></tr>
+      <tr><td>Vocabulaire</td><td><strong>Dictionnaire de P couleurs</strong></td></tr>
+      <tr><td>Document</td><td>Image</td></tr>
+      <tr><td>Occurrence d'un mot</td><td>Pixel associé à une couleur</td></tr>
+      <tr><td>Sac-de-mots</td><td><strong>Histogramme couleur</strong></td></tr>
+      <tr><td>BM25 (saturation)</td><td><strong>√x</strong></td></tr>
+      <tr><td>IDF (df = nb de documents)</td><td>IDF (df = <strong>proportion moyenne</strong>)</td></tr>
+    </table>
+    <p style="margin-top:6px">Visualisation de la palette (<code>plot_palette_hsv</code>) : <strong>angle = teinte</strong>, <strong>rayon = saturation</strong>, <strong>taille = valeur</strong> (HSV).</p>
+  </div>
+</div>
+
+<h2>4. L'histogramme couleur</h2>
+<div class="deux-colonnes">
+<pre>def compute_hist(kmeans, I):
+    I_lab = rgb2lab(I.astype(np.float64) / 255.0)
+    idx = kmeans.predict(I_lab.reshape((-1, 3)))
+    x = np.zeros((kmeans.n_clusters,))
+    idv, v = np.unique(idx, return_counts=True)
+    x[idv] = v               # comptes à leur place
+    return x / np.sum(x)     # proportions (somme 1)</pre>
+  <div class="boite methode">
+    <span class="boite-titre">Tuto : calculer un histogramme</span>
+    <ol>
+      <li>Vecteur de <strong>P zéros</strong> (une case par couleur, même absente).</li>
+      <li>Compter les pixels de chaque couleur et les ranger à leur indice.</li>
+      <li><strong>Diviser par le nombre de pixels</strong>.</li>
+    </ol>
+    <div class="exemple"><strong>Exemple</strong> : P = 5, <code>idx = [0, 2, 2, 3, 2, 0]</code><br>
+      comptes [2, 0, 3, 1, 0] → <strong>[1/3, 0, 1/2, 1/6, 0]</strong></div>
+  </div>
+</div>
+<p><code>X</code> = histogrammes de toutes les images : forme <strong>(1491, 128)</strong>. La <strong>normalisation</strong> rend l'histogramme indépendant de la taille : 2 500 px sur 100×100 et 10 000 px sur 200×200 donnent tous deux <strong>0,25</strong>.</p>
+
+<h2>5. Recherche par similarité et mAP</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Holidays</strong> : 1491 photos, 500 groupes (scène ou objet). La <strong>1re image</strong> de chaque groupe est la requête ; but : retrouver en tête les autres images du groupe.</p>
+    <ul>
+      <li>Nom <code>112301.jpg</code> : groupe <code>int(f[1:4])</code> = <strong>123</strong> ; requête si le nom finit par <code>00.jpg</code> (ici <strong>non</strong>).</li>
+      <li><code>dist = euclidean_distances(X[queries], X)</code> : forme <strong>(500, 1491)</strong>, triée par <code>argsort</code>.</li>
+      <li>Dans <code>score_map</code>, la <strong>requête est exclue</strong> des résultats (distance 0 à elle-même, sinon toujours 1re).</li>
+      <li><strong>mAP</strong> = moyenne des AP des 500 requêtes (× 100).</li>
+    </ul>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Tuto : AP de <code>score_ap_from_ranks_1</code></span>
+    <p>Pour chaque bon résultat (rang <code>r</code> à partir de 0, <code>ntp</code> bons avant lui) :<br>
+      p<sub>0</sub> = ntp / r (1 si r = 0), p<sub>1</sub> = (ntp + 1) / (r + 1)<br>
+      AP += (p<sub>0</sub> + p<sub>1</sub>) / 2 × 1 / nres &nbsp;(<strong>trapèzes</strong>)</p>
+<pre>nres = 2, rangs [0, 2]
+ r=0 : (1   + 1  )/2 × 1/2 = 0,500
+ r=2 : (1/2 + 2/3)/2 × 1/2 ≈ 0,292
+ AP ≈ 0,79    (AP classique : 0,83)
+nres = 1, rang [1]
+ r=1 : (0 + 1/2)/2 × 1     = 0,25</pre>
+  </div>
+</div>
+
+<h2>6. Améliorer la représentation : √x puis IDF</h2>
+<div class="deux-colonnes">
+  <div>
+    <h3>Racine carrée (saturation, comme BM25)</h3>
+    <p><code>X_sqrt = np.sqrt(X)</code>. √ croît vite près de 0 puis s'aplatit : une couleur qui domine (ciel) ne <strong>écrase</strong> plus les autres. 0,64 et 0,01 → 0,8 et 0,1 : le rapport passe de <strong>64 à 8</strong>.</p>
+    <div class="exemple"><strong>Exemple</strong> : q = [0,8 ; 0,1 ; 0,1 ; 0], A = [0,8 ; 0 ; 0 ; 0,2], B = [0,5 ; 0,1 ; 0,1 ; 0,3]<br>
+      Brut : d(q,A) ≈ 0,245 &lt; d(q,B) ≈ 0,424 → <strong>A</strong> (même couleur dominante)<br>
+      Après √ : d(q,A) ≈ 0,632 &gt; d(q,B) ≈ 0,579 → <strong>B</strong> (mêmes couleurs secondaires)</div>
+    <h3>Pondération IDF</h3>
+    <div class="formule">df(k) = (1/N) ∑<sub>i</sub> x<sub>i</sub>(k) &nbsp;&nbsp;·&nbsp;&nbsp; idf(k) = ln(1 / df(k))</div>
+    <p><code>df = X.mean(axis=0)</code> ; <code>idf = np.log(1.0 / (df + 1e-6))</code> (le 1e-6 évite la division par 0). <code>np.log</code> = <strong>ln</strong>.</p>
+  </div>
+  <div>
+    <div class="boite methode">
+      <span class="boite-titre">Tuto : df, idf et pondération</span>
+<pre>X = [[0,5 ; 0,5 ; 0  ]
+     [0,6 ; 0,2 ; 0,2]
+     [0,4 ; 0,3 ; 0,3]]
+df  = [0,5  ; 0,333 ; 0,167]
+idf = [0,69 ; 1,10  ; 1,79 ]
+    = [ln 2 ; ln 3  ; ln 6 ]</pre>
+      <ul>
+        <li>∑<sub>k</sub> df(k) = 1 (moyenne d'histogrammes de somme 1).</li>
+        <li>Couleur partout (df → 1) : idf → 0. Couleur rare : idf élevé.</li>
+        <li>TD : idf min <strong>3,15</strong> → df = e<sup>−3,15</sup> ≈ <strong>4,3 %</strong> ; idf max <strong>8,36</strong> → df ≈ 0,02 %.</li>
+      </ul>
+      <p><code>X_sqrt_idf = X_sqrt * idf[None, :]</code> : (1491, 128) × (1, 128), le <strong>broadcasting</strong> multiplie la colonne k par idf[k]. Équivalent : <code>X_sqrt * idf</code>. Erreur de forme : <code>idf[:, None]</code>, <code>np.diag(idf)</code>.</p>
+    </div>
+    <table>
+      <tr><th>Représentation (LAB, P = 128)</th><th>mAP</th><th>Gain</th></tr>
+      <tr><td>Histogramme brut</td><td>40,43 %</td><td>—</td></tr>
+      <tr><td>√x</td><td>54,91 %</td><td><strong>+14,5 pts</strong></td></tr>
+      <tr><td>√x × idf</td><td>55,29 %</td><td>+0,4 pt</td></tr>
+    </table>
+  </div>
+</div>
+<div class="boite piege"><span class="boite-titre">Pièges</span>
+  <strong>df d'une couleur ≠ df d'un mot</strong> : ici une proportion moyenne, pas un nombre de documents. Le plus gros gain vient de <strong>√x</strong>, pas de l'IDF. Diviser l'histogramme par <strong>P</strong> au lieu du nombre de pixels est faux. La quantification se fait <strong>en LAB</strong> ; seul l'affichage repasse en RGB.
+</div>
+<div class="boite astuce"><span class="boite-titre">Astuce</span>
+  Même démarche que pour le texte : <strong>extraire des features</strong> (histogramme), choisir une <strong>métrique</strong> (euclidienne, dans un bon espace), <strong>trier</strong> par similarité, puis <strong>mesurer</strong> (mAP) l'effet de chaque amélioration. La représentation compte autant que l'algorithme de recherche.
+</div>
+
+</body>
+</html>

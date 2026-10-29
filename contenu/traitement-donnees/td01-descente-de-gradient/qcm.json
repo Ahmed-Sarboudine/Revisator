@@ -1,0 +1,491 @@
+{
+  "matiere": "Traitement de données",
+  "document": "td",
+  "titre": "Descente de gradient",
+  "cours": "cours01-introduction",
+  "questions": [
+    {
+      "id": "td1-001",
+      "type": "unique",
+      "enonce": "Pour $f(x) = ax^2 + bx + c$, quelles contraintes rendent $f$ **strictement** convexe ($f'' > 0$, critère du TD) ?",
+      "choix": [
+        "$a > 0$, $b$ et $c$ quelconques",
+        "$a > 0$ et $b > 0$, $c$ quelconque",
+        "$a > 0$, $b < 0$ et $c > 0$",
+        "$a \\neq 0$, $b$ et $c$ quelconques"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "La convexité se lit sur la dérivée seconde : $f''(x) = 2a > 0 \\iff$ **$a > 0$**. $b$ et $c$ ne font que déplacer la parabole ; le choix du TD ($a = 2$, $b = -4$, $c = 5$) n'est qu'un exemple."
+    },
+    {
+      "id": "td1-002",
+      "type": "unique",
+      "exercice": "Dans le TD : $f(x) = 2x^2 - 4x + 5$ (fonction `compute_f`).",
+      "enonce": "Que valent le minimiseur $x_{\\text{opt}}$ et le minimum $f(x_{\\text{opt}})$ ?",
+      "choix": [
+        "$x_{\\text{opt}} = 1$ et $f = 5$",
+        "$x_{\\text{opt}} = -1$ et $f = 11$",
+        "$x_{\\text{opt}} = 2$ et $f = 5$",
+        "$x_{\\text{opt}} = 1$ et $f = 3$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "$x_{\\text{opt}} = -\\frac{b}{2a} = -\\frac{-4}{2 \\times 2} = 1$ et **$f(1) = 2 - 4 + 5 = 3$**. Confondre le minimum $f(x_{\\text{opt}})$ avec $c = 5$ (valeur en $x = 0$) est le piège classique."
+    },
+    {
+      "id": "td1-003",
+      "type": "unique",
+      "exercice": "Méthode du nombre d'or (`mno`) sur $f(x) = 2x^2 - 4x + 5$, intervalle de départ $(x_1, x_3) = (-100, 100)$, sondes $x_2 = x_3 - \\frac{x_3 - x_1}{\\varphi}$ et $x_4 = x_1 + \\frac{x_3 - x_1}{\\varphi}$, avec $\\varphi = \\frac{1+\\sqrt{5}}{2} \\approx 1{,}618$.",
+      "enonce": "Que valent les deux premières sondes $x_2$ et $x_4$ ?",
+      "choix": [
+        "$x_2 \\approx -61{,}8$ et $x_4 \\approx 61{,}8$",
+        "$x_2 \\approx -23{,}6$ et $x_4 \\approx 23{,}6$",
+        "$x_2 \\approx -33{,}3$ et $x_4 \\approx 33{,}3$",
+        "$x_2 \\approx -38{,}2$ et $x_4 \\approx 38{,}2$"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "$(x_3 - x_1)/\\varphi = 200/1{,}618 \\approx 123{,}6$, donc **$x_2 = 100 - 123{,}6 = -23{,}6$** et $x_4 = -100 + 123{,}6 = 23{,}6$. $\\pm 61{,}8 = \\pm 100/\\varphi$ place les sondes autour du centre au lieu des bornes ; $\\pm 38{,}2$ applique la formule à la demi-largeur (100) au lieu de la largeur (200)."
+    },
+    {
+      "id": "td1-004",
+      "type": "unique",
+      "exercice": "Méthode du nombre d'or (`mno`) sur $f(x) = 2x^2 - 4x + 5$, intervalle de départ $(x_1, x_3) = (-100, 100)$, sondes $x_2 = x_3 - \\frac{x_3 - x_1}{\\varphi}$ et $x_4 = x_1 + \\frac{x_3 - x_1}{\\varphi}$, avec $\\varphi = \\frac{1+\\sqrt{5}}{2} \\approx 1{,}618$.",
+      "enonce": "On trouve $f(x_2) \\approx 1214$ et $f(x_4) \\approx 1025$. Quel intervalle `mno` garde-t-il ?",
+      "choix": [
+        "$(-100 ; 23{,}6)$",
+        "$(-23{,}6 ; 23{,}6)$",
+        "$(23{,}6 ; 100)$",
+        "$(-23{,}6 ; 100)$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "$f(x_2) > f(x_4)$ : le code passe dans le `else` et fait `x_1 = x_2`. Le minimum est dans **$(x_2, x_3) = (-23{,}6 ; 100)$** (il est bien en $x = 1$). On ne peut pas jeter $(x_2, x_4)$ : le minimum peut s'y trouver."
+    },
+    {
+      "id": "td1-005",
+      "type": "multiple",
+      "enonce": "Que faut-il pour appliquer la méthode du nombre d'or (`mno`) ?",
+      "choix": [
+        "Connaître la dérivée $f'$ de la fonction",
+        "Un intervalle de départ qui contient le minimum",
+        "Une fonction de plusieurs variables",
+        "Un pas $\\mu$ bien choisi",
+        "Une fonction unimodale sur cet intervalle"
+      ],
+      "reponses": [
+        1,
+        4
+      ],
+      "explication": "La méthode cherche le minimum d'une fonction **mono-variable et unimodale**, dans un intervalle $(x_1, x_3)$ qui le **contient**. Elle n'utilise que des valeurs de $f$ : ni dérivée, ni pas $\\mu$ (ce sont les ingrédients de la descente de gradient)."
+    },
+    {
+      "id": "td1-006",
+      "type": "multiple",
+      "enonce": "Quelles affirmations sur l'algorithme du gradient sont vraies ?",
+      "choix": [
+        "Il part d'un point $x_0$ (avec un pas et le gradient)",
+        "Il exige un intervalle de départ contenant le minimum",
+        "Il s'applique aussi aux fonctions de plusieurs variables",
+        "Son nombre d'itérations est connu à l'avance"
+      ],
+      "reponses": [
+        0,
+        2
+      ],
+      "explication": "La descente part d'un **seul point $x_0$** et marche aussi en dimension $D$ ($\\mathbf{x} \\leftarrow \\mathbf{x} - \\mu\\nabla f(\\mathbf{x})$). L'intervalle encadrant est une exigence du nombre d'or ; le nombre d'itérations est inconnu, d'où un critère d'arrêt."
+    },
+    {
+      "id": "td1-007",
+      "type": "unique",
+      "enonce": "Pourquoi y a-t-il un signe moins dans $x_{t+1} = x_t - \\mu\\, f'(x_t)$ ?",
+      "choix": [
+        "Le gradient pointe vers la plus forte hausse de $f$",
+        "Le gradient pointe vers la plus forte baisse de $f$",
+        "Pour que $\\mu$ reste positif quand $f'$ est négatif",
+        "Pour compenser une dérivée seconde négative"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Le gradient indique la direction de **plus forte montée** ; pour descendre on va dans la direction **opposée** $-\\nabla f$. (L'énoncé dit « dans la direction du gradient » : c'est un raccourci, la formule a bien le signe moins.)"
+    },
+    {
+      "id": "td1-008",
+      "type": "unique",
+      "exercice": "Dans le TD : $f(x) = 2x^2 - 4x + 5$ (fonction `compute_f`).",
+      "enonce": "Que doit renvoyer `compute_df(x)` ?",
+      "choix": [
+        "`2*x - 4`",
+        "`4*x - 4`",
+        "`4*x + 4`",
+        "`4*x - 4 + 5`"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "$f'(x) = 2ax + b = $ **$4x - 4$**. La constante $c = 5$ disparaît à la dérivation ; `2*x - 4` oublie le coefficient $a = 2$."
+    },
+    {
+      "id": "td1-009",
+      "type": "unique",
+      "exercice": "Dans le TD : $f(x) = 2x^2 - 4x + 5$ (fonction `compute_f`). Descente de gradient à pas fixe : $x_{t+1} = x_t - \\mu\\, f'(x_t)$.",
+      "enonce": "Avec $x_0 = 10$ et $\\mu = 0{,}1$, que vaut $x_1$ ?",
+      "choix": [
+        "$6{,}4$",
+        "$13{,}6$",
+        "$-6{,}5$",
+        "$9{,}6$"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "$f'(10) = 4 \\times 10 - 4 = 36$, donc $x_1 = 10 - 0{,}1 \\times 36 = $ **$6{,}4$**. $13{,}6$ vient d'un signe $+$ (on monterait) et $-6{,}5$ d'un pas calculé avec $f(10) = 165$ au lieu de $f'(10)$."
+    },
+    {
+      "id": "td1-010",
+      "type": "unique",
+      "exercice": "Dans le TD : $f(x) = 2x^2 - 4x + 5$ (fonction `compute_f`). Descente de gradient à pas fixe : $x_{t+1} = x_t - \\mu\\, f'(x_t)$.",
+      "enonce": "Toujours avec $x_0 = 10$ et $\\mu = 0{,}1$ ($x_1 = 6{,}4$), que vaut $x_2$ ?",
+      "choix": [
+        "$2{,}80$",
+        "$3{,}84$",
+        "$4{,}24$",
+        "$8{,}56$"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "$f'(6{,}4) = 25{,}6 - 4 = 21{,}6$, d'où $x_2 = 6{,}4 - 2{,}16 = $ **$4{,}24$**. $2{,}8$ réutilise le gradient de $x_0$ ($36$) : il faut **recalculer le gradient au nouveau point** à chaque itération."
+    },
+    {
+      "id": "td1-011",
+      "type": "unique",
+      "exercice": "Dans le TD : $f(x) = 2x^2 - 4x + 5$ (fonction `compute_f`). Descente de gradient à pas fixe : $x_{t+1} = x_t - \\mu\\, f'(x_t)$.",
+      "enonce": "Ici $x_{t+1} - 1 = (1 - 4\\mu)(x_t - 1)$. Pour quels pas $\\mu$ la descente converge-t-elle ?",
+      "choix": [
+        "$0 < \\mu < 0{,}25$",
+        "$0 < \\mu < 0{,}5$",
+        "$0 < \\mu < 1$",
+        "$0{,}25 < \\mu < 0{,}5$"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "La distance au minimum est multipliée par $1 - 4\\mu$ : il faut $|1 - 4\\mu| < 1$, soit **$0 < \\mu < 0{,}5$**. Entre $0{,}25$ et $0{,}5$ le facteur est négatif : ça converge quand même, mais en **oscillant** autour de 1."
+    },
+    {
+      "id": "td1-012",
+      "type": "multiple",
+      "exercice": "Dans le TD : $f(x) = 2x^2 - 4x + 5$ (fonction `compute_f`). Descente de gradient à pas fixe : $x_{t+1} = x_t - \\mu\\, f'(x_t)$.",
+      "enonce": "La correction lance `algo_gradient1` depuis $x_0 = 10$, pour $n = 10$ itérations, avec $\\mu \\in \\{0{,}0001 ; 0{,}1 ; 0{,}4 ; 0{,}5 ; 0{,}6\\}$. Que constate-t-on ?",
+      "choix": [
+        "$\\mu = 0{,}0001$ : $x$ a à peine bougé ($x_{10} \\approx 9{,}96$)",
+        "$\\mu = 0{,}5$ : $x$ converge lentement vers 1",
+        "$\\mu = 0{,}6$ : $x$ s'éloigne de 1 en oscillant ($x_{10} \\approx 261$)",
+        "$\\mu = 0{,}4$ : $x$ diverge en oscillant autour de 1"
+      ],
+      "reponses": [
+        0,
+        2
+      ],
+      "explication": "Facteur $1 - 4\\mu$ : $0{,}9996$ pour $\\mu = 0{,}0001$ (**trop lent**), $-1$ pour $\\mu = 0{,}5$ (oscillation **sans fin** entre $10$ et $-8$), $-1{,}4$ pour $\\mu = 0{,}6$ (**divergence**). Avec $\\mu = 0{,}4$ (facteur $-0{,}6$), ça oscille mais converge : $x_{10} \\approx 1{,}054$."
+    },
+    {
+      "id": "td1-013",
+      "type": "unique",
+      "exercice": "Dans le TD : $f(x) = 2x^2 - 4x + 5$ (fonction `compute_f`). Descente de gradient à pas fixe : $x_{t+1} = x_t - \\mu\\, f'(x_t)$.",
+      "enonce": "Avec $x_0 = 10$ et $\\mu = 0{,}5$, que valent $x_1$ et $x_2$ ?",
+      "choix": [
+        "$x_1 = 1$ et $x_2 = 1$",
+        "$x_1 = 28$ et $x_2 = 82$",
+        "$x_1 = -8$ et $x_2 = -26$",
+        "$x_1 = -8$ et $x_2 = 10$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "$x_1 = 10 - 0{,}5 \\times 36 = -8$, puis $f'(-8) = -36$ donc **$x_2 = -8 + 18 = 10$** : $x$ oscille indéfiniment entre $10$ et $-8$. $-26$ réutilise l'ancien gradient ($36$), $28$ vient d'un signe $+$."
+    },
+    {
+      "id": "td1-014",
+      "type": "unique",
+      "exercice": "Dans le TD : $f(x) = 2x^2 - 4x + 5$ (fonction `compute_f`). Descente de gradient à pas fixe : $x_{t+1} = x_t - \\mu\\, f'(x_t)$.",
+      "enonce": "Avec $x_0 = 10$, on prend $\\mu = 0{,}25$. Que se passe-t-il ?",
+      "choix": [
+        "$x$ oscille entre $10$ et $-8$",
+        "$x_1 = 1$ : minimum atteint en un seul pas",
+        "$x$ diverge dès la première itération",
+        "$x$ converge lentement vers 1, sans osciller"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "$x_1 = 10 - 0{,}25 \\times 36 = 1$ : le facteur $1 - 4\\mu$ est **nul**. Pour une parabole, le pas $\\mu = 1/f''$ (ici $1/4$) mène directement au minimum ; l'oscillation $10 \\leftrightarrow -8$ correspond à $\\mu = 0{,}5$."
+    },
+    {
+      "id": "td1-015",
+      "type": "multiple",
+      "enonce": "Concernant le pas $\\mu$ d'une descente de gradient à pas fixe, quelles affirmations sont vraies ?",
+      "choix": [
+        "Trop petit : il faut énormément d'itérations",
+        "Trop grand : $x$ oscille autour du minimum, voire diverge",
+        "Plus le pas est grand, moins il faut d'itérations",
+        "La plage de pas qui converge dépend de la fonction",
+        "$\\mu$ est appris, comme les paramètres du modèle"
+      ],
+      "reponses": [
+        0,
+        1,
+        3
+      ],
+      "explication": "Ici $\\mu = 0{,}0001$ demande **41 672 itérations**, et $\\mu \\geq 0{,}5$ ne converge plus. Plus grand n'est pas mieux : $\\mu = 0{,}1$ et $\\mu = 0{,}4$ demandent toutes deux 42 itérations. $\\mu$ est un **hyperparamètre** fixé à la main, pas un paramètre appris."
+    },
+    {
+      "id": "td1-016",
+      "type": "unique",
+      "enonce": "Dans `algo_gradient2`, quel test signale que l'on a convergé ?",
+      "choix": [
+        "$|f'(x_t)| \\leq \\varepsilon$",
+        "$|x_{t+1} - x_t| \\leq \\varepsilon$",
+        "$f(x_t) \\leq \\varepsilon$",
+        "$t$ atteint un nombre d'itérations $n$ fixé"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "On boucle tant que `np.fabs(dfx) > epsilon` : on s'arrête quand la **dérivée est quasi nulle**, ce qui caractérise le minimum. $f(x) \\leq \\varepsilon$ n'a pas de sens (le minimum vaut 3) ; le nombre $n$ fixé est celui d'`algo_gradient1`."
+    },
+    {
+      "id": "td1-017",
+      "type": "unique",
+      "exercice": "```python\nx = x - mu*dfx\nx_hist.append(x)\nfx2 = f(x)\nif(fx2 >= fx):\n    break\n```",
+      "enonce": "À quoi sert ce test dans `algo_gradient2` ?",
+      "choix": [
+        "À sortir de la boucle si $f$ ne baisse plus",
+        "À vérifier que le gradient est quasi nul",
+        "À limiter le nombre total d'itérations",
+        "À réduire le pas $\\mu$ quand $f$ augmente"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Si un pas ne fait pas baisser $f$, l'algorithme **diverge ou stagne** : on sort (`break`) plutôt que de boucler sans fin. Le pas n'est jamais modifié (il est fixe) ; la limite d'itérations n'apparaît qu'avec `max_iter` dans `algo_gradient3`."
+    },
+    {
+      "id": "td1-018",
+      "type": "unique",
+      "exercice": "Dans le TD : $f(x) = 2x^2 - 4x + 5$ (fonction `compute_f`).",
+      "enonce": "Que renvoie `algo_gradient2(compute_f, compute_df, 0.5, 10.0, 1e-10)` ?",
+      "choix": [
+        "$x = 1$, après 42 itérations",
+        "$x = 10$, sans aucune itération",
+        "$x = -8$, après une itération",
+        "Rien : la boucle ne s'arrête jamais"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "$x_1 = -8$ et $f(-8) = 165 = f(10)$ : $f$ n'a pas diminué, le test `fx2 >= fx` **coupe la boucle** et renvoie le dernier point, $-8$. Sans ce test, $x$ oscillerait sans fin entre $10$ et $-8$."
+    },
+    {
+      "id": "td1-019",
+      "type": "unique",
+      "enonce": "Pour $f(\\mathbf{x}) = \\mathbf{x}^\\top A\\mathbf{x} + \\mathbf{x}^\\top\\mathbf{b} + c$ avec $A$ non symétrique, que vaut $\\nabla f(\\mathbf{x})$ ?",
+      "choix": [
+        "$2A\\mathbf{x} + \\mathbf{b}$",
+        "$A\\mathbf{x} + \\mathbf{b}$",
+        "$(A + A^\\top)\\mathbf{x}$",
+        "$(A + A^\\top)\\mathbf{x} + \\mathbf{b}$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Le gradient de $\\mathbf{x}^\\top A\\mathbf{x}$ est **$(A + A^\\top)\\mathbf{x}$**, qui ne vaut $2A\\mathbf{x}$ que si $A$ est symétrique ; celui de $\\mathbf{x}^\\top\\mathbf{b}$ est $\\mathbf{b}$, et $c$ disparaît."
+    },
+    {
+      "id": "td1-020",
+      "type": "unique",
+      "exercice": "Dans le TD : $f(\\mathbf{x}) = \\mathbf{x}^\\top A\\mathbf{x} + \\mathbf{x}^\\top\\mathbf{b} + c$ avec $A = \\begin{bmatrix} 2 & 1 \\\\ 2 & 4 \\end{bmatrix}$, $\\mathbf{b} = \\begin{bmatrix} 1 \\\\ 2 \\end{bmatrix}$, $c = 2$ (`compute_f2`).",
+      "enonce": "Avec $\\mathbf{x}_0 = (-5, -5)$, que vaut $\\nabla f(\\mathbf{x}_0)$ ?",
+      "choix": [
+        "$(-29, -58)$",
+        "$(-35, -55)$",
+        "$(-34, -53)$",
+        "$(-14, -28)$"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "$A + A^\\top = \\begin{bmatrix} 4 & 3 \\\\ 3 & 8 \\end{bmatrix}$, donc $(A + A^\\top)\\mathbf{x}_0 = (-35, -55)$, plus $\\mathbf{b}$ : **$(-34, -53)$**, comme dans la sortie de la correction. $(-29, -58)$ vient de $2A\\mathbf{x} + \\mathbf{b}$ ; $(-35, -55)$ oublie $\\mathbf{b}$."
+    },
+    {
+      "id": "td1-021",
+      "type": "unique",
+      "exercice": "Dans le TD : $f(\\mathbf{x}) = \\mathbf{x}^\\top A\\mathbf{x} + \\mathbf{x}^\\top\\mathbf{b} + c$ avec $A = \\begin{bmatrix} 2 & 1 \\\\ 2 & 4 \\end{bmatrix}$, $\\mathbf{b} = \\begin{bmatrix} 1 \\\\ 2 \\end{bmatrix}$, $c = 2$ (`compute_f2`).",
+      "enonce": "Avec $\\mathbf{x}_0 = (-5, -5)$, que vaut $f(\\mathbf{x}_0)$ ?",
+      "choix": [
+        "$137$",
+        "$210$",
+        "$212$",
+        "$242$"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "$\\mathbf{x}_0^\\top A\\mathbf{x}_0 = 25 \\times (2 + 1 + 2 + 4) = 225$, $\\mathbf{x}_0^\\top\\mathbf{b} = -5 - 10 = -15$, plus $c$ : **$225 - 15 + 2 = 212$**. $242$ inverse le signe de $\\mathbf{x}^\\top\\mathbf{b}$, $210$ oublie $c$, $137$ ne garde que la diagonale de $A$."
+    },
+    {
+      "id": "td1-022",
+      "type": "unique",
+      "exercice": "Dans le TD : $f(\\mathbf{x}) = \\mathbf{x}^\\top A\\mathbf{x} + \\mathbf{x}^\\top\\mathbf{b} + c$ avec $A = \\begin{bmatrix} 2 & 1 \\\\ 2 & 4 \\end{bmatrix}$, $\\mathbf{b} = \\begin{bmatrix} 1 \\\\ 2 \\end{bmatrix}$, $c = 2$ (`compute_f2`).",
+      "enonce": "Un pas de descente avec $\\mu = 0{,}05$ depuis $\\mathbf{x}_0 = (-5, -5)$ donne :",
+      "choix": [
+        "$\\mathbf{x}_1 = (-6{,}7 ; -7{,}65)$",
+        "$\\mathbf{x}_1 = (-3{,}3 ; -2{,}35)$",
+        "$\\mathbf{x}_1 = (-3{,}55 ; -2{,}1)$",
+        "$\\mathbf{x}_1 = (-3{,}25 ; -2{,}25)$"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "$\\mathbf{x}_1 = \\mathbf{x}_0 - 0{,}05 \\times (-34, -53) = $ **$(-3{,}3 ; -2{,}35)$** ($f$ passe de $212$ à $\\approx 61{,}1$). Le signe $+$ donne $(-6{,}7 ; -7{,}65)$ ; $(-3{,}55 ; -2{,}1)$ vient du gradient faux $2A\\mathbf{x} + \\mathbf{b}$, $(-3{,}25 ; -2{,}25)$ oublie $\\mathbf{b}$."
+    },
+    {
+      "id": "td1-023",
+      "type": "unique",
+      "exercice": "Dans le TD : $f(\\mathbf{x}) = \\mathbf{x}^\\top A\\mathbf{x} + \\mathbf{x}^\\top\\mathbf{b} + c$ avec $A = \\begin{bmatrix} 2 & 1 \\\\ 2 & 4 \\end{bmatrix}$, $\\mathbf{b} = \\begin{bmatrix} 1 \\\\ 2 \\end{bmatrix}$, $c = 2$ (`compute_f2`).",
+      "enonce": "Comment obtient-on $\\mathbf{x}_{\\text{opt}}$ analytiquement ?",
+      "choix": [
+        "En résolvant $A\\mathbf{x} = -\\mathbf{b}$",
+        "En résolvant $(A + A^\\top)\\mathbf{x} = \\mathbf{b}$",
+        "En annulant $f(\\mathbf{x})$ elle-même",
+        "En résolvant $(A + A^\\top)\\mathbf{x} = -\\mathbf{b}$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Minimum ⇔ **gradient nul** : $(A + A^\\top)\\mathbf{x} + \\mathbf{b} = \\mathbf{0}$. Ici $\\begin{bmatrix} 4 & 3 \\\\ 3 & 8 \\end{bmatrix}\\mathbf{x} = -\\begin{bmatrix} 1 \\\\ 2 \\end{bmatrix}$ donne $\\mathbf{x}_{\\text{opt}} = -\\frac{1}{23}(2, 5) \\approx (-0{,}087 ; -0{,}217)$ et $f(\\mathbf{x}_{\\text{opt}}) = 40/23 \\approx 1{,}739$."
+    },
+    {
+      "id": "td1-024",
+      "type": "multiple",
+      "enonce": "`compute_f2` calcule `np.dot(np.dot(x.T, A), x) + np.dot(x.T, b) + c` et `compute_df2` renvoie `np.dot(A + A.T, x) + b`. Quels `x_0` conviennent pour `algo_gradient3` ?",
+      "choix": [
+        "`np.zeros((2, 1))`",
+        "`np.array((-5., -5.))`",
+        "`np.zeros(2)`",
+        "`[-5., -5.]` (liste Python)"
+      ],
+      "reponses": [
+        1,
+        2
+      ],
+      "explication": "Il faut un **vecteur numpy 1D de forme `(2,)`**. Un vecteur colonne `(2, 1)` casse `compute_df2` : `(A + A.T) @ x + b` est diffusé en une matrice $2 \\times 2$. Une liste Python n'a pas d'attribut `.T`."
+    },
+    {
+      "id": "td1-025",
+      "type": "multiple",
+      "enonce": "Quelles conditions arrêtent la boucle de `algo_gradient3` ?",
+      "choix": [
+        "$\\|\\nabla f(\\mathbf{x})\\| \\leq \\varepsilon$",
+        "$\\|\\mathbf{x}_{k+1} - \\mathbf{x}_k\\| \\leq \\varepsilon$",
+        "Le compteur $k$ atteint `max_iter`",
+        "$f(\\mathbf{x})$ ne diminue plus après un pas",
+        "$f(\\mathbf{x}) \\leq \\varepsilon$"
+      ],
+      "reponses": [
+        0,
+        2,
+        3
+      ],
+      "explication": "`while(np.linalg.norm(dfx) > epsilon and k < max_iter)` : **norme du gradient** ou **`max_iter`** (qui garantit que la boucle se termine), plus le `break` si **$f$ ne baisse plus** (divergence). L'écart entre deux itérés n'est pas testé."
+    },
+    {
+      "id": "td1-026",
+      "type": "unique",
+      "exercice": "La correction lance `algo_gradient3(compute_f2, compute_df2, 0.05, x_0, 1e-10, 10000)` depuis $\\mathbf{x}_0 = (-5, -5)$ et obtient `x_opt_2 = [-0.08695654 -0.21739129]`.",
+      "enonce": "La sortie affiche `compute_df2(x_opt_2) = [-4.64e-08  2.48e-08]`. Pourquoi la boucle s'est-elle arrêtée ?",
+      "choix": [
+        "La norme du gradient est passée sous $\\varepsilon = 10^{-10}$",
+        "Le nombre maximal de 10 000 itérations a été atteint",
+        "$f$ n'a plus diminué (limite de la précision numérique)",
+        "Le pas $\\mu = 0{,}05$ est trop grand : l'algorithme a divergé"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "La norme du gradient ($\\approx 5 \\cdot 10^{-8}$) reste **au-dessus de $\\varepsilon$** et seules 144 itérations ont tourné : c'est le test `f(x) >= fx` qui a coupé, $f$ ne baissant plus à la précision machine près. Pas de divergence : $\\mathbf{x}$ est bien à l'optimum."
+    },
+    {
+      "id": "td1-027",
+      "type": "multiple",
+      "exercice": "```python\nft = lambda mu : f(x - mu*dfx)\nmu_opt = mno(ft, 0, 100, 1e-10)\nx = x - mu_opt*dfx\n```",
+      "enonce": "Dans `algo_gradient4`, que représente `mu_opt` ?",
+      "choix": [
+        "Le pas qui annule le gradient au point $\\mathbf{x}$",
+        "Le pas qui minimise $f$ le long de $-\\nabla f(\\mathbf{x})$",
+        "Le plus grand pas qui ne fait pas diverger",
+        "Un pas fixe calculé une fois pour toutes"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "`ft(mu)` $= g(\\mu) = f(\\mathbf{x}_k - \\mu\\nabla f(\\mathbf{x}_k))$ : jusqu'où descendre **dans la direction** $-\\nabla f$. $g$ est mono-variable, on la minimise par le **nombre d'or** sur $[0, 100]$, et ce à **chaque itération** (le pas change)."
+    },
+    {
+      "id": "td1-028",
+      "type": "multiple",
+      "exercice": "Sur `compute_f2`, depuis $\\mathbf{x}_0 = (-5, -5)$ : pas fixe $\\mu = 0{,}05$ → 144 itérations ; pas optimal (`algo_gradient4`) → 12 itérations.",
+      "enonce": "Quelles conclusions sont justes ?",
+      "choix": [
+        "Le pas optimal évite de choisir $\\mu$ à la main",
+        "Le pas optimal trouve un minimum plus bas",
+        "Une itération à pas optimal coûte plus cher",
+        "Le pas optimal converge en bien moins d'itérations"
+      ],
+      "reponses": [
+        0,
+        2,
+        3
+      ],
+      "explication": "Les deux arrivent au même $f(\\mathbf{x}_{\\text{opt}}) \\approx 1{,}739$ (fonction convexe, un seul minimum). Le pas optimal **supprime le réglage de $\\mu$** et divise le nombre d'itérations par 12, mais **chaque itération lance une recherche du nombre d'or** (une centaine d'évaluations de $f$)."
+    },
+    {
+      "id": "td1-029",
+      "type": "multiple",
+      "enonce": "La fonction du TD est convexe. Que change le choix du point de départ $x_0$ ?",
+      "choix": [
+        "Le minimum trouvé à la fin",
+        "Le nombre d'itérations nécessaires",
+        "Le pas maximal qui converge",
+        "La valeur de $f$ à l'optimum"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Pour une fonction **convexe**, le seul minimum local est le minimum global : tout $x_0$ mène au même $x_{\\text{opt}}$ (si $\\mu$ convient). $x_0$ change seulement la distance à parcourir, donc le **nombre d'itérations**. Le pas limite ($\\mu < 0{,}5$) dépend de la courbure, pas de $x_0$."
+    },
+    {
+      "id": "td1-030",
+      "type": "multiple",
+      "enonce": "Si la fonction à minimiser n'est pas convexe, que peut-il arriver ?",
+      "choix": [
+        "On s'arrête sur un minimum local, pas global",
+        "Un gradient nul suffit à prouver le minimum global",
+        "Le minimum atteint dépend du point de départ",
+        "La règle $x \\leftarrow x - \\mu\\nabla f$ doit être changée"
+      ],
+      "reponses": [
+        0,
+        2
+      ],
+      "explication": "Le gradient s'annule aussi en un **minimum local** : la descente peut s'y arrêter, et le minimum atteint dépend de **$x_0$**. La règle de mise à jour reste la même ; c'est la garantie d'optimum global qui disparaît."
+    }
+  ]
+}

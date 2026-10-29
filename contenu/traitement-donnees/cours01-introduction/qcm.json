@@ -1,0 +1,689 @@
+{
+  "matiere": "Traitement de données",
+  "document": "cours",
+  "titre": "Introduction au machine learning",
+  "questions": [
+    {
+      "id": "intro-001",
+      "type": "multiple",
+      "enonce": "D'après le cours, lesquelles de ces applications relèvent de l'apprentissage **non supervisé** ?",
+      "choix": [
+        "Filtrer les spams d'une boîte mail",
+        "Regrouper les acheteurs par types",
+        "Prédire le prix d'un bien immobilier",
+        "Détecter des transactions bancaires inhabituelles",
+        "Reconnaître un visage dans une image"
+      ],
+      "reponses": [
+        1,
+        3
+      ],
+      "explication": "Regrouper des clients (**clustering**) et repérer des transactions inhabituelles (**détection d'anomalie**) se font **sans vérité terrain**. Le spam, le prix et la reconnaissance de visage ont des exemples étiquetés : c'est du supervisé.",
+      "page": 12
+    },
+    {
+      "id": "intro-002",
+      "type": "unique",
+      "enonce": "On veut prédire l'âge (en années) d'une personne à partir de sa photo d'identité. De quel type de problème s'agit-il ?",
+      "choix": [
+        "Classification supervisée",
+        "Clustering non supervisé",
+        "Régression supervisée",
+        "Détection d'anomalie"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "La sortie est **quantitative** (un âge) et les exemples sont étiquetés : **régression**. La classification (discrimination) produit une sortie **catégorielle**, comme SPAM / NON-SPAM.",
+      "page": 13
+    },
+    {
+      "id": "intro-003",
+      "type": "unique",
+      "enonce": "Une alarme de vidéosurveillance doit repérer des événements rares (accident, agression) dans un flux vidéo, sans exemples étiquetés. Quelle approche ?",
+      "choix": [
+        "Détection d'anomalie (non supervisé)",
+        "Clustering (non supervisé)",
+        "Classification (supervisé)",
+        "Apprentissage semi-supervisé"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "On cherche ce qui est **anormal** par rapport à l'ensemble d'apprentissage, sans vérité terrain : **détection d'anomalie**. Le clustering, lui, regroupe les données en groupes homogènes (ex. clients).",
+      "page": 14
+    },
+    {
+      "id": "intro-004",
+      "type": "unique",
+      "enonce": "Un modèle apprend à deviner le mot masqué d'une phrase à partir du contexte, sur des milliards de phrases non annotées. Quel type d'apprentissage ?",
+      "choix": [
+        "Semi-supervisé",
+        "Non supervisé (clustering)",
+        "Par renforcement",
+        "Auto-supervisé"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Le label (le mot caché) est **fabriqué automatiquement** à partir des données : **auto-supervisé** (principe de GPT, BERT). Le semi-supervisé utilise, lui, un petit nombre d'étiquettes **humaines**.",
+      "page": 16
+    },
+    {
+      "id": "intro-005",
+      "type": "unique",
+      "enonce": "Dans les deux étapes de tout apprentissage, comment se répartit le coût calculatoire ?",
+      "choix": [
+        "Apprentissage faible, prédiction élevée et refaite à chaque fois",
+        "Apprentissage élevé mais fait une fois, prédiction faible",
+        "Les deux étapes ont un coût comparable à chaque appel",
+        "Apprentissage et prédiction refaits pour chaque nouvelle donnée"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "L'**apprentissage** coûte cher mais n'est fait **qu'une fois** ; le modèle entraîné est ensuite **réutilisé** pour chaque **prédiction**, à faible coût.",
+      "page": 19
+    },
+    {
+      "id": "intro-006",
+      "type": "unique",
+      "enonce": "Dans quel ordre s'enchaîne la chaîne de traitement générale du cours ?",
+      "choix": [
+        "Données brutes → apprentissage → représentation → évaluation",
+        "Données brutes → évaluation → représentation → apprentissage",
+        "Données brutes → représentation → apprentissage → évaluation",
+        "Représentation → données brutes → apprentissage → évaluation"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Les données brutes (texte, image, son) sont d'abord **converties en vecteurs** (extraction de représentation), puis on choisit et entraîne une méthode, et enfin on **évalue** sa généralisation.",
+      "page": 22
+    },
+    {
+      "id": "intro-007",
+      "type": "multiple",
+      "enonce": "Lesquels sont des **hyperparamètres** (et non des paramètres) ?",
+      "choix": [
+        "Les coefficients d'une droite de régression",
+        "Le degré d'un polynôme",
+        "Le nombre de voisins $k$ des k plus proches voisins",
+        "Le choix de la méthode (régression, k-NN…)",
+        "Les valeurs $\\mu^*$ obtenues en minimisant le critère"
+      ],
+      "reponses": [
+        1,
+        2,
+        3
+      ],
+      "explication": "Les **hyperparamètres** sont fixés **avant** l'apprentissage : degré, $k$, force de régularisation, et même le **choix de la méthode**. Les coefficients (et $\\mu^*$) sont des **paramètres**, appris automatiquement sur train.",
+      "page": 24
+    },
+    {
+      "id": "intro-008",
+      "type": "unique",
+      "enonce": "On compare 10 réglages et on garde celui qui a le meilleur score sur **test**. Quel est le problème ?",
+      "choix": [
+        "Le modèle a été réentraîné sur les données de test",
+        "Le score de test n'est plus une estimation honnête",
+        "Le test est trop petit pour comparer 10 réglages",
+        "Les réglages auraient dû être comparés sur train"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "En choisissant d'après le test, on a **adapté nos choix au test** : son score devient optimiste, même sans avoir appris dessus. Il faut un **3e ensemble (validation)** pour les choix. Comparer sur train favoriserait toujours le modèle le plus complexe.",
+      "page": 27
+    },
+    {
+      "id": "intro-009",
+      "type": "multiple",
+      "enonce": "Avec le découpage train / validation / test, quelles affirmations sont exactes ?",
+      "choix": [
+        "Le dictionnaire de mots et la normalisation sont appris sur train",
+        "La normalisation est recalculée sur la validation avant de mesurer",
+        "La taille du vocabulaire se choisit sur la validation",
+        "Le test est regardé une seule fois, à la toute fin",
+        "Le modèle final est réappris sur le test pour l'évaluer"
+      ],
+      "reponses": [
+        0,
+        2,
+        3
+      ],
+      "explication": "L'**extraction de caractéristiques** (dictionnaire, normalisation) est apprise sur **train** comme le modèle, puis **réappliquée telle quelle** sur validation et test, jamais réapprise. Ses hyperparamètres (taille du vocabulaire, bins, PCA) se choisissent sur **validation**.",
+      "page": 29
+    },
+    {
+      "id": "intro-010",
+      "type": "unique",
+      "exercice": "On dispose de $N = 1200$ exemples étiquetés et on applique le découpage du cours : 60 % / 20 % / 20 %.",
+      "enonce": "Combien d'exemples servent à apprendre les paramètres du modèle ?",
+      "choix": [
+        "720",
+        "240",
+        "960",
+        "1200"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "**Train = 60 %** de 1200 = **720**. Validation (240) et test (240) ne servent pas à apprendre $\\mu$. Le piège 960 correspond à train + validation (80 %).",
+      "page": 30
+    },
+    {
+      "id": "intro-011",
+      "type": "unique",
+      "exercice": "Après avoir mis le test de côté, il reste 800 exemples. On fait une validation croisée $k = 4$ (k-fold) pour comparer 5 valeurs du degré $D$.",
+      "enonce": "Combien d'entraînements faut-il au total, et sur combien d'exemples chacun ?",
+      "choix": [
+        "5 entraînements de 800 exemples",
+        "20 entraînements de 200 exemples",
+        "4 entraînements de 600 exemples",
+        "20 entraînements de 600 exemples"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Chaque part fait $800/4 = 200$ exemples. Pour **une** valeur de $D$ : **k = 4** entraînements sur $k-1 = 3$ parts, soit **600** exemples. Pour 5 valeurs : $4 \\times 5 = 20$. Le piège 200 est la taille de la part de **validation**.",
+      "page": 31
+    },
+    {
+      "id": "intro-012",
+      "type": "multiple",
+      "enonce": "Quelles affirmations sur la validation croisée k-fold sont exactes ?",
+      "choix": [
+        "On moyenne les $k$ performances de validation",
+        "Chaque entraînement utilise une seule part sur les $k$",
+        "Le test fait partie des $k$ parts",
+        "Elle coûte $k$ fois plus d'entraînements",
+        "Elle est surtout utile avec beaucoup de données"
+      ],
+      "reponses": [
+        0,
+        3
+      ],
+      "explication": "On entraîne sur **$k-1$ parts**, on valide sur la dernière (à tour de rôle), puis on **moyenne** les $k$ scores, pour un coût **$k$ fois** plus élevé. Le test n'y participe jamais, et c'est surtout utile avec **peu** de données.",
+      "page": 31
+    },
+    {
+      "id": "intro-013",
+      "type": "unique",
+      "enonce": "Quelle différence entre le risque empirique $R_{emp}(f)$ et le risque réel $R(f)$ ?",
+      "choix": [
+        "$R_{emp}$ porte sur toute la distribution, $R$ sur les $P$ exemples",
+        "$R_{emp}$ utilise l'erreur quadratique, $R$ le taux d'erreur",
+        "$R_{emp}$ se calcule sur le test, $R$ sur l'apprentissage",
+        "$R_{emp}$ porte sur les $P$ exemples, $R$ sur toute la distribution"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "$R_{emp}(f) = \\frac{1}{P}\\sum L(f(x_i), y_i)$ est **calculable** sur les données d'apprentissage ; $R(f) = \\mathbb E[L(f(x), y)]$ porte sur la distribution **inconnue**. Généraliser, c'est faire que $R_{emp}$ soit un bon indicateur de $R$. Les deux utilisent la même perte $L$.",
+      "page": 33
+    },
+    {
+      "id": "intro-014",
+      "type": "unique",
+      "exercice": "Un modèle $f$ prédit $\\hat y = (1{,}5 ;\\ 2 ;\\ 2 ;\\ 4)$ pour des cibles $y = (1 ;\\ 2 ;\\ 3 ;\\ 4)$. La perte est l'erreur quadratique $L = (\\hat y - y)^2$.",
+      "enonce": "Que vaut le risque empirique $R_{emp}(f) = \\frac{1}{P}\\sum_{i=1}^{P} L(f(x_i), y_i)$ ?",
+      "choix": [
+        "0,3125",
+        "1,25",
+        "0,375",
+        "0,625"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Carrés des écarts : $0{,}25 ;\\ 0 ;\\ 1 ;\\ 0$, somme $1{,}25$, divisée par $P = 4$ : **0,3125**. Pièges : 1,25 oublie le $\\frac{1}{P}$ ; 0,375 prend les écarts en valeur absolue.",
+      "page": 33
+    },
+    {
+      "id": "intro-015",
+      "type": "unique",
+      "exercice": "Un modèle obtient une erreur quadratique moyenne de 0,01 sur train et de 0,90 sur validation.",
+      "enonce": "Quel diagnostic poser ?",
+      "choix": [
+        "Sous-apprentissage : il est trop simple",
+        "Bon modèle : l'erreur train est très faible",
+        "Sur-apprentissage : il a mémorisé le bruit",
+        "Aucun diagnostic possible sans le test"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Erreur train très faible mais validation forte : le modèle **apprend par cœur** → **sur-apprentissage**. En sous-apprentissage, l'erreur est élevée **même sur train**. Un grand écart train/validation est un signal d'alerte **avant même** de regarder le test.",
+      "page": 35
+    },
+    {
+      "id": "intro-016",
+      "type": "multiple",
+      "enonce": "Sur la courbe d'erreur en fonction du degré du polynôme (train et validation), quelles affirmations sont exactes ?",
+      "choix": [
+        "L'erreur sur train baisse toujours quand le degré augmente",
+        "L'erreur sur train seule suffit à repérer le sur-apprentissage",
+        "L'erreur de validation forme un creux",
+        "À droite du creux de validation, on sous-apprend",
+        "Le bon degré est celui qui minimise l'erreur de test"
+      ],
+      "reponses": [
+        0,
+        2
+      ],
+      "explication": "L'erreur **train baisse toujours** : elle ne dit rien du sur-apprentissage. L'erreur de **validation** forme un **creux** : à gauche sous-apprentissage, à droite **sur**-apprentissage. On choisit le degré sur la validation, jamais sur le test.",
+      "page": 36
+    },
+    {
+      "id": "intro-017",
+      "type": "multiple",
+      "exercice": "Erreur de test (tableau du cours) pour un polynôme de degré $D$ entraîné sur $P$ exemples :\n\n| Degré \\ Taille | P = 10 | P = 50 | P = 150 |\n|---|---|---|---|\n| **D = 1** | 0,65 | 0,65 | 0,66 |\n| **D = 4** | 0,054 | 0,029 | 0,028 |\n| **D = 16** | 2 500 | 0,029 | 0,035 |",
+      "enonce": "Que montre cet extrait ?",
+      "choix": [
+        "Plus de données compense un degré élevé",
+        "Plus de données corrige le sous-apprentissage de $D = 1$",
+        "À $P = 10$, un degré trop élevé fait exploser l'erreur",
+        "Le degré 16 est le meilleur choix dès $P = 10$"
+      ],
+      "reponses": [
+        0,
+        2
+      ],
+      "explication": "À $P$ fixé, un degré trop élevé **explose** (sur-apprentissage) ; à degré fixé, l'erreur redevient bonne quand $P$ augmente : **le volume de données compense la complexité**. Mais $D = 1$ reste à 0,65 : plus de données **ne corrige pas un sous-apprentissage**.",
+      "page": 37
+    },
+    {
+      "id": "intro-018",
+      "type": "unique",
+      "exercice": "Pour couvrir le segment $[0, 1]$ (dimension 1), on utilise 10 points régulièrement espacés.",
+      "enonce": "Combien de points faut-il pour couvrir l'espace avec la même densité en dimension $N = 6$ ?",
+      "choix": [
+        "60",
+        "$10^6$",
+        "$6^{10}$",
+        "1 000"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Avec 10 points par axe, il faut $10^N$ points : **$10^6$** en dimension 6 (le cours : $10^{10}$ en dimension 10). Le volume croît **exponentiellement** : c'est la **malédiction de la dimension**, qui pénalise surtout les méthodes de voisinage (k-NN).",
+      "page": 38
+    },
+    {
+      "id": "intro-019",
+      "type": "unique",
+      "enonce": "Pourquoi ne pas coder des couleurs rouge, vert, bleu par 1, 2, 3 ?",
+      "choix": [
+        "Le modèle ne peut pas apprendre à partir de valeurs entières",
+        "Le vecteur obtenu n'a pas une taille fixe",
+        "Cela rend le problème d'optimisation non convexe",
+        "Cela impose un ordre et des écarts qui n'existent pas"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Un code 1, 2, 3 ferait croire que « bleu = 3 × rouge » ou que vert est **entre** rouge et bleu. Le **one-hot** place chaque catégorie sur un axe de la base canonique : aucune relation d'ordre ou de magnitude n'est imposée.",
+      "page": 43
+    },
+    {
+      "id": "intro-020",
+      "type": "unique",
+      "exercice": "Les couleurs {rouge, vert, bleu, jaune} sont codées en one-hot : rouge $= (1,0,0,0)$, vert $= (0,1,0,0)$, bleu $= (0,0,1,0)$, jaune $= (0,0,0,1)$.",
+      "enonce": "Que vaut la distance euclidienne entre deux couleurs différentes ?",
+      "choix": [
+        "$\\sqrt 2$ pour toute paire",
+        "1 pour toute paire",
+        "2 pour toute paire",
+        "Elle dépend de la paire choisie"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Deux vecteurs one-hot différents diffèrent sur **2 coordonnées** (un 1 et un 0 échangés) : $\\sqrt{1^2 + 1^2} = \\sqrt 2$. Toutes les catégories sont donc **équidistantes**, c'est le but du codage. Le piège 2 oublie la racine.",
+      "page": 43
+    },
+    {
+      "id": "intro-021",
+      "type": "multiple",
+      "enonce": "Sur la représentation du texte et des images, quelles affirmations sont exactes ?",
+      "choix": [
+        "Le bag-of-words compte les mots sur un vocabulaire fixé à l'avance",
+        "Le vecteur bag-of-words grandit avec la longueur du texte",
+        "Le seul nombre de mots garde l'essentiel de l'information",
+        "La taille d'un histogramme de couleurs dépend de la résolution"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Le **bag-of-words** a une taille fixée par le **vocabulaire**, quelle que soit la longueur du texte. Le nombre de mots est simple mais **perd beaucoup d'information**, et l'histogramme de couleurs a une taille **indépendante de la résolution**.",
+      "page": 44
+    },
+    {
+      "id": "intro-022",
+      "type": "unique",
+      "enonce": "Dans la notation $\\hat y = f_{\\mu,\\lambda}(x)$, que désignent $\\mu$ et $\\lambda$ ?",
+      "choix": [
+        "$\\mu$ : les hyperparamètres ; $\\lambda$ : les paramètres appris",
+        "$\\mu$ : les paramètres appris ; $\\lambda$ : les hyperparamètres",
+        "$\\mu$ : la moyenne des données ; $\\lambda$ : le pas d'apprentissage",
+        "$\\mu$ : le vecteur d'entrée ; $\\lambda$ : la valeur prédite"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "$\\mu$ = **paramètres** appris en minimisant $g$ ($\\mu^* = \\arg\\min_\\mu g$) ; $\\lambda$ = **hyperparamètres**, fixés avant. L'entrée est $x \\in \\mathbb R^N$ et la prédiction $\\hat y$.",
+      "page": 47
+    },
+    {
+      "id": "intro-023",
+      "type": "multiple",
+      "enonce": "Quelles affirmations sur l'optimisation sont exactes d'après le cours ?",
+      "choix": [
+        "Convexe : tout minimum local est global",
+        "Convexe : pas d'algorithme générique efficace",
+        "Non convexe : plusieurs minima locaux et globaux possibles",
+        "Non convexe : la solution trouvée est toujours unique",
+        "Sans formule fermée, on cherche $\\mu^*$ de façon itérative"
+      ],
+      "reponses": [
+        0,
+        2,
+        4
+      ],
+      "explication": "**Convexe** : tout minimum local est global (la valeur minimale est unique, même si plusieurs $\\mu$ peuvent l'atteindre, p. 51) et il existe des algorithmes génériques efficaces. **Non convexe** : plusieurs minima, donc plusieurs solutions possibles. Sans formule fermée, on cherche $\\mu^*$ par une méthode **itérative** (descente de gradient).",
+      "page": 50
+    },
+    {
+      "id": "intro-024",
+      "type": "unique",
+      "enonce": "Deux modèles expliquent aussi bien les données d'apprentissage. Que conseille le rasoir d'Ockham ?",
+      "choix": [
+        "Préférer le plus complexe, il a plus de capacité",
+        "Garder celui qui a la plus faible erreur de test",
+        "Préférer le plus simple des deux modèles",
+        "Faire la moyenne des deux pour réduire la variance"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Entre solutions équivalentes, **préférer la plus simple**. En pratique : choisir un modèle assez simple, ou **régulariser** en pénalisant $\\|\\mu\\|_2^2$ dans le critère. Le test, lui, ne sert jamais à choisir.",
+      "page": 51
+    },
+    {
+      "id": "intro-025",
+      "type": "unique",
+      "exercice": "Une base contient 990 exemples positifs et 10 négatifs. Un classifieur répond **toujours** « positif ».",
+      "enonce": "Que valent son taux d'erreur et sa spécificité ?",
+      "choix": [
+        "1 % et 0 %",
+        "1 % et 99 %",
+        "99 % et 0 %",
+        "0 % et 100 %"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Erreur = 10 / 1000 = **1 %** (les 10 négatifs). Spécificité = $\\frac{TN}{TN+FP} = \\frac{0}{0+10}$ = **0 %**. Un taux d'erreur de 1 % semble excellent alors que le modèle ne sait rien : il est **trompeur sur des classes déséquilibrées**.",
+      "page": 54
+    },
+    {
+      "id": "intro-026",
+      "type": "unique",
+      "exercice": "Deux tests de diagnostic de tumeur sur 1000 patients (classe positive : **maligne**) :\n\n**Test 1**\n\n| Vérité \\ Prédit | maligne | bénigne |\n|---|---|---|\n| **maligne** | 98 | 2 |\n| **bénigne** | 50 | 850 |\n\n**Test 2**\n\n| Vérité \\ Prédit | maligne | bénigne |\n|---|---|---|\n| **maligne** | 55 | 45 |\n| **bénigne** | 5 | 895 |",
+      "enonce": "Que vaut la **précision** du test 1 ?",
+      "choix": [
+        "94,8 %",
+        "98 %",
+        "94,4 %",
+        "66,2 %"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Précision $= \\frac{TP}{TP+FP} = \\frac{98}{98+50} = \\frac{98}{148}$ ≈ **66,2 %**. Pièges : 98 % est le **rappel** ($\\frac{98}{100}$), 94,4 % la spécificité, 94,8 % l'exactitude.",
+      "page": 59
+    },
+    {
+      "id": "intro-027",
+      "type": "unique",
+      "exercice": "Deux tests de diagnostic de tumeur sur 1000 patients (classe positive : **maligne**) :\n\n**Test 1**\n\n| Vérité \\ Prédit | maligne | bénigne |\n|---|---|---|\n| **maligne** | 98 | 2 |\n| **bénigne** | 50 | 850 |\n\n**Test 2**\n\n| Vérité \\ Prédit | maligne | bénigne |\n|---|---|---|\n| **maligne** | 55 | 45 |\n| **bénigne** | 5 | 895 |",
+      "enonce": "Que vaut le **rappel** (sensibilité) du test 2 ?",
+      "choix": [
+        "91,7 %",
+        "95 %",
+        "55 %",
+        "99,4 %"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Rappel $= \\frac{TP}{TP+FN} = \\frac{55}{55+45}$ = **55 %** : le test 2 rate 45 tumeurs malignes sur 100. Pièges : 91,7 % est sa **précision** ($\\frac{55}{60}$), 99,4 % sa spécificité.",
+      "page": 59
+    },
+    {
+      "id": "intro-028",
+      "type": "multiple",
+      "exercice": "Deux tests de diagnostic de tumeur sur 1000 patients (classe positive : **maligne**) :\n\n**Test 1**\n\n| Vérité \\ Prédit | maligne | bénigne |\n|---|---|---|\n| **maligne** | 98 | 2 |\n| **bénigne** | 50 | 850 |\n\n**Test 2**\n\n| Vérité \\ Prédit | maligne | bénigne |\n|---|---|---|\n| **maligne** | 55 | 45 |\n| **bénigne** | 5 | 895 |",
+      "enonce": "Quelles affirmations sur ces deux tests sont exactes ?",
+      "choix": [
+        "Le test 1 a la meilleure exactitude (accuracy)",
+        "Le test 2 laisse passer 45 tumeurs malignes sur 100",
+        "Le test 1 a la meilleure précision",
+        "Pour un diagnostic, le rappel élevé du test 1 est préférable",
+        "Le test 1 a le plus faible taux d'erreur"
+      ],
+      "reponses": [
+        1,
+        3
+      ],
+      "explication": "Exactitude : test 1 = 948/1000 = 94,8 %, test 2 = 950/1000 = **95 %** : le test 2 « gagne » sur l'exactitude et la précision (91,7 % contre 66,2 %), mais il **rate 45 malignes**. En médecine, rater un positif coûte cher : on privilégie le **rappel** (98 % pour le test 1).",
+      "page": 56
+    },
+    {
+      "id": "intro-029",
+      "type": "unique",
+      "exercice": "Deux tests de diagnostic de tumeur sur 1000 patients (classe positive : **maligne**) :\n\n**Test 1**\n\n| Vérité \\ Prédit | maligne | bénigne |\n|---|---|---|\n| **maligne** | 98 | 2 |\n| **bénigne** | 50 | 850 |\n\n**Test 2**\n\n| Vérité \\ Prédit | maligne | bénigne |\n|---|---|---|\n| **maligne** | 55 | 45 |\n| **bénigne** | 5 | 895 |",
+      "enonce": "Quel est le score $F_1$ du test 2 ?",
+      "choix": [
+        "73,3 %",
+        "68,8 %",
+        "79,0 %",
+        "50,4 %"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "$F_1 = \\frac{2 \\times P \\times R}{P + R} = \\frac{2 \\times 0{,}917 \\times 0{,}55}{0{,}917 + 0{,}55}$ ≈ **68,8 %** (moyenne **harmonique**). Pièges : 73,3 % est la moyenne arithmétique, 79,0 % le $F_1$ du test 1.",
+      "page": 62
+    },
+    {
+      "id": "intro-030",
+      "type": "multiple",
+      "exercice": "Un filtre anti-spam (positif = spam) obtient sur 200 mails : TP = 40, FN = 20, FP = 10, TN = 130.",
+      "enonce": "Quelles valeurs sont exactes ?",
+      "choix": [
+        "Précision = 80 %",
+        "Rappel = 80 %",
+        "Exactitude = 85 %",
+        "Spécificité = 66,7 %",
+        "$F_1$ ≈ 72,7 %"
+      ],
+      "reponses": [
+        0,
+        2,
+        4
+      ],
+      "explication": "Précision $= \\frac{40}{40+10}$ = **80 %** ; rappel $= \\frac{40}{40+20}$ ≈ 66,7 % ; exactitude $= \\frac{40+130}{200}$ = **85 %** ; spécificité $= \\frac{130}{130+10}$ ≈ 92,9 % ; $F_1 = \\frac{2 \\times 0{,}8 \\times 0{,}667}{0{,}8+0{,}667}$ ≈ **72,7 %**.",
+      "page": 59
+    },
+    {
+      "id": "intro-031",
+      "type": "unique",
+      "exercice": "Matrice de confusion du cours sur les 10 000 images de test de MNIST (lignes = vraie classe, colonnes = classe prédite) :\n\n| Vraie \\ Prédite | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |\n|---|---|---|---|---|---|---|---|---|---|---|\n| **0** | 952 | 0 | 0 | 5 | 5 | 8 | 6 | 2 | 5 | 3 |\n| **1** | 0 | 1104 | 4 | 2 | 0 | 5 | 0 | 2 | 8 | 0 |\n| **2** | 4 | 7 | 915 | 13 | 13 | 2 | 10 | 9 | 21 | 5 |\n| **3** | 5 | 7 | 21 | 908 | 0 | 29 | 3 | 12 | 27 | 8 |\n| **4** | 0 | 1 | 4 | 2 | 912 | 1 | 14 | 1 | 4 | 36 |\n| **5** | 5 | 5 | 6 | 22 | 11 | 804 | 17 | 2 | 26 | 4 |\n| **6** | 3 | 7 | 8 | 1 | 5 | 9 | 944 | 0 | 4 | 1 |\n| **7** | 1 | 2 | 15 | 6 | 11 | 2 | 0 | 975 | 2 | 28 |\n| **8** | 7 | 29 | 13 | 19 | 6 | 20 | 10 | 4 | 853 | 14 |\n| **9** | 5 | 6 | 4 | 13 | 31 | 2 | 0 | 22 | 6 | 905 |\n\nLigne 8 : 975 images au total. Colonne 8 : 956 prédictions « 8 » au total.",
+      "enonce": "Quels sont le rappel et la précision de la classe 8 ?",
+      "choix": [
+        "Rappel 87,5 % ; précision 89,2 %",
+        "Rappel 89,2 % ; précision 87,5 %",
+        "Rappel 85,3 % ; précision 95,6 %",
+        "Rappel 87,5 % ; précision 92,7 %"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Rappel = bien classés / **ligne** (vrais 8) $= \\frac{853}{975}$ ≈ **87,5 %**. Précision = bien classés / **colonne** (prédits 8) $= \\frac{853}{956}$ ≈ **89,2 %**. Piège : inverser ligne et colonne ; 92,7 % est l'exactitude globale (9 272 / 10 000).",
+      "page": 57
+    },
+    {
+      "id": "intro-032",
+      "type": "unique",
+      "exercice": "Matrice de confusion du cours sur les 10 000 images de test de MNIST (lignes = vraie classe, colonnes = classe prédite) :\n\n| Vraie \\ Prédite | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |\n|---|---|---|---|---|---|---|---|---|---|---|\n| **0** | 952 | 0 | 0 | 5 | 5 | 8 | 6 | 2 | 5 | 3 |\n| **1** | 0 | 1104 | 4 | 2 | 0 | 5 | 0 | 2 | 8 | 0 |\n| **2** | 4 | 7 | 915 | 13 | 13 | 2 | 10 | 9 | 21 | 5 |\n| **3** | 5 | 7 | 21 | 908 | 0 | 29 | 3 | 12 | 27 | 8 |\n| **4** | 0 | 1 | 4 | 2 | 912 | 1 | 14 | 1 | 4 | 36 |\n| **5** | 5 | 5 | 6 | 22 | 11 | 804 | 17 | 2 | 26 | 4 |\n| **6** | 3 | 7 | 8 | 1 | 5 | 9 | 944 | 0 | 4 | 1 |\n| **7** | 1 | 2 | 15 | 6 | 11 | 2 | 0 | 975 | 2 | 28 |\n| **8** | 7 | 29 | 13 | 19 | 6 | 20 | 10 | 4 | 853 | 14 |\n| **9** | 5 | 6 | 4 | 13 | 31 | 2 | 0 | 22 | 6 | 905 |\n\nLigne 8 : 975 images au total. Colonne 8 : 956 prédictions « 8 » au total.",
+      "enonce": "Quelle est la confusion la plus fréquente ?",
+      "choix": [
+        "Un 9 prédit comme un 4 (36 fois)",
+        "Un 9 prédit comme un 4 (31 fois)",
+        "Un 8 prédit comme un 1 (29 fois)",
+        "Un 4 prédit comme un 9 (36 fois)"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Hors diagonale, la plus grande case est **ligne 4, colonne 9 = 36** : un vrai 4 prédit 9. La case symétrique (vrai 9 prédit 4) vaut 31. Lignes = vérité, colonnes = prédiction.",
+      "page": 57
+    },
+    {
+      "id": "intro-033",
+      "type": "multiple",
+      "enonce": "Quelles affirmations sur les courbes ROC et rappel-précision sont exactes ?",
+      "choix": [
+        "La ROC trace la sensibilité en fonction de 1 − spécificité",
+        "Une AUC de 0,5 correspond à un classifieur aléatoire",
+        "La ROC trace la précision en fonction du rappel",
+        "Sur des classes très déséquilibrées, la ROC peut être trop optimiste",
+        "La ROC dépend du seuil de décision choisi"
+      ],
+      "reponses": [
+        0,
+        1,
+        3
+      ],
+      "explication": "La **ROC** trace le taux de vrais positifs contre le taux de faux positifs ($1 -$ spécificité) pour **tous les seuils** : elle compare des modèles **indépendamment du seuil**. AUC : 1 = parfait, **0,5 = aléatoire**. Sur classes déséquilibrées, la courbe **rappel-précision** est plus parlante.",
+      "page": 61
+    },
+    {
+      "id": "intro-034",
+      "type": "unique",
+      "enonce": "Avec le score $F_\\beta$, quelle valeur de $\\beta$ privilégie la **sensibilité** (rappel) ?",
+      "choix": [
+        "$\\beta < 1$",
+        "$\\beta > 1$",
+        "$\\beta = 1$",
+        "$\\beta = 0$"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "$F_\\beta$ généralise $F_1$ (moyenne harmonique de précision et rappel) : **$\\beta > 1$ privilégie la sensibilité**, $\\beta < 1$ la précision, $\\beta = 1$ donne $F_1$.",
+      "page": 62
+    },
+    {
+      "id": "intro-035",
+      "type": "multiple",
+      "enonce": "Quelles affirmations sur le coefficient de corrélation de Matthews (MCC) sont exactes ?",
+      "choix": [
+        "Il est compris entre 0 et 1",
+        "Il résume toute la matrice de confusion en un chiffre",
+        "Il devient trompeur sur des classes très déséquilibrées",
+        "C'est l'aire sous la courbe rappel-précision"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Le **MCC** résume **toute la matrice de confusion** en un chiffre entre **−1 et 1**, et reste **robuste** sur des classes déséquilibrées. L'aire sous la courbe rappel-précision, c'est la **précision moyenne** (average precision).",
+      "page": 63
+    },
+    {
+      "id": "intro-036",
+      "type": "unique",
+      "enonce": "Que dit le théorème du No Free Lunch ?",
+      "choix": [
+        "En moyenne, les réseaux de neurones battent les autres méthodes",
+        "Un modèle plus complexe généralise moins bien qu'un simple",
+        "En moyenne sur tous les problèmes, aucun algorithme n'est meilleur",
+        "Tout gain de précision se paie par une perte de rappel"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Sur **tous les problèmes possibles**, aucun algorithme ne bat un autre (pas même l'aléatoire). Les vrais problèmes ont une **structure** : d'où l'intérêt de connaître **plusieurs méthodes** et de savoir laquelle convient au contexte.",
+      "page": 64
+    },
+    {
+      "id": "intro-037",
+      "type": "unique",
+      "exercice": "Régression polynomiale du cours : $f_{\\mu,\\lambda}(x) = \\sum_{k=0}^{D} a_k x^k$, entraînée en minimisant $\\sum_{i=1}^{P} (f_{\\mu,\\lambda}(x_i) - y_i)^2 + \\alpha\\|\\mu\\|_2^2$, avec $D = 5$.",
+      "enonce": "Combien de paramètres sont appris sur train, et quels sont les hyperparamètres ?",
+      "choix": [
+        "6 paramètres ; hyperparamètres $D$ et $\\alpha$",
+        "5 paramètres ; hyperparamètres $D$ et $\\alpha$",
+        "6 paramètres ; hyperparamètre $\\alpha$ seul",
+        "7 paramètres ($a_0$ à $a_5$ et $\\alpha$) ; hyperparamètre $D$"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "$\\mu = \\{a_0, \\dots, a_5\\}$ : **$D + 1 = 6$ coefficients** appris sur train. $\\lambda = \\{D, \\alpha\\}$ : le degré et la force de régularisation, choisis sur **validation**. Piège : oublier $a_0$ (5 paramètres).",
+      "page": 65
+    },
+    {
+      "id": "intro-038",
+      "type": "unique",
+      "enonce": "Avec $D = 150$ fixé, que se passe-t-il si la force de régularisation $\\alpha$ est trop **forte** ?",
+      "choix": [
+        "Sur-apprentissage, comme un degré $D$ trop grand",
+        "Aucun effet : seul $D$ contrôle la complexité",
+        "L'erreur sur train devient nulle",
+        "Sous-apprentissage, comme un degré $D$ trop petit"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Un $\\alpha$ fort contraint l'amplitude des coefficients : le modèle devient trop rigide → **sous-apprentissage**. Un $\\alpha$ trop faible laisse le modèle sur-apprendre. $\\alpha^*$ se choisit sur **validation**.",
+      "page": 68
+    },
+    {
+      "id": "intro-039",
+      "type": "multiple",
+      "enonce": "Sur la décomposition de l'erreur quadratique moyenne en biais et variance, quelles affirmations sont exactes ?",
+      "choix": [
+        "Un biais important signale un modèle trop simple",
+        "La variance mesure le décalage du barycentre au centre",
+        "Une variance importante signale un modèle trop complexe",
+        "L'objectif est un faible biais et une forte variance"
+      ],
+      "reponses": [
+        0,
+        2
+      ],
+      "explication": "**Biais** = décalage du barycentre des prédictions par rapport à la vraie valeur (modèle **trop simple**, sous-apprentissage). **Variance** = dispersion des prédictions d'un jeu d'entraînement à l'autre (modèle **trop complexe**). Objectif : **faible biais et faible variance**.",
+      "page": 72
+    },
+    {
+      "id": "intro-040",
+      "type": "unique",
+      "exercice": "Pour un modèle, on estime $\\text{Biais}(\\hat y) = 0{,}3$ et $\\text{Var}(\\hat y) = 0{,}05$.",
+      "enonce": "Que vaut l'erreur quadratique moyenne ?",
+      "choix": [
+        "0,35",
+        "0,14",
+        "0,0925",
+        "0,25"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "$\\text{EQM} = \\text{Biais}^2 + \\text{Var} = 0{,}3^2 + 0{,}05 = 0{,}09 + 0{,}05 =$ **0,14**. Piège : 0,35 oublie de mettre le biais au carré.",
+      "page": 71
+    }
+  ]
+}

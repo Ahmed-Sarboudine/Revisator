@@ -1,0 +1,642 @@
+{
+  "matiere": "Traitement de données",
+  "document": "cours",
+  "titre": "Sac de mots, TF-IDF et K-Means",
+  "questions": [
+    {
+      "id": "bow-001",
+      "type": "unique",
+      "enonce": "Pourquoi le regroupement d'articles par thème étudié ici relève-t-il de l'apprentissage **non supervisé** ?",
+      "choix": [
+        "Aucun hyperparamètre n'est à régler par l'utilisateur",
+        "Les classes sont connues, mais pas leur nombre",
+        "On ne connaît a priori ni les classes ni leur nombre",
+        "On n'utilise que l'ensemble de test, jamais le train"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Non supervisé : on ne connaît **ni les classes ni leur nombre** a priori, on regroupe les données par ressemblance. Connaître les classes (même sans leur nombre), ce serait déjà une supervision."
+    },
+    {
+      "id": "bow-002",
+      "type": "multiple",
+      "enonce": "Pourquoi coder une donnée catégorielle à K valeurs en **one-hot** (« 1 parmi K ») plutôt que par un entier de 1 à K ?",
+      "choix": [
+        "On réduit ainsi la donnée à une seule variable numérique",
+        "La moyenne de tels vecteurs donne la proportion de chaque catégorie",
+        "On n'introduit pas d'ordre artificiel entre les catégories",
+        "Deux catégories différentes sont toujours à la même distance",
+        "On peut ainsi ordonner les catégories de la plus petite à la plus grande"
+      ],
+      "reponses": [
+        1,
+        2,
+        3
+      ],
+      "explication": "Le one-hot met toutes les catégories **à égale distance** (pas d'ordre artificiel, contrairement à 1, 2, 3…) et la **moyenne** donne les proportions. Il crée au contraire K variables, pas une seule, et n'impose aucun ordre."
+    },
+    {
+      "id": "bow-003",
+      "type": "multiple",
+      "enonce": "Qu'est-ce que la représentation en sac-de-mots conserve d'un document ?",
+      "choix": [
+        "Le nombre d'occurrences de chaque mot du dictionnaire",
+        "L'ordre dans lequel les mots apparaissent dans le texte",
+        "La structure grammaticale de chacune des phrases",
+        "La syntaxe, via les paires de mots consécutifs"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Un document devient l'**histogramme des occurrences** des mots du dictionnaire (vecteur de la taille du dictionnaire). Ni l'ordre, ni la syntaxe, ni la grammaire ne sont encodés."
+    },
+    {
+      "id": "bow-004",
+      "type": "unique",
+      "exercice": "Vocabulaire appris par `fit` sur le train, dans l'ordre des colonnes : chat, chien, mange, souris. Les stop words (le, la) sont retirés.",
+      "enonce": "Quel vecteur `transform` produit-il pour la phrase « Le chat mange la souris, puis le chat dort. » ?",
+      "choix": [
+        "$(2, 0, 1, 1)$",
+        "$(2, 0, 1, 1, 1, 1)$",
+        "$(2, 1, 1, 1)$",
+        "$(1, 0, 1, 1)$"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Une composante par mot **du vocabulaire appris sur le train** : chat 2, chien 0, mange 1, souris 1. « puis » et « dort » sont **hors vocabulaire**, donc ignorés (pas de nouvelle colonne). $(1,0,1,1)$ ne note que la présence, pas le comptage."
+    },
+    {
+      "id": "bow-005",
+      "type": "unique",
+      "enonce": "`X = CountVectorizer().fit_transform(train[\"text\"])` sur les 9 600 articles du train donne `X.shape == (9600, 107457)`. Que représente 107 457 ?",
+      "choix": [
+        "Le nombre de mots distincts du train et du test",
+        "Le nombre total d'occurrences de mots du train",
+        "Le nombre de mots du plus long article du train",
+        "La taille du vocabulaire appris sur le train"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "La matrice est **(nombre de documents, taille du vocabulaire)** : une ligne par article, une colonne par mot du dictionnaire appris sur le train. Le test n'intervient pas dans `fit`."
+    },
+    {
+      "id": "bow-006",
+      "type": "unique",
+      "enonce": "Le vocabulaire est appris par `fit` sur le train. Que devient un mot du test absent de ce vocabulaire lors de `transform(test)` ?",
+      "choix": [
+        "Il provoque une erreur « mot hors vocabulaire »",
+        "Il est ignoré, comme s'il n'existait pas",
+        "Il est remplacé par le mot du train le plus proche",
+        "Il est ajouté au vocabulaire dans une nouvelle colonne"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Le vocabulaire est **figé** après `fit` : un mot hors vocabulaire (*OOV*) est simplement **ignoré**. `transform` ne crée jamais de colonne, sinon train et test n'auraient plus la même dimension."
+    },
+    {
+      "id": "bow-007",
+      "type": "multiple",
+      "enonce": "Les vecteurs sac-de-mots d'un vrai corpus sont **creux** (*sparse*) et très grands. Quels problèmes le cours souligne-t-il ?",
+      "choix": [
+        "Une perte de l'information de comptage des mots",
+        "L'impossibilité de calculer des distances entre eux",
+        "Une grande dimension, qui expose au sur-apprentissage",
+        "Un coût mémoire, géré efficacement par `scipy.sparse`"
+      ],
+      "reponses": [
+        2,
+        3
+      ],
+      "explication": "Taille du vocabulaire ⇒ **mémoire** (d'où `scipy.sparse`) et **grande dimension** : il faudrait beaucoup de données, sinon risque d'**overfitting**. Les comptages sont conservés et les distances restent calculables."
+    },
+    {
+      "id": "bow-008",
+      "type": "unique",
+      "enonce": "Comment le cours calcule-t-il la **precision@k** qui évalue une représentation ?",
+      "choix": [
+        "Part des articles du test bien classés par un classifieur supervisé",
+        "Part des k plus proches voisins (cosinus) dans le train de même catégorie",
+        "Part des k catégories les plus probables contenant la bonne",
+        "Part des k termes de plus fort poids communs à l'article et sa catégorie"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Pour chaque article du test, on prend ses **k plus proches voisins dans le train (similarité cosinus)** et on mesure la part de même catégorie, puis on **moyenne sur le test**. Le cours n'entraîne **aucun classifieur supervisé**."
+    },
+    {
+      "id": "bow-009",
+      "type": "unique",
+      "exercice": "Un article du test de catégorie Sport. Ses 5 plus proches voisins dans le train, par similarité cosinus décroissante :\n\n| Rang | 1 | 2 | 3 | 4 | 5 |\n|---|---|---|---|---|---|\n| Catégorie | Sport | Sport | Culture | Sport | Politique |",
+      "enonce": "Que valent la precision@1 et la precision@5 de cet article ?",
+      "choix": [
+        "$0{,}6$ et $1$",
+        "$1$ et $0{,}75$",
+        "$0{,}2$ et $0{,}6$",
+        "$1$ et $0{,}6$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "precision@1 : le 1er voisin est Sport → $1$. precision@5 : 3 voisins Sport sur 5 → $3/5 = 0{,}6$. On compare au hasard : avec 6 catégories équilibrées, la **baseline vaut $1/6 \\approx 0{,}167$**."
+    },
+    {
+      "id": "bow-010",
+      "type": "multiple",
+      "enonce": "Sur la visualisation **t-SNE** utilisée dans le cours, quelles affirmations sont justes ?",
+      "choix": [
+        "C'est un outil de visualisation 2D qui préserve les voisinages",
+        "On l'applique aux vecteurs creux, sans réduction préalable",
+        "Elle sert à calculer la precision@k sur le test",
+        "C'est un algorithme de clustering qui crée les groupes"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "t-SNE est un **outil de visualisation exploratoire** : projection 2D qui préserve les voisinages, sans « créer » de groupes. Les vecteurs creux sont d'abord réduits par **SVD tronquée** ; la precision@k se calcule à part, par cosinus."
+    },
+    {
+      "id": "bow-011",
+      "type": "unique",
+      "enonce": "D'après le tableau récapitulatif (precision@1 sur le test), quelle étape apporte **le plus gros gain** ?",
+      "choix": [
+        "La suppression des stop words",
+        "La racinisation (stemming)",
+        "Le filtrage des valeurs numériques",
+        "La pondération TF-IDF"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "La seule **suppression des stop words** fait passer la precision@1 de **0,49 à 0,75**. Les autres étapes gagnent à peine 1 point (le filtre numérique +0,004, le stemming +0,009) et TF-IDF baisse même légèrement la precision@1 (0,765 → 0,749)."
+    },
+    {
+      "id": "bow-012",
+      "type": "unique",
+      "exercice": "`tokenize_filter_numeric` (cours) : passe le texte en minuscules, extrait les mots d'au moins 2 caractères (motif `\\b\\w\\w+\\b`), puis retire les stop words NLTK et les tokens `t` tels que `t.isdigit()`.",
+      "enonce": "Que renvoie `tokenize_filter_numeric(\"Les 2 buts du match à 19h, en 2019\")` ?",
+      "choix": [
+        "`['2', 'buts', 'match', '19h']`",
+        "`['buts', 'match']`",
+        "`['buts', 'match', '19h']`",
+        "`['buts', 'match', '19h', '2019']`"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "« 2 » (1 caractère) n'est pas capté par le motif ; « 2019 » est purement numérique → filtré ; « les », « du », « à », « en » sont des stop words. Mais **« 19h » n'est pas `isdigit()`** : il reste (on le retrouve d'ailleurs parmi les termes de plus fort IDF)."
+    },
+    {
+      "id": "bow-013",
+      "type": "multiple",
+      "enonce": "Lemmatisation et racinisation (*stemming*) : quelles affirmations sont justes ?",
+      "choix": [
+        "Le cours lemmatise les mots avec le `SnowballStemmer`",
+        "La lemmatisation ramène un verbe à son infinitif",
+        "Les deux procédés réduisent la taille du vocabulaire",
+        "La racine obtenue n'est en général pas un mot réel de la langue",
+        "Le stemming exige de savoir si le mot est un verbe ou un nom"
+      ],
+      "reponses": [
+        1,
+        2,
+        3
+      ],
+      "explication": "Le **stemming** coupe préfixes/suffixes (« étudiants » → « étudi », pas un vrai mot) ; la **lemmatisation** donne la forme canonique (infinitif, singulier) et c'est elle qui exige de connaître la nature du mot. Le cours n'utilise que le stemming (`SnowballStemmer`)."
+    },
+    {
+      "id": "bow-014",
+      "type": "multiple",
+      "enonce": "Sur la pondération TF-IDF définie dans le cours, quelles affirmations sont justes ?",
+      "choix": [
+        "Diviser par la taille du document avantage les longs documents",
+        "Un terme présent dans un seul des M documents a un IDF de $\\log M$",
+        "Un terme présent dans tous les documents a un IDF nul",
+        "La TF divise le nombre d'occurrences par la taille du document",
+        "Un IDF élevé signale un terme présent dans beaucoup de documents"
+      ],
+      "reponses": [
+        1,
+        2,
+        3
+      ],
+      "explication": "$TF = n(t,doc)/Card(doc)$ **normalise par la longueur** (pour ne pas avantager les longs documents). $IDF = \\log(M / \\text{nb de documents contenant } t)$ : $\\log 1 = 0$ si $t$ est partout, $\\log M$ s'il est dans un seul. IDF élevé = terme **rare**, donc discriminant."
+    },
+    {
+      "id": "bow-015",
+      "type": "unique",
+      "exercice": "Corpus de $M = 4$ documents déjà prétraités :\n\n| Document | Texte |\n|---|---|\n| d1 | but match but équipe |\n| d2 | match équipe joueur |\n| d3 | vote match loi |\n| d4 | vote loi match député |\n\nOn utilise la TF-IDF **du cours** (TF normalisée par la longueur du document, IDF avec le logarithme népérien).",
+      "enonce": "Que vaut le TF-IDF de « but » dans d1 ?",
+      "choix": [
+        "$\\approx 0{,}35$",
+        "$\\approx 0{,}30$",
+        "$\\approx 0{,}69$",
+        "$\\approx 2{,}77$"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "$TF = 2/4 = 0{,}5$ ; « but » n'est que dans d1 : $IDF = \\ln(4/1) \\approx 1{,}386$ ; **TF-IDF $\\approx 0{,}69$**. Pièges : $2{,}77$ oublie de diviser par la longueur, $0{,}30$ utilise $\\log_{10}$, $0{,}35$ ne compte qu'une occurrence."
+    },
+    {
+      "id": "bow-016",
+      "type": "multiple",
+      "exercice": "Corpus de $M = 4$ documents déjà prétraités :\n\n| Document | Texte |\n|---|---|\n| d1 | but match but équipe |\n| d2 | match équipe joueur |\n| d3 | vote match loi |\n| d4 | vote loi match député |\n\nOn utilise la TF-IDF **du cours** (TF normalisée par la longueur du document, IDF avec le logarithme népérien).",
+      "enonce": "Quelles affirmations sont justes ?",
+      "choix": [
+        "« match » a un TF-IDF nul dans les quatre documents",
+        "« but » a l'IDF le plus faible, car il apparaît deux fois dans d1",
+        "« vote » a un TF-IDF plus élevé dans d3 que dans d4",
+        "« équipe » a le même TF-IDF dans d1 et dans d2"
+      ],
+      "reponses": [
+        0,
+        2
+      ],
+      "explication": "« match » est dans les 4 documents : $IDF = \\ln 1 = 0$. « vote » : $\\tfrac13 \\ln 2 \\approx 0{,}23$ dans d3 contre $\\tfrac14 \\ln 2 \\approx 0{,}17$ dans d4 (même comptage, document plus court). « équipe » : $0{,}17$ dans d1, $0{,}23$ dans d2. « but » a au contraire l'**IDF le plus élevé** ($\\ln 4$) : l'IDF compte les **documents**, pas les occurrences."
+    },
+    {
+      "id": "bow-017",
+      "type": "unique",
+      "enonce": "Dans la représentation finale `TfidfVectorizer(tokenizer=tokenize_and_stem, token_pattern=None, min_df=5)`, que fait `min_df=5` ?",
+      "choix": [
+        "Il retire les termes présents dans moins de 5 documents du train",
+        "Il ne garde que les 5 termes les plus fréquents de chaque document",
+        "Il retire du train les documents qui comptent moins de 5 mots",
+        "Il retire les termes présents dans plus de 5 % des documents du train"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "`min_df` = fréquence **documentaire minimale** : on écarte les termes très rares (noms propres isolés…), peu utiles pour généraliser. Conséquence vue dans le cours : tous les termes présents dans exactement 5 documents ont le **même IDF maximal** (ex-æquo)."
+    },
+    {
+      "id": "bow-018",
+      "type": "unique",
+      "exercice": "Comptages de trois documents ($c$ est le même texte que $a$, écrit deux fois) :\n\n| Document | terme 1 | terme 2 | terme 3 | terme 4 |\n|---|---|---|---|---|\n| $a$ | 2 | 0 | 1 | 1 |\n| $b$ | 1 | 0 | 0 | 1 |\n| $c$ | 4 | 0 | 2 | 2 |",
+      "enonce": "Que valent la distance euclidienne et la similarité cosinus entre a et c ?",
+      "choix": [
+        "$\\sqrt{24} \\approx 4{,}90$ et $1$",
+        "$\\sqrt 6 \\approx 2{,}45$ et $0{,}5$",
+        "$6$ et $2$",
+        "$\\sqrt 6 \\approx 2{,}45$ et $1$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "$c - a = (2,0,1,1)$ donc $d = \\sqrt{6} \\approx 2{,}45$ ; $c$ et $a$ sont colinéaires donc **cosinus $= 1$**. Le cosinus ignore la longueur du document, la distance euclidienne non : d'où le choix du **cosinus** pour chercher les voisins. (Pour info : $\\cos(a,b) = 3/\\sqrt{12} \\approx 0{,}87$.)"
+    },
+    {
+      "id": "bow-019",
+      "type": "multiple",
+      "enonce": "Que dit le cours de la pondération **BM25** ?",
+      "choix": [
+        "$k_1$ (saturation) et $b$ (longueur) en sont des hyperparamètres",
+        "Elle normalise par la longueur du document rapportée à la moyenne",
+        "Elle s'applique par-dessus TF-IDF, en cumulant les deux poids",
+        "scikit-learn la fournit directement via `BM25Vectorizer`",
+        "Son poids sature : de 1 à 2 occurrences compte plus que de 10 à 11"
+      ],
+      "reponses": [
+        0,
+        1,
+        4
+      ],
+      "explication": "BM25 **sature** la fréquence du terme et **normalise par la longueur** ($|d|/\\text{avgdl}$), réglées par les hyperparamètres $k_1$ et $b$. C'est une pondération **alternative** à TF-IDF (même prétraitement), et scikit-learn n'a pas de `BM25Vectorizer` : le cours écrit un `BM25Transformer`."
+    },
+    {
+      "id": "bow-020",
+      "type": "unique",
+      "enonce": "Pourquoi BM25 fait-il mieux que TF-IDF sur ce corpus du *Monde* ?",
+      "choix": [
+        "Les 6 catégories sont parfaitement équilibrées (1 600 articles chacune)",
+        "Les articles ont des longueurs très variables (300 à 45 000 caractères)",
+        "BM25 a été conçu pour le français, contrairement à TF-IDF",
+        "BM25 profite d'un stemming plus poussé que celui appliqué à TF-IDF"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "L'atout de BM25 est sa **normalisation par la longueur** : utile ici car les longueurs varient énormément. Sur des textes courts et homogènes (des titres), il ne ferait pas mieux. Le prétraitement est **identique** pour les deux : on compare à prétraitement égal."
+    },
+    {
+      "id": "km-001",
+      "type": "unique",
+      "enonce": "On affecte chaque point au point de référence le plus proche. Quelle est la frontière entre les régions de deux références A et B ?",
+      "choix": [
+        "La droite qui passe par les deux points A et B",
+        "La droite équidistante de A et B (la médiatrice de [AB])",
+        "La droite parallèle à (AB) passant par le milieu de [AB]",
+        "Le cercle centré au milieu de [AB], de diamètre AB"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Chaque point de la frontière est **à égale distance** des deux références : c'est la médiatrice. Répété pour toutes les paires, cela découpe l'espace en **diagramme de Voronoï** — exactement l'étape d'assignation de K-Means."
+    },
+    {
+      "id": "km-002",
+      "type": "unique",
+      "enonce": "Quel critère l'algorithme des K-Moyennes minimise-t-il ?",
+      "choix": [
+        "$\\sum_{i=1}^{N}\\|x_i-\\bar{x}\\|^2$",
+        "$\\sum_{k=1}^{K}\\sum_{l\\neq k}\\|\\mu_k-\\mu_l\\|^2$",
+        "$\\sum_{k=1}^{K}\\sum_{i\\notin C_k}\\|x_i-\\mu_k\\|^2$",
+        "$\\sum_{k=1}^{K}\\sum_{i\\in C_k}\\|x_i-\\mu_k\\|^2$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "K-Means minimise la **somme des inerties** des groupes : carrés des distances de chaque point au **centre de son groupe**. $\\sum\\|x_i-\\bar x\\|^2$ est l'inertie totale, qui ne dépend pas du découpage."
+    },
+    {
+      "id": "km-003",
+      "type": "multiple",
+      "enonce": "Quels sont les **paramètres** que K-Means détermine en minimisant son critère ?",
+      "choix": [
+        "Le nombre d'initialisations aléatoires `n_init`",
+        "Le nombre K de groupes à former",
+        "Les centres de gravité des groupes",
+        "Le groupe auquel est assignée chaque observation"
+      ],
+      "reponses": [
+        2,
+        3
+      ],
+      "explication": "Les paramètres sont les **centres** et l'**assignation** des observations. K et `n_init` sont des **hyperparamètres** fixés avant de lancer l'algorithme (K se choisit à part, par ex. avec la méthode du coude)."
+    },
+    {
+      "id": "km-004",
+      "type": "multiple",
+      "enonce": "Que fait K-Means à chaque itération ?",
+      "choix": [
+        "Il déplace chaque centre vers le point le plus éloigné de son groupe",
+        "Il remplace chaque centre par la moyenne des points qui lui sont assignés",
+        "Il ajoute un centre si l'inertie a trop peu diminué",
+        "Il assigne chaque observation au centre le plus proche"
+      ],
+      "reponses": [
+        1,
+        3
+      ],
+      "explication": "Deux étapes en boucle : **assignation** (Voronoï des centres courants) puis **mise à jour** des centres = **barycentres** des groupes. K reste fixe : aucun centre n'est ajouté."
+    },
+    {
+      "id": "km-005",
+      "type": "unique",
+      "enonce": "L'assignation étant fixée, pourquoi le meilleur centre d'un groupe est-il son barycentre ?",
+      "choix": [
+        "Annuler le gradient de $J_k$ donne $\\mu_k=\\frac{1}{n_k}\\sum_{i\\in C_k}x_i$",
+        "Par convention : la médiane donnerait exactement le même critère",
+        "Le barycentre est le point du groupe le plus proche de tous les autres",
+        "Le barycentre maximise la distance entre les différents groupes"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Avec les groupes fixés, $J$ se sépare en $K$ problèmes indépendants. $\\nabla_{\\mu_k} J_k = -2\\sum_{i\\in C_k}(x_i-\\mu_k) = 0$ donne **la moyenne** des points du groupe. Le barycentre n'est pas forcément un point du groupe."
+    },
+    {
+      "id": "km-006",
+      "type": "unique",
+      "exercice": "$K = 2$, distance euclidienne. Points :\n\n| Point | $P_1$ | $P_2$ | $P_3$ | $P_4$ | $P_5$ | $P_6$ |\n|---|---|---|---|---|---|---|\n| $x$ | 0 | 1 | 0 | 4 | 5 | 4 |\n| $y$ | 0 | 0 | 2 | 4 | 4 | 6 |\n\nCentres initiaux tirés parmi les données : $\\mu_1 = P_1$ et $\\mu_2 = P_3$.",
+      "enonce": "Après la 1ʳᵉ affectation, quels points forment le groupe de $\\mu_1$ ?",
+      "choix": [
+        "$P_1$, $P_2$ et $P_4$",
+        "$P_1$ seul",
+        "$P_1$ et $P_2$",
+        "$P_1$, $P_2$ et $P_3$"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "$P_2$ : $d(P_2,\\mu_1) = 1 < d(P_2,\\mu_2) = \\sqrt5$ → groupe 1. $P_3$ est le centre $\\mu_2$ lui-même. $P_4$ : $\\sqrt{32} \\approx 5{,}66$ contre $\\sqrt{20} \\approx 4{,}47$ → groupe 2, comme $P_5$ et $P_6$."
+    },
+    {
+      "id": "km-007",
+      "type": "unique",
+      "exercice": "$K = 2$, distance euclidienne. Points :\n\n| Point | $P_1$ | $P_2$ | $P_3$ | $P_4$ | $P_5$ | $P_6$ |\n|---|---|---|---|---|---|---|\n| $x$ | 0 | 1 | 0 | 4 | 5 | 4 |\n| $y$ | 0 | 0 | 2 | 4 | 4 | 6 |\n\nCentres initiaux tirés parmi les données : $\\mu_1 = P_1$ et $\\mu_2 = P_3$.",
+      "enonce": "Quels sont les centres après la 1ʳᵉ mise à jour ?",
+      "choix": [
+        "$\\mu_1 = (0 ; 0)$ et $\\mu_2 = (3{,}25 ; 4)$",
+        "$\\mu_1 = (0{,}33 ; 0{,}67)$ et $\\mu_2 = (4{,}33 ; 4{,}67)$",
+        "$\\mu_1 = (0{,}5 ; 0)$ et $\\mu_2 = (3{,}25 ; 4)$",
+        "$\\mu_1 = (0{,}5 ; 0)$ et $\\mu_2 = (4{,}33 ; 4{,}67)$"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Groupe 1 = $\\{P_1, P_2\\}$ → $(0{,}5 ; 0)$. Groupe 2 = $\\{P_3, P_4, P_5, P_6\\}$ → $\\left(\\frac{0+4+5+4}{4} ; \\frac{2+4+4+6}{4}\\right) = (3{,}25 ; 4)$. Oublier $P_3$ donne $(4{,}33 ; 4{,}67)$ ; ce sont les centres **finaux**, atteints à l'itération suivante quand $P_3$ bascule dans le groupe 1."
+    },
+    {
+      "id": "km-008",
+      "type": "unique",
+      "exercice": "$K = 2$, distance euclidienne. Points :\n\n| Point | $P_1$ | $P_2$ | $P_3$ | $P_4$ | $P_5$ | $P_6$ |\n|---|---|---|---|---|---|---|\n| $x$ | 0 | 1 | 0 | 4 | 5 | 4 |\n| $y$ | 0 | 0 | 2 | 4 | 4 | 6 |\n\nCentres initiaux tirés parmi les données : $\\mu_1 = P_1$ et $\\mu_2 = P_3$.",
+      "enonce": "L'algorithme converge vers les groupes $\\{P_1,P_2,P_3\\}$ et $\\{P_4,P_5,P_6\\}$, de centres $(\\frac13 ; \\frac23)$ et $(\\frac{13}{3} ; \\frac{14}{3})$. Que vaut l'inertie finale $J$ ?",
+      "choix": [
+        "$\\approx 6{,}67$",
+        "$\\approx 3{,}33$",
+        "$\\approx 6{,}13$",
+        "$\\approx 1{,}11$"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Chaque groupe a une inertie de $\\frac59 + \\frac89 + \\frac{17}{9} = \\frac{30}{9} \\approx 3{,}33$, donc **$J = 60/9 \\approx 6{,}67$**. Pièges : $3{,}33$ = un seul groupe, $6{,}13$ = somme des distances **non élevées au carré**, $1{,}11$ = inertie moyenne par point."
+    },
+    {
+      "id": "km-009",
+      "type": "multiple",
+      "enonce": "Sur l'initialisation des centres, quelles affirmations sont justes ?",
+      "choix": [
+        "Le code « maison » du cours tire K observations au hasard parmi les données",
+        "Par défaut, scikit-learn utilise *k-means++*, qui éloigne les centres initiaux",
+        "Le résultat final ne dépend pas des centres initiaux choisis",
+        "Par défaut, scikit-learn place les centres sur une grille régulière"
+      ],
+      "reponses": [
+        0,
+        1
+      ],
+      "explication": "Le cours choisit K **observations au hasard parmi les données** ; `KMeans` utilise **k-means++** (centres initiaux éloignés les uns des autres). Le résultat **dépend** de l'initialisation : on peut tomber dans un minimum local."
+    },
+    {
+      "id": "km-010",
+      "type": "unique",
+      "enonce": "À quoi sert le paramètre `n_init` de `KMeans` ?",
+      "choix": [
+        "Fixer le nombre maximal d'itérations d'une exécution de l'algorithme",
+        "Essayer plusieurs valeurs de K et garder la meilleure selon le coude",
+        "Fixer le nombre de points tirés au hasard pour former chaque centre",
+        "Relancer avec plusieurs initialisations et garder le critère J minimal"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "J décroît à chaque itération, mais peut converger vers un **minimum local** selon les centres de départ. On relance donc `n_init` fois (dizaines, voire centaines) et on **garde l'exécution de J final minimal**. Le nombre d'itérations, c'est `max_iter`."
+    },
+    {
+      "id": "km-011",
+      "type": "unique",
+      "enonce": "Comment évolue le critère final $J(K)$ quand on augmente le nombre de groupes K ?",
+      "choix": [
+        "Il passe par un minimum pour le « bon » nombre de groupes",
+        "Il décroît, jusqu'à 0 quand K égale le nombre de données",
+        "Il croît, car chaque groupe compte moins de points",
+        "Il reste constant : seule l'assignation des points change"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Plus de centres = points plus proches de leur centre : **J décroît mécaniquement** (0 si chaque point est son propre centre). On ne peut donc pas choisir K en minimisant J : il faut la **méthode du coude** ou la **silhouette**."
+    },
+    {
+      "id": "km-012",
+      "type": "unique",
+      "exercice": "Inertie finale $J(K)$ obtenue par K-Means :\n\n| $K$ | 1 | 2 | 3 | 4 | 5 |\n|---|---|---|---|---|---|\n| $J(K)$ | 1000 | 600 | 150 | 130 | 120 |",
+      "enonce": "Que vaut $\\Delta_{rel}(3) = \\frac{J(2)-J(3)}{J(2)}$ ?",
+      "choix": [
+        "$0{,}25$",
+        "$0{,}75$",
+        "$450$",
+        "$3$"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "$\\frac{600-150}{600} = 0{,}75$ : passer de 2 à 3 groupes **divise l'inertie par 4**. $0{,}25 = J(3)/J(2)$, $3$ = division par $J(3)$, $450$ = baisse absolue."
+    },
+    {
+      "id": "km-013",
+      "type": "unique",
+      "exercice": "Inertie finale $J(K)$ obtenue par K-Means :\n\n| $K$ | 1 | 2 | 3 | 4 | 5 |\n|---|---|---|---|---|---|\n| $J(K)$ | 1000 | 600 | 150 | 130 | 120 |",
+      "enonce": "Quel nombre de groupes la méthode du coude suggère-t-elle ?",
+      "choix": [
+        "$K = 5$",
+        "$K = 3$",
+        "$K = 2$"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Baisses relatives : $0{,}40$ ($K=2$), **$0{,}75$ ($K=3$)**, puis $0{,}13$ et $0{,}08$. Après $K = 3$, ajouter un groupe n'apporte plus qu'un **gain marginal** : c'est le coude : on garde le dernier K qui apporte une forte baisse, juste avant la chute de $\\Delta_{rel}(4)$. $K = 5$ a la plus petite inertie, mais J décroît toujours avec K."
+    },
+    {
+      "id": "km-014",
+      "type": "multiple",
+      "enonce": "Sur le **score de silhouette**, quelles affirmations sont justes ?",
+      "choix": [
+        "$b(i)$ est la distance de $i$ au centre du cluster voisin le plus proche",
+        "Comme l'inertie, elle s'améliore mécaniquement quand K augmente",
+        "$a(i)$ est la distance moyenne de $i$ aux autres points de son cluster",
+        "Elle se calcule sans vérité terrain, sur des données non étiquetées",
+        "$s(i) < 0$ signale un point mieux placé dans un autre cluster"
+      ],
+      "reponses": [
+        2,
+        3,
+        4
+      ],
+      "explication": "$s(i) = \\frac{b(i)-a(i)}{\\max(a(i),b(i))}$ avec $b(i)$ = distance **moyenne aux points** du cluster voisin (pas à son centre). Elle **pénalise** un K trop grand (cluster coupé en deux → silhouette en baisse) et ne demande **aucune étiquette**."
+    },
+    {
+      "id": "km-015",
+      "type": "unique",
+      "exercice": "Pour un point $i$ : distance moyenne aux autres points de son cluster $a(i) = 0{,}8$ ; distance moyenne aux points du cluster voisin le plus proche $b(i) = 2{,}0$.",
+      "enonce": "Que vaut $s(i)$ ?",
+      "choix": [
+        "$0{,}4$",
+        "$1{,}2$",
+        "$-0{,}6$",
+        "$0{,}6$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "$s(i) = \\frac{2{,}0 - 0{,}8}{\\max(0{,}8 ; 2{,}0)} = \\frac{1{,}2}{2} = 0{,}6$ : point plutôt bien placé. $-0{,}6$ inverse $a$ et $b$, $1{,}2$ oublie la division, $0{,}4 = a/b$."
+    },
+    {
+      "id": "km-016",
+      "type": "multiple",
+      "enonce": "Sur l'**Adjusted Rand Index** (ARI), quelles affirmations sont justes ?",
+      "choix": [
+        "Il est la métrique de référence sur de vraies données non étiquetées",
+        "Il compare le clustering obtenu à une vérité terrain connue",
+        "Il vaut 1 pour deux partitions identiques à une renumérotation près",
+        "Il vaut 0 quand les groupes sont identiques mais numérotés autrement"
+      ],
+      "reponses": [
+        1,
+        2
+      ],
+      "explication": "L'ARI mesure l'accord avec une **vérité terrain** (1 = identique à une renumérotation près, 0 = pas mieux que le hasard). Il n'est calculable que sur données synthétiques ou étiquetées : sur données réelles, c'est la **silhouette** qui sert de référence."
+    },
+    {
+      "id": "km-017",
+      "type": "unique",
+      "enonce": "Après `clust = KMeans(n_clusters=K, n_init=10).fit(X_train)`, que renvoie `clust.score(X_val)` d'après le cours ?",
+      "choix": [
+        "L'opposé de l'inertie de X_val par rapport aux centres appris",
+        "Le score de silhouette moyen des points de X_val",
+        "La proportion de points de X_val affectés au bon groupe",
+        "L'inertie de X_val divisée par son nombre de points"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "`KMeans.score` renvoie **−inertie** (plus grand = mieux). Le cours divise ensuite par `len(X_val)` pour comparer train et validation, de tailles différentes, sur la même échelle (inertie moyenne par point)."
+    },
+    {
+      "id": "km-018",
+      "type": "unique",
+      "enonce": "On multiplie par 30 une variable X qui ne porte aucune information sur les deux groupes (séparés selon Y). Que se passe-t-il ?",
+      "choix": [
+        "K-Means coupe selon Y ; aucune correction n'est nécessaire",
+        "K-Means coupe selon X ; il faut augmenter K",
+        "K-Means coupe selon X ; il faut un `StandardScaler` avant",
+        "K-Means coupe selon X ; il faut augmenter `n_init`"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "La distance euclidienne est **dominée par la variable de plus grande échelle** : K-Means coupe selon X (ARI ≈ 0). Après **`StandardScaler`** (moyenne 0, écart-type 1), il retrouve les groupes (ARI ≈ 1). Plus d'initialisations n'y changent rien."
+    },
+    {
+      "id": "km-019",
+      "type": "multiple",
+      "enonce": "Deux cercles concentriques (`make_circles`) : quelles affirmations sont justes ?",
+      "choix": [
+        "K-Means réussit si l'on prend K = 2 avec un `n_init` élevé",
+        "Le clustering spectral (graphe de plus proches voisins) les retrouve",
+        "La variable $x^2 + y^2$ rendrait les deux groupes séparables",
+        "K-Means échoue, car il suppose des groupes à peu près convexes",
+        "Un `StandardScaler` suffit pour que K-Means les sépare"
+      ],
+      "reponses": [
+        1,
+        2,
+        3
+      ],
+      "explication": "K-Means découpe l'espace en régions convexes (Voronoï) : il **ne peut pas** séparer des cercles emboîtés, quels que soient l'échelle ou `n_init`. Les cercles diffèrent par leur **distance au centre** ($x^2+y^2$, idée du kernel trick), et le **clustering spectral** les sépare sans construire cette variable."
+    },
+    {
+      "id": "km-020",
+      "type": "unique",
+      "enonce": "Pourquoi le cours sépare-t-il train et validation même pour un algorithme non supervisé comme K-Means ?",
+      "choix": [
+        "Accélérer l'algorithme en réduisant le nombre de points à traiter",
+        "Ajuster les centres sur la validation, puis les évaluer sur le train",
+        "Vérifier que le K choisi reflète une vraie structure, pas l'échantillon",
+        "Pouvoir calculer l'ARI, qui exige un ensemble de validation étiqueté"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "On ajuste les centres sur le **train** et on vérifie sur la **validation** que le découpage **généralise** : si les courbes d'inertie moyenne se superposent, K = 4 reflète une vraie structure et non un hasard d'échantillonnage."
+    }
+  ]
+}

@@ -62,7 +62,7 @@
       "image": "fig-osi-fonctions.png",
       "legende": "Fonctions (à gauche) et couches OSI (à droite)",
       "enonce": "« **Définit les procédures d'accès aux supports** » : quelle couche ?",
-      "choix": ["Physique", "Liaison de données", "Réseau", "Application"],
+      "choix": ["Physique (1)", "Liaison (2)", "Réseau (3)", "Application (7)"],
       "reponses": [1],
       "explication": "Le **contrôle d'accès au support** est une fonction de la couche **liaison de données** (sous-couche MAC). La couche physique, elle, gère « câble, tensions, bits et débit ».",
       "page": 2
@@ -76,9 +76,9 @@
       "enonce": "Quelle est la définition de l'**encapsulation** ?",
       "choix": [
         "Découpage du flux de données en morceaux adaptés à la transmission",
-        "Processus d'ajout d'informations ou d'étiquettes portant sur la couche, nécessaires pour transmettre les données",
+        "Ajout, à chaque couche, des informations nécessaires à la transmission",
         "Méthode permettant de transmettre plusieurs flux sur un même canal",
-        "Règles formelles décrivant la structure et le processus de communication"
+        "Règles formelles décrivant la structure de la communication"
       ],
       "reponses": [1],
       "explication": "Encapsulation = **ajout d'un en-tête** (et parfois d'une queue) à chaque couche. Le découpage, c'est la **segmentation** ; plusieurs flux sur un canal, le **multiplexage** ; les règles formelles, un **protocole**.",
@@ -102,7 +102,7 @@
       "enonce": "Pourquoi les technologies à **commutation de circuits** ont-elles été abandonnées lors du développement d'Internet ?",
       "choix": [
         "Elles obligeaient à découper un message en blocs contenant des adresses",
-        "Les premiers réseaux à circuits n'établissaient pas automatiquement de circuit de secours en cas de panne",
+        "Aucun circuit de secours n'était établi automatiquement en cas de panne",
         "Elles gardaient un circuit ouvert même quand aucune donnée n'était transférée",
         "Mettre en place de nombreux circuits ouverts simultanément est coûteux"
       ],
@@ -118,7 +118,7 @@
         "Elle s'adapte rapidement à la perte d'équipements",
         "Elle exploite efficacement l'infrastructure du réseau",
         "Les paquets peuvent suivre différents chemins simultanément",
-        "Les ressources physiques sont réservées pour la communication en cours"
+        "Les ressources sont réservées pendant toute la communication"
       ],
       "reponses": [0, 1, 2],
       "explication": "Tolérance aux pannes, utilisation efficace du réseau, chemins multiples. La **réservation** de ressources caractérise la commutation de **circuits**.",
@@ -129,7 +129,7 @@
       "type": "unique",
       "enonce": "Quel est le rôle de la qualité de service (QoS) dans un réseau convergent ?",
       "choix": [
-        "Abandonner tout trafic dépassant la bande passante disponible",
+        "Abandonner le trafic qui dépasse la bande passante disponible",
         "Établir les priorités de livraison des différents messages",
         "Fixer une priorité identique pour toutes les communications",
         "Partager la bande passante inutilisée entre les services de l'entreprise"
@@ -143,10 +143,10 @@
       "type": "unique",
       "enonce": "Un serveur répond à une requête web. Après le formatage de la page et la création des segments TCP, quelle est l'opération suivante ?",
       "choix": [
-        "Le client désencapsule le segment et ouvre la page",
-        "Le serveur convertit les données en bits",
-        "Le serveur ajoute les adresses IP source et destination à chaque segment",
-        "Le serveur ajoute les adresses physiques (MAC) à chaque paquet"
+        "Le client désencapsule le segment et lit la page",
+        "Le serveur convertit les segments en bits",
+        "Le serveur ajoute les adresses IP à chaque segment",
+        "Le serveur ajoute les adresses MAC à chaque paquet"
       ],
       "reponses": [2],
       "explication": "On descend la pile dans l'ordre : segment → **paquet (adresses IP)** → trame (adresses MAC) → bits. Juste après les segments TCP viennent donc les adresses IP.",

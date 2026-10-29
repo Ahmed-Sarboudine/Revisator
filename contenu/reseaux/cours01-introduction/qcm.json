@@ -8,10 +8,10 @@
       "type": "unique",
       "enonce": "Qu'est-ce qu'un réseau informatique ?",
       "choix": [
-        "Un ensemble de câbles reliant des ordinateurs",
-        "Un ensemble de moyens matériels et logiciels permettant les communications entre ordinateurs, terminaux et éléments d'interconnexion",
-        "Un logiciel qui permet d'accéder à Internet",
-        "Un ensemble d'ordinateurs appartenant à la même entreprise"
+        "Un ensemble de câbles et de prises reliant physiquement plusieurs ordinateurs",
+        "Des moyens matériels et logiciels permettant aux équipements de communiquer",
+        "Un logiciel installé sur chaque poste pour lui donner accès à Internet",
+        "Un ensemble d'ordinateurs appartenant à une même entreprise ou un même site"
       ],
       "reponses": [1],
       "explication": "Un réseau informatique regroupe des moyens **matériels et logiciels** qui assurent les communications entre équipements et font circuler des données (texte, images, vidéo, son) selon des **protocoles** bien définis. Les câbles seuls ne suffisent pas.",
@@ -21,8 +21,8 @@
       "id": "intro-002",
       "type": "unique",
       "enonce": "En quelle année ARPANET a-t-il vu le jour ?",
-      "choix": ["1966", "1969", "1974", "1984"],
-      "reponses": [1],
+      "choix": ["1969", "1974", "1984", "1966"],
+      "reponses": [0],
       "explication": "Le projet est lancé en **1966**, ARPANET voit le jour en **1969**. TCP/IP est créé en 1974 et ARPANET l'adopte en 1984.",
       "page": 8
     },
@@ -30,8 +30,8 @@
       "id": "intro-003",
       "type": "unique",
       "enonce": "Quel est l'ordre des réseaux, de la plus petite à la plus grande couverture ?",
-      "choix": ["LAN < PAN < MAN < WAN", "PAN < LAN < MAN < WAN", "PAN < MAN < LAN < WAN", "LAN < MAN < PAN < WAN"],
-      "reponses": [1],
+      "choix": ["PAN < MAN < LAN < WAN", "LAN < PAN < MAN < WAN", "LAN < MAN < PAN < WAN", "PAN < LAN < MAN < WAN"],
+      "reponses": [3],
       "explication": "**PAN** (une dizaine de mètres) < **LAN** (une centaine de mètres) < **MAN** (une dizaine de kilomètres) < **WAN** (une centaine de kilomètres et plus).",
       "page": 10
     },
@@ -39,8 +39,8 @@
       "id": "intro-004",
       "type": "unique",
       "enonce": "Un ordinateur et un smartphone échangent des fichiers en Bluetooth. De quel type de réseau s'agit-il ?",
-      "choix": ["PAN", "LAN", "MAN", "WAN"],
-      "reponses": [0],
+      "choix": ["LAN", "WAN", "PAN", "MAN"],
+      "reponses": [2],
       "explication": "Le **PAN** (Personal Area Network) s'étend sur une dizaine de mètres et relie des appareils personnels, via USB ou Bluetooth.",
       "page": 11
     },
@@ -50,11 +50,11 @@
       "enonce": "Quelles affirmations sur le LAN sont vraies ?",
       "choix": [
         "Il s'étend sur une centaine de mètres",
-        "Il utilise des switchs pour connecter les machines au niveau local",
         "Ses communications passent généralement par Internet",
+        "Il utilise des switchs pour connecter les machines au niveau local",
         "La technologie typiquement utilisée est Ethernet"
       ],
-      "reponses": [0, 1, 3],
+      "reponses": [0, 2, 3],
       "explication": "Un LAN couvre environ une centaine de mètres (une entreprise), utilise des switchs en local et des routeurs pour relier les LANs, avec Ethernet. Ses communications sont généralement **locales, sans passer par Internet** : c'est le WAN qui passe par Internet.",
       "page": 12
     },
@@ -63,12 +63,12 @@
       "type": "unique",
       "enonce": "À quoi sert un VLAN ?",
       "choix": [
-        "À relier des réseaux locaux distants dans une ville",
-        "À créer des réseaux locaux logiquement distincts sur le même switch",
-        "À connecter un LAN à Internet",
-        "À augmenter le débit d'un câble Ethernet"
+        "À créer des réseaux logiquement distincts sur un même switch",
+        "À augmenter le débit disponible sur un câble Ethernet",
+        "À relier des réseaux locaux distants à l'échelle d'une ville",
+        "À connecter un réseau local à Internet via un routeur"
       ],
-      "reponses": [1],
+      "reponses": [0],
       "explication": "Un **VLAN** (Virtual LAN) crée des réseaux locaux **logiquement distincts sur le même switch**, pour améliorer la gestion et la sécurité du réseau.",
       "page": 12
     },
@@ -76,8 +76,8 @@
       "id": "intro-007",
       "type": "unique",
       "enonce": "Une banque relie ses agences situées dans plusieurs villes du pays. Quel type de réseau utilise-t-elle ?",
-      "choix": ["PAN", "LAN", "MAN", "WAN"],
-      "reponses": [3],
+      "choix": ["PAN", "LAN", "WAN", "MAN"],
+      "reponses": [2],
       "explication": "Le **WAN** relie des réseaux distants à l'échelle d'un pays (fibre optique, ATM, MPLS…). Le MAN se limite à l'échelle d'une ville.",
       "page": 14
     },
@@ -86,12 +86,12 @@
       "type": "unique",
       "enonce": "Que décrit la topologie **logique** d'un réseau ?",
       "choix": [
-        "L'emplacement physique du matériel",
-        "La manière dont le réseau transfère les trames d'un nœud à l'autre",
-        "Le type de câbles utilisés",
-        "Le nombre de machines connectées"
+        "Le type de câbles et de connecteurs utilisés entre les nœuds",
+        "Le nombre de machines connectées et leur répartition",
+        "L'emplacement physique des nœuds et le tracé des câbles",
+        "La manière dont les trames circulent d'un nœud à l'autre"
       ],
-      "reponses": [1],
+      "reponses": [3],
       "explication": "La topologie **physique** décrit l'organisation physique des nœuds et des câbles. La topologie **logique** décrit le parcours de l'information, quel que soit l'agencement physique.",
       "page": 16
     },
@@ -100,12 +100,12 @@
       "type": "multiple",
       "enonce": "Pourquoi la topologie en bus est-elle très peu utilisée ?",
       "choix": [
-        "Si le câble tombe en panne, le réseau n'existe plus",
         "Le câble commun entraîne une vitesse de transmission faible",
-        "Deux machines qui émettent en même temps provoquent des collisions",
-        "Elle nécessite un équipement central coûteux"
+        "Deux émissions simultanées provoquent des collisions",
+        "Elle nécessite un équipement central coûteux (switch)",
+        "Si le câble tombe en panne, le réseau n'existe plus"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [0, 1, 3],
       "explication": "En bus, toutes les machines partagent **un seul câble** : une panne du câble coupe tout, le débit est partagé, et deux émissions simultanées entrent en collision. Il n'y a pas d'équipement central (c'est le cas de l'étoile).",
       "page": 17
     },
@@ -114,10 +114,10 @@
       "type": "unique",
       "enonce": "Quel est le principal inconvénient de la topologie en étoile ?",
       "choix": [
-        "Les collisions sont fréquentes",
-        "Si l'élément central tombe en panne, plus aucune communication n'est possible",
-        "Il faut un câble entre chaque paire de machines",
-        "Les machines doivent attendre un jeton pour émettre"
+        "Les machines doivent attendre un jeton pour avoir le droit d'émettre",
+        "Une panne de l'élément central coupe toutes les communications",
+        "Les collisions sont fréquentes dès que plusieurs postes émettent",
+        "Il faut un câble dédié entre chaque paire de machines du réseau"
       ],
       "reponses": [1],
       "explication": "En étoile, tout passe par le nœud central (switch, routeur, hub…) : c'est un **point unique de défaillance**. Son avantage est l'absence de risque de collisions.",
@@ -128,12 +128,12 @@
       "type": "unique",
       "enonce": "Dans un réseau Token Ring (topologie en anneau), comment une machine obtient-elle le droit d'émettre ?",
       "choix": [
-        "Elle émet dès qu'elle a des données",
         "Elle attend que le switch central l'autorise",
         "Elle attend de recevoir le jeton (token)",
-        "Elle émet à tour de rôle selon son adresse IP"
+        "Elle émet à tour de rôle selon son adresse IP",
+        "Elle émet dès qu'elle a des données"
       ],
-      "reponses": [2],
+      "reponses": [1],
       "explication": "Dans un anneau Token Ring, les ordinateurs **attendent le jeton** pour transmettre, ce qui donne à chacun un accès équitable au réseau.",
       "page": 19
     },
@@ -142,12 +142,12 @@
       "type": "multiple",
       "enonce": "Quelles sont les caractéristiques de la topologie maillée ?",
       "choix": [
-        "Grande résistance aux pannes grâce à la redondance des connexions",
+        "Un point unique de défaillance au centre",
         "Coût élevé en câbles et en matériel",
-        "Un point central unique de défaillance",
-        "Une consommation d'énergie plus élevée"
+        "Une consommation d'énergie plus élevée",
+        "Grande résistance aux pannes (connexions redondantes)"
       ],
-      "reponses": [0, 1, 3],
+      "reponses": [1, 2, 3],
       "explication": "Dans un réseau maillé, les machines sont reliées entre elles : c'est **robuste** (redondance) mais **coûteux**, **complexe** et plus gourmand en **énergie**. Le point central de défaillance concerne l'étoile.",
       "page": 20
     },
@@ -156,12 +156,12 @@
       "type": "unique",
       "enonce": "Quelle est la différence entre un concentrateur (hub) et un commutateur (switch) ?",
       "choix": [
-        "Le hub choisit le port de sortie selon l'adresse de destination, le switch répète sur tous les ports",
-        "Le switch choisit le port de sortie selon l'adresse de destination, le hub répète sur tous les ports",
-        "Le hub relie des réseaux différents, le switch relie des machines d'un même réseau",
-        "Il n'y a aucune différence, ce sont deux noms du même équipement"
+        "Le switch aiguille selon l'adresse de destination, le hub diffuse partout",
+        "Le hub aiguille selon l'adresse de destination, le switch diffuse partout",
+        "Le hub relie des réseaux différents, le switch des machines d'un même réseau",
+        "Aucune : ce sont deux noms commerciaux du même équipement"
       ],
-      "reponses": [1],
+      "reponses": [0],
       "explication": "Le **hub** (non intelligent) régénère le signal et répercute les données vers tous les autres appareils. Le **switch** (intelligent) détermine sur quel port envoyer chaque trame en fonction de son adresse de destination.",
       "page": 27
     },
@@ -169,7 +169,7 @@
       "id": "intro-014",
       "type": "multiple",
       "enonce": "Parmi ces équipements, lequel ou lesquels sont qualifiés d'« intelligents » dans le cours ?",
-      "choix": ["Le concentrateur (hub)", "Le commutateur (switch)", "Le répéteur"],
+      "choix": ["Le concentrateur (hub)", "Le commutateur (switch)", "Le répéteur de signal"],
       "reponses": [1],
       "explication": "Seul le **switch** est intelligent : il sait vers quel port envoyer une trame. Le hub et le répéteur sont **non intelligents** : ils se contentent de régénérer le signal.",
       "page": 26
@@ -180,9 +180,9 @@
       "enonce": "Quels sont les rôles de la carte réseau (NIC) ?",
       "choix": [
         "Découper les données en blocs appelés trames",
-        "Transformer les données en signaux transmissibles sur le support",
+        "Porter un identifiant unique : l'adresse MAC",
         "Déterminer le meilleur chemin vers la destination",
-        "Porter un identifiant unique : l'adresse MAC"
+        "Transformer les données en signaux transmissibles sur le support"
       ],
       "reponses": [0, 1, 3],
       "explication": "La carte réseau fait l'interface entre la machine et le support : elle prépare les données en **trames**, les transforme en **signaux** et possède une **adresse MAC** unique. Choisir le chemin est le rôle du **routeur**.",
@@ -192,8 +192,8 @@
       "id": "intro-016",
       "type": "unique",
       "enonce": "Quelle commande affiche la configuration réseau (dont l'adresse MAC) sous Windows ?",
-      "choix": ["`ifconfig`", "`ipconfig`", "`ping`", "`netstat`"],
-      "reponses": [1],
+      "choix": ["`ping`", "`ifconfig`", "`netstat`", "`ipconfig`"],
+      "reponses": [3],
       "explication": "Sous Windows on utilise `ipconfig` (avec `ipconfig /all` pour voir l'adresse MAC), sous Linux `ifconfig`.",
       "page": 25
     },
@@ -201,7 +201,7 @@
       "id": "intro-017",
       "type": "unique",
       "enonce": "Quel équipement détermine le chemin qu'un paquet va emprunter entre plusieurs réseaux ?",
-      "choix": ["Le hub", "Le switch", "Le routeur", "Le répéteur"],
+      "choix": ["Le switch", "Le hub", "Le routeur", "Le répéteur"],
       "reponses": [2],
       "explication": "Le **routeur** interconnecte des réseaux et assure le **routage** des paquets, c'est-à-dire le choix de leur chemin.",
       "page": 28
@@ -211,12 +211,12 @@
       "type": "multiple",
       "enonce": "Que fait un répéteur ?",
       "choix": [
-        "Il régénère les signaux",
+        "Il filtre les trames selon l'adresse MAC de destination",
+        "Il régénère les signaux affaiblis par la distance",
         "Il augmente la longueur d'émission possible sur un support",
-        "Il peut relier deux types de supports différents (câble et fibre)",
-        "Il filtre les trames selon l'adresse MAC de destination"
+        "Il peut relier deux types de supports différents (câble et fibre)"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [1, 2, 3],
       "explication": "Le répéteur, non intelligent, **régénère** le signal pour aller plus loin et peut faire l'interface entre deux supports. Il ne lit pas les adresses : filtrer selon la MAC, c'est le rôle du switch.",
       "page": 29
     },
@@ -224,7 +224,7 @@
       "id": "intro-019",
       "type": "multiple",
       "enonce": "Quelles sont les caractéristiques de base qu'une architecture réseau doit prendre en compte ?",
-      "choix": ["La tolérance aux pannes", "L'évolutivité", "La qualité de service (QoS)", "La sécurité"],
+      "choix": ["La sécurité", "L'évolutivité", "La qualité de service (QoS)", "La tolérance aux pannes"],
       "reponses": [0, 1, 2, 3],
       "explication": "Les **4 besoins** d'une architecture réseau sont : tolérance aux pannes, évolutivité, qualité de service et sécurité.",
       "page": 30
@@ -234,12 +234,12 @@
       "type": "unique",
       "enonce": "Qu'est-ce qu'un réseau évolutif ?",
       "choix": [
-        "Un réseau dont le matériel est régulièrement remplacé",
-        "Un réseau qui accueille de nouveaux utilisateurs et applications sans dégrader le service des utilisateurs existants",
-        "Un réseau qui se répare tout seul en cas de panne",
-        "Un réseau dont la topologie change automatiquement"
+        "Un réseau qui se rétablit tout seul après la panne d'un équipement",
+        "Un réseau dont le matériel est régulièrement remplacé par du plus récent",
+        "Un réseau dont la topologie s'adapte automatiquement au trafic",
+        "Un réseau qui s'étend sans pénaliser les utilisateurs existants"
       ],
-      "reponses": [1],
+      "reponses": [3],
       "explication": "L'**évolutivité** est la capacité à s'étendre facilement sans affecter les performances pour les utilisateurs déjà présents. Se rétablir après une panne relève de la tolérance aux pannes.",
       "page": 32
     },
@@ -248,12 +248,12 @@
       "type": "unique",
       "enonce": "Quel est le rôle des FAI (ISP) de niveau 1 ?",
       "choix": [
-        "Être en contact direct avec les utilisateurs finaux",
-        "Fournir des services régionaux",
-        "Assurer les connexions nationales et internationales et composer le réseau fédérateur d'Internet",
-        "Vendre des box Internet aux particuliers"
+        "Assurer les liaisons nationales et internationales (réseau fédérateur)",
+        "Vendre des box et des abonnements Internet aux particuliers",
+        "Fournir des services régionaux et payer l'accès au niveau supérieur",
+        "Être en contact direct avec les utilisateurs finaux (abonnés)"
       ],
-      "reponses": [2],
+      "reponses": [0],
       "explication": "Niveau 1 : connexions nationales et internationales, **réseau fédérateur** d'Internet. Niveau 2 : services régionaux, payent le niveau 1. Niveau 3 : contact avec les utilisateurs finaux, payent le niveau 2.",
       "page": 33
     },
@@ -262,10 +262,10 @@
       "type": "unique",
       "enonce": "Comment assure-t-on une certaine qualité de service (QoS) dans un réseau convergent ?",
       "choix": [
-        "En augmentant le nombre de câbles",
-        "En classant les applications en catégories et en attribuant une priorité à chacune, via des files d'attente",
-        "En séparant les données, l'audio et la vidéo sur des réseaux différents",
-        "En limitant le nombre d'utilisateurs"
+        "En séparant données, audio et vidéo sur des réseaux physiques distincts",
+        "En classant les applications par priorité, gérée par des files d'attente",
+        "En limitant le nombre d'utilisateurs connectés simultanément",
+        "En augmentant le nombre de câbles pour accroître le débit total"
       ],
       "reponses": [1],
       "explication": "On **classe** les applications (audio, vidéo, données…), on attribue des **niveaux de priorité**, et les **files d'attente** font passer en premier le trafic prioritaire.",
@@ -276,12 +276,12 @@
       "type": "multiple",
       "enonce": "Quelles affirmations sur la commutation de circuits sont vraies ?",
       "choix": [
+        "Le circuit est libéré dès qu'aucune donnée ne circule",
         "Le réseau téléphonique (RTC) en est un exemple",
         "La liaison et le débit sont garantis pendant la communication",
-        "Le circuit est libéré dès qu'aucune donnée ne circule",
         "Si une liaison du circuit tombe en panne, l'appel est interrompu"
       ],
-      "reponses": [0, 1, 3],
+      "reponses": [1, 2, 3],
       "explication": "En commutation de circuits, les ressources sont **réservées** (débit garanti), mais le circuit reste établi **même sans communication**, et une panne interrompt l'appel : il faut rappeler sur un nouveau circuit.",
       "page": 39
     },
@@ -290,12 +290,12 @@
       "type": "multiple",
       "enonce": "Quelles affirmations sur la commutation de paquets (Internet) sont vraies ?",
       "choix": [
+        "Tous les paquets d'un message suivent le même chemin",
+        "Elle nécessite de gérer la qualité de service",
         "Le message est découpé en paquets",
-        "Tous les paquets suivent obligatoirement le même chemin",
-        "Aucun circuit n'est réservé entre l'émetteur et le destinataire",
-        "Elle nécessite de gérer la qualité de service"
+        "Aucun circuit n'est réservé entre l'émetteur et le destinataire"
       ],
-      "reponses": [0, 2, 3],
+      "reponses": [1, 2, 3],
       "explication": "Le message est découpé en **paquets** qui peuvent emprunter **des chemins différents** : une décision de routage est prise à chaque intersection. C'est sans connexion, évolutif et tolérant aux pannes, mais il faut contrôler la **QoS** (ex. prioriser le streaming live).",
       "page": 40
     },
@@ -303,8 +303,8 @@
       "id": "intro-025",
       "type": "unique",
       "enonce": "Combien de couches comptent respectivement le modèle TCP/IP et le modèle OSI ?",
-      "choix": ["4 et 7", "7 et 4", "5 et 7", "4 et 4"],
-      "reponses": [0],
+      "choix": ["7 et 4", "5 et 7", "4 et 7", "4 et 4"],
+      "reponses": [2],
       "explication": "**TCP/IP** : 4 couches (application, transport, Internet, accès réseau). **OSI** : 7 couches, c'est le modèle théorique de référence.",
       "page": 44
     },
@@ -312,8 +312,8 @@
       "id": "intro-026",
       "type": "unique",
       "enonce": "Dans le modèle TCP/IP, quelle couche détermine le meilleur chemin à travers le réseau ?",
-      "choix": ["Application", "Transport", "Internet", "Accès réseau"],
-      "reponses": [2],
+      "choix": ["Transport", "Internet", "Accès réseau", "Application"],
+      "reponses": [1],
       "explication": "La couche **Internet** détermine le meilleur chemin. La couche transport (TCP, UDP) assure la livraison de bout en bout, la couche accès réseau gère le matériel et les supports.",
       "page": 45
     },
@@ -321,8 +321,8 @@
       "id": "intro-027",
       "type": "unique",
       "enonce": "Comment appelle-t-on le PDU de la couche transport lorsque le protocole utilisé est UDP ?",
-      "choix": ["Un segment", "Un datagramme", "Un paquet", "Une trame"],
-      "reponses": [1],
+      "choix": ["Un segment UDP", "Une trame", "Un paquet IP", "Un datagramme"],
+      "reponses": [3],
       "explication": "Couche transport : **segment** avec TCP, **datagramme** avec UDP. Couche Internet : paquet. Couche accès réseau : trame, puis bits.",
       "page": 48
     },
@@ -331,12 +331,12 @@
       "type": "unique",
       "enonce": "Quel est l'ordre des PDU lors de l'encapsulation d'un message TCP ?",
       "choix": [
-        "Données → Paquet → Segment → Trame → Bits",
-        "Données → Segment → Paquet → Trame → Bits",
+        "Données → Trame → Segment → Paquet → Bits",
         "Bits → Trame → Paquet → Segment → Données",
-        "Données → Trame → Segment → Paquet → Bits"
+        "Données → Segment → Paquet → Trame → Bits",
+        "Données → Paquet → Segment → Trame → Bits"
       ],
-      "reponses": [1],
+      "reponses": [2],
       "explication": "En descendant la pile : les **données** reçoivent un en-tête de transport (**segment**), puis un en-tête réseau (**paquet**), puis un en-tête et une queue de trame (**trame**), et sont enfin codées en **bits**. L'ordre inverse correspond à la désencapsulation.",
       "page": 49
     },
@@ -345,8 +345,13 @@
       "type": "unique",
       "exercice": "Un serveur web envoie une page HTML à un client. Le message descend la pile TCP/IP du serveur, de la couche application à la couche accès réseau.",
       "enonce": "Dans quel en-tête sont placés les **ports** source et destination ?",
-      "choix": ["L'en-tête de trame", "L'en-tête IP", "L'en-tête du segment TCP", "La queue de trame"],
-      "reponses": [2],
+      "choix": [
+        "L'en-tête du segment TCP",
+        "L'en-tête du paquet IP",
+        "L'en-tête de la trame Ethernet",
+        "La queue de trame (FCS)"
+      ],
+      "reponses": [0],
       "explication": "Couche transport : les données sont encapsulées en **segments TCP**, dont l'en-tête contient les **ports** source et destination.",
       "page": 50
     },
@@ -356,12 +361,12 @@
       "exercice": "Un serveur web envoie une page HTML à un client. Le message descend la pile TCP/IP du serveur, de la couche application à la couche accès réseau.",
       "enonce": "Que contient la **trame** construite par la couche accès réseau ?",
       "choix": [
-        "Les adresses MAC source et destination dans l'en-tête",
         "Le paquet IP encapsulé",
+        "Le nom de domaine du serveur dans l'en-tête",
         "Une queue avec des informations de vérification d'erreurs",
-        "Le nom de domaine du serveur"
+        "Les adresses MAC source et destination dans l'en-tête"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [0, 2, 3],
       "explication": "La trame encapsule le **paquet IP** entre un **en-tête** (adresses MAC source et destination) et une **queue** (vérification des erreurs binaires). Le nom de domaine n'apparaît pas dans la trame.",
       "page": 50
     },
@@ -371,12 +376,12 @@
       "exercice": "Le client reçoit les bits envoyés par le serveur et les remonte dans sa pile TCP/IP (désencapsulation).",
       "enonce": "Que fait la couche accès réseau du client après avoir reformé la trame ?",
       "choix": [
-        "Elle supprime l'en-tête IP et transmet le segment",
-        "Si l'adresse MAC de destination est la sienne, elle retire l'en-tête et la queue de trame et transmet le paquet IP à la couche supérieure",
-        "Elle réassemble les données et affiche la page web",
-        "Elle renvoie la trame au serveur pour confirmer la réception"
+        "Elle renvoie la trame au serveur pour lui confirmer la réception",
+        "Elle retire l'en-tête IP puis transmet le segment TCP à la couche transport",
+        "Elle réassemble les segments et transmet la page web au navigateur",
+        "Si la MAC de destination est la sienne, elle remonte le paquet IP"
       ],
-      "reponses": [1],
+      "reponses": [3],
       "explication": "La couche accès réseau vérifie que l'**adresse MAC de destination** est celle du client, retire en-tête et queue de trame, puis transmet le **paquet IP**. Ensuite, la couche Internet retire l'en-tête IP, la couche transport retire l'en-tête TCP et l'application affiche la page.",
       "page": 51
     }

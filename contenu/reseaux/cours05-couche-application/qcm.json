@@ -7,7 +7,7 @@
       "id": "c5-001",
       "type": "unique",
       "enonce": "À quelles couches du modèle OSI correspond la couche Application du modèle TCP/IP ?",
-      "choix": ["À la couche 7 uniquement", "Aux couches 5, 6 et 7", "Aux couches 4 et 7", "Aux couches 6 et 7"],
+      "choix": ["Aux couches 6 et 7", "Aux couches 5, 6 et 7", "À la couche 7 uniquement", "Aux couches 4 et 7"],
       "reponses": [1],
       "explication": "La couche Application de TCP/IP englobe les couches **session (5)**, **présentation (6)** et **application (7)** du modèle OSI.",
       "page": 2
@@ -16,8 +16,8 @@
       "id": "c5-002",
       "type": "unique",
       "enonce": "Dans l'URL `http://www.cisco.com/index.html`, que désigne `www.cisco.com` ?",
-      "choix": ["Le protocole", "Le nom du serveur", "Le fichier demandé", "Le port"],
-      "reponses": [1],
+      "choix": ["Le numéro de port", "Le fichier demandé", "Le protocole", "Le nom du serveur"],
+      "reponses": [3],
       "explication": "Le navigateur découpe l'URL en trois parties : `http` (protocole), `www.cisco.com` (**nom du serveur**), `index.html` (fichier demandé). Le nom est ensuite converti en adresse IP par le DNS.",
       "page": 5
     },
@@ -26,10 +26,10 @@
       "type": "unique",
       "enonce": "Pour afficher `http://www.cisco.com/index.html`, que fait le navigateur juste avant d'envoyer sa requête HTTP ?",
       "choix": [
-        "Il demande au serveur DNS l'adresse IP de www.cisco.com",
-        "Il demande une adresse IP au serveur DHCP",
-        "Il télécharge index.html par FTP",
-        "Il envoie une requête POST"
+        "Il demande au DNS l'adresse IP de www.cisco.com",
+        "Il envoie une requête POST pour obtenir index.html",
+        "Il demande une adresse IP au serveur DHCP du réseau",
+        "Il télécharge index.html par FTP sur le port 21"
       ],
       "reponses": [0],
       "explication": "Un paquet IP a besoin d'une **adresse IP**, pas d'un nom : le navigateur interroge d'abord un **serveur de noms (DNS)**, puis envoie une requête **GET** pour index.html.",
@@ -39,8 +39,8 @@
       "id": "c5-004",
       "type": "unique",
       "enonce": "Quelle méthode HTTP sert à demander des informations au serveur **sans rien modifier** ?",
-      "choix": ["GET", "POST", "PUT", "DELETE"],
-      "reponses": [0],
+      "choix": ["DELETE", "POST", "GET", "PUT"],
+      "reponses": [2],
       "explication": "**GET** demande une ressource sans rien modifier. **POST** envoie des données pour créer (formulaire d'inscription), **PUT** met à jour des données existantes (modifier un profil).",
       "page": 11
     },
@@ -48,8 +48,8 @@
       "id": "c5-005",
       "type": "unique",
       "enonce": "Tu modifies l'adresse e-mail de ton profil sur un site. Quelle méthode HTTP l'application utilise-t-elle, d'après le cours ?",
-      "choix": ["GET", "POST", "PUT", "HEAD"],
-      "reponses": [2],
+      "choix": ["HEAD", "POST", "GET", "PUT"],
+      "reponses": [3],
       "explication": "**PUT** sert à **mettre à jour** des données existantes (`PUT /users/123`). POST sert à en **créer** (nouveau compte).",
       "page": 12
     },
@@ -57,8 +57,13 @@
       "id": "c5-006",
       "type": "multiple",
       "enonce": "Que contient la première ligne (ligne de requête) d'une requête HTTP ?",
-      "choix": ["La méthode (GET, POST…)", "L'URL", "La version du protocole (HTTP/1.1)", "Le code d'état (200, 404…)"],
-      "reponses": [0, 1, 2],
+      "choix": [
+        "L'URL de la ressource",
+        "La version du protocole (HTTP/1.1)",
+        "Le code d'état (200, 404…)",
+        "La méthode (GET, POST…)"
+      ],
+      "reponses": [0, 1, 3],
       "explication": "Ligne de requête : **MÉTHODE URL VERSION**, séparées par des espaces. Le **code d'état** se trouve dans la première ligne de la **réponse**.",
       "page": 10
     },
@@ -68,12 +73,12 @@
       "exercice": "Réponse reçue par le navigateur :\n\n```\nHTTP/1.1 200 OK\nServer: Apache/2.0.50 (Unix)\nContent-Type: text/html\nContent-Language: fr\n\n<html> ...\n```",
       "enonce": "Que signifie cette réponse ?",
       "choix": [
-        "La requête a réussi et le corps contient une page HTML",
-        "La page demandée n'existe pas",
-        "La requête est mal formée",
-        "Le serveur demande une authentification"
+        "La page demandée n'existe pas sur le serveur Apache",
+        "La requête a réussi et renvoie une page HTML",
+        "Le serveur demande une authentification du client",
+        "La requête est mal formée et doit être corrigée"
       ],
-      "reponses": [0],
+      "reponses": [1],
       "explication": "**200 OK** : la requête a réussi. `Content-Type: text/html` indique que le corps contient du HTML. **404** = Not Found, **400** = Bad Request.",
       "page": 14
     },
@@ -82,12 +87,12 @@
       "type": "unique",
       "enonce": "Pourquoi utilise-t-on le DNS ?",
       "choix": [
+        "Pour traduire un nom de domaine en adresse IP",
+        "Pour trouver l'adresse MAC d'une machine distante",
         "Pour attribuer des adresses IP aux machines",
-        "Pour traduire des noms de domaine en adresses IP",
-        "Pour chiffrer les communications",
-        "Pour trouver l'adresse MAC d'une machine"
+        "Pour chiffrer les communications sur le web"
       ],
-      "reponses": [1],
+      "reponses": [0],
       "explication": "Un paquet IP doit contenir une **adresse IP**. Le **DNS** (*Domain Name System*) traduit les noms de domaine en adresses IP, grâce à une organisation **hiérarchique en arbre**. Attribuer les adresses, c'est DHCP ; trouver la MAC, c'est ARP.",
       "page": 16
     },
@@ -95,7 +100,12 @@
       "id": "c5-009",
       "type": "unique",
       "enonce": "Dans le nom `www.exemple.com.`, que représente `com` ?",
-      "choix": ["Le nom d'hôte", "Le domaine de deuxième niveau", "Le domaine de premier niveau (TLD)", "La racine du DNS"],
+      "choix": [
+        "La zone racine du DNS",
+        "Le nom d'hôte de la machine",
+        "Le domaine de premier niveau",
+        "Le domaine de deuxième niveau"
+      ],
       "reponses": [2],
       "explication": "`www` : nom d'hôte ; `exemple` : domaine de deuxième niveau ; `com` : **TLD** (domaine de premier niveau) ; le **point final** : la **racine**, souvent omise.",
       "page": 17
@@ -105,12 +115,12 @@
       "type": "multiple",
       "enonce": "Quelles affirmations sur les serveurs racines du DNS sont vraies ?",
       "choix": [
-        "Il existe 13 identités de serveurs racines, nommées de A à M",
-        "Chaque identité est répliquée sur de nombreux serveurs physiques dans le monde",
         "C'est le point de départ de toute recherche DNS",
-        "Il n'existe que 13 machines physiques au total"
+        "Chaque identité est répliquée sur de nombreux serveurs",
+        "Il n'existe que 13 machines physiques dans le monde",
+        "Il existe 13 identités de serveurs racines (A à M)"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [0, 1, 3],
       "explication": "Les **13 serveurs racines** (a.root-servers.net à m.root-servers.net) sont chacun **répliqués** sur des centaines ou des milliers de serveurs physiques, pour la vitesse et la résilience.",
       "page": 20
     },
@@ -118,8 +128,8 @@
       "id": "c5-011",
       "type": "multiple",
       "enonce": "Quel(s) enregistrement(s) DNS associe(nt) un nom d'hôte à une adresse **IPv6** ?",
-      "choix": ["A", "AAAA", "PTR", "CNAME"],
-      "reponses": [1],
+      "choix": ["A", "CNAME", "PTR", "AAAA"],
+      "reponses": [3],
       "explication": "**AAAA** : nom → IPv6. **A** : nom → IPv4. **PTR** : IP → nom (résolution inverse). **CNAME** : alias.",
       "page": 21
     },
@@ -127,8 +137,8 @@
       "id": "c5-012",
       "type": "unique",
       "enonce": "Quel enregistrement DNS indique le serveur de **messagerie** d'un domaine ?",
-      "choix": ["NS", "MX", "SOA", "A"],
-      "reponses": [1],
+      "choix": ["MX", "A", "SOA", "NS"],
+      "reponses": [0],
       "explication": "**MX** (*Mail eXchange*), par exemple `example.com. IN MX 10 mail.example.com.` **NS** donne les serveurs de noms faisant autorité, **SOA** les informations administratives de la zone.",
       "page": 22
     },
@@ -137,10 +147,10 @@
       "type": "multiple",
       "enonce": "Quelles correspondances entre types d'enregistrements DNS et rôles sont correctes ?",
       "choix": [
-        "PTR : résolution inverse (adresse IP → nom)",
+        "SOA : informations administratives sur la zone",
         "CNAME : crée un alias vers un autre nom",
-        "NS : indique le serveur de messagerie",
-        "SOA : informations administratives sur la zone"
+        "NS : indique le serveur de mail du domaine",
+        "PTR : résolution inverse (adresse IP → nom)"
       ],
       "reponses": [0, 1, 3],
       "explication": "PTR = résolution inverse, CNAME = alias, SOA = autorité et administration de la zone. **NS** désigne les **serveurs de noms** qui font autorité ; la messagerie, c'est **MX**.",
@@ -151,12 +161,12 @@
       "type": "unique",
       "enonce": "En résolution DNS **récursive**, que se passe-t-il quand le serveur primaire ne connaît pas le nom ?",
       "choix": [
-        "Il renvoie une erreur au client",
-        "Il relaie la requête de serveur en serveur jusqu'à celui qui a autorité sur la zone, puis renvoie l'adresse",
+        "Il renvoie une erreur au client, qui doit réessayer",
         "Il renvoie au client l'adresse du prochain serveur à interroger",
-        "Il diffuse la requête en broadcast sur le réseau local"
+        "Il diffuse la requête en broadcast sur le réseau local",
+        "Il relaie la requête jusqu'au serveur qui a autorité, puis répond"
       ],
-      "reponses": [1],
+      "reponses": [3],
       "explication": "En **récursif**, la requête est **relayée** jusqu'au serveur qui fait autorité, et la réponse revient. En **itératif**, le serveur renvoie seulement **l'adresse du prochain serveur** à interroger.",
       "page": 23
     },
@@ -165,13 +175,13 @@
       "type": "multiple",
       "enonce": "Dans quels cas une recherche DNS **itérative** est-elle utilisée ?",
       "choix": [
-        "Quand le client demande la récursivité mais qu'elle est désactivée sur le serveur",
         "Quand le client ne demande pas la récursivité",
-        "Quand un serveur de premier niveau très sollicité ne relaie pas les requêtes",
-        "Uniquement pour la résolution inverse"
+        "Quand le client et le serveur sont sur le même réseau local",
+        "Quand la récursivité est désactivée sur le serveur",
+        "Pour les serveurs de premier niveau, trop sollicités"
       ],
-      "reponses": [0, 1, 2],
-      "explication": "L'itératif est utilisé quand la récursivité est **désactivée** ou **non demandée**, et souvent par les serveurs de **premier niveau** très sollicités, qui ne relaient pas. Rien ne le limite à la résolution inverse.",
+      "reponses": [0, 2, 3],
+      "explication": "L'itératif est utilisé quand la récursivité est **désactivée** ou **non demandée**, et souvent par les serveurs de **premier niveau** très sollicités, qui ne relaient pas. Le fait que client et serveur soient sur le même réseau local n'y change rien.",
       "page": 24
     },
     {
@@ -179,10 +189,10 @@
       "type": "multiple",
       "enonce": "Quelles affirmations sur DHCP sont vraies ?",
       "choix": [
-        "Il transmet des paramètres de configuration (dont l'adresse IP) aux machines",
-        "Il fonctionne sur un modèle client/serveur, avec les ports 67 et 68",
-        "Il utilise TCP au niveau transport",
-        "C'est une extension de BOOTP"
+        "Il fournit aux machines leur configuration IP",
+        "C'est une extension de BOOTP",
+        "Il s'appuie sur TCP en couche transport",
+        "Il suit un modèle client/serveur (ports 67 et 68)"
       ],
       "reponses": [0, 1, 3],
       "explication": "DHCP distribue la configuration IP en client/serveur (ports **67** et **68**) et étend BOOTP. Il utilise **UDP**, suffisant pour des échanges simples sur le réseau local.",
@@ -193,12 +203,12 @@
       "type": "unique",
       "enonce": "Quel est l'ordre des messages lorsqu'un client obtient une adresse par DHCP ?",
       "choix": [
-        "Discover → Offer → Request → Ack",
-        "Request → Offer → Discover → Ack",
         "Discover → Request → Offer → Ack",
+        "Request → Offer → Discover → Ack",
+        "Discover → Offer → Request → Ack",
         "Offer → Discover → Ack → Request"
       ],
-      "reponses": [0],
+      "reponses": [2],
       "explication": "Le client **diffuse** un DHCP**Discover**, le serveur propose une adresse (**Offer**), le client la demande (**Request**), le serveur confirme la configuration complète (**Ack**).",
       "page": 29
     },
@@ -207,10 +217,10 @@
       "type": "unique",
       "enonce": "Après avoir reçu sa configuration DHCP, le client fait une requête ARP sur l'adresse proposée et **obtient une réponse**. Que fait-il ?",
       "choix": [
-        "Il garde l'adresse : c'est normal",
-        "Il refuse la configuration avec un DHCPDecline et recommence",
-        "Il envoie un DHCPRelease",
-        "Il prend l'adresse MAC de la machine qui a répondu"
+        "Il adopte l'adresse MAC de la machine qui a répondu",
+        "Il refuse l'adresse par un DHCPDecline et recommence",
+        "Il garde l'adresse : la réponse confirme qu'elle est libre",
+        "Il rend l'adresse par un DHCPRelease puis se déconnecte"
       ],
       "reponses": [1],
       "explication": "Personne ne devrait répondre, car l'adresse n'est pas encore utilisée. Une réponse signifie un **conflit** : le client envoie un **DHCPDecline** et recommence. DHCPRelease sert à rendre son adresse en quittant le réseau.",
@@ -221,12 +231,12 @@
       "type": "unique",
       "enonce": "Qu'est-ce que le **bail** DHCP ?",
       "choix": [
-        "La plage d'adresses du serveur",
-        "La durée limitée pendant laquelle une adresse IP est attribuée au client",
-        "Le message envoyé pour quitter le réseau",
-        "Le port utilisé par le serveur"
+        "La durée limitée pendant laquelle l'adresse IP est attribuée",
+        "La plage d'adresses que le serveur peut distribuer",
+        "Le message envoyé par le client pour quitter le réseau",
+        "Le port UDP sur lequel écoute le serveur DHCP"
       ],
-      "reponses": [1],
+      "reponses": [0],
       "explication": "Le **bail** est la **durée limitée** d'attribution d'une adresse. À son terme, le client peut demander son renouvellement par un DHCPRequest.",
       "page": 30
     },
@@ -235,12 +245,12 @@
       "type": "multiple",
       "enonce": "Quelles affirmations sur POP3 et IMAP sont vraies ?",
       "choix": [
+        "POP3 synchronise la boîte mail sur plusieurs appareils",
         "IMAP synchronise la boîte mail sur tous les appareils",
         "POP3 télécharge les e-mails pour les lire hors ligne",
-        "Avec IMAP, les e-mails sont conservés sur le serveur",
-        "POP3 permet l'accès depuis plusieurs appareils synchronisés"
+        "Avec IMAP, les e-mails sont conservés sur le serveur"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [1, 2, 3],
       "explication": "**IMAP** : synchronisation, conservation sur le **serveur**, accès multiple. **POP3** : téléchargement sur l'**appareil**, lecture hors ligne, mais **pas** de synchronisation ni d'accès multiple.",
       "page": 35
     },
@@ -248,7 +258,7 @@
       "id": "c5-021",
       "type": "unique",
       "enonce": "Quel port SMTP les **clients** de messagerie utilisent-ils pour envoyer leurs e-mails, d'après le cours ?",
-      "choix": ["25", "110", "143", "587"],
+      "choix": ["143", "25", "110", "587"],
       "reponses": [3],
       "explication": "SMTP : port **25** entre serveurs de messagerie, port **587** pour les clients. 110 = POP3, 143 = IMAP.",
       "page": 32
@@ -258,12 +268,12 @@
       "type": "multiple",
       "enonce": "Quelles affirmations sur FTP sont vraies ?",
       "choix": [
-        "Il utilise le port 21 pour le canal de contrôle (commandes)",
         "Il utilise le port 20 pour le canal de données",
         "Il chiffre les identifiants par défaut",
+        "Il utilise le port 21 pour le canal de contrôle",
         "Il s'appuie sur TCP"
       ],
-      "reponses": [0, 1, 3],
+      "reponses": [0, 2, 3],
       "explication": "FTP utilise TCP avec **deux canaux** : contrôle (port **21**) et données (port **20**). Il n'est **pas sécurisé** : les identifiants passent en clair. Les alternatives sécurisées sont **FTPS** (SSL/TLS) et **SFTP** (via SSH).",
       "page": 37
     },
@@ -272,12 +282,12 @@
       "type": "multiple",
       "enonce": "Pourquoi faut-il préférer SSH à Telnet ?",
       "choix": [
-        "SSH chiffre les échanges, Telnet transmet tout en clair, mots de passe compris",
+        "SSH chiffre les échanges, Telnet circule en clair",
         "SSH permet l'authentification par clé publique",
-        "SSH permet aussi le transfert de fichiers et les tunnels",
-        "SSH utilise le port 23"
+        "SSH passe par le port 23, réservé aux accès sûrs",
+        "SSH permet tunnels et transfert de fichiers"
       ],
-      "reponses": [0, 1, 2],
+      "reponses": [0, 1, 3],
       "explication": "SSH (port **22**) chiffre les communications (RSA, AES, ECC), accepte l'authentification par clé et offre tunnels et transfert de fichiers. Telnet (port **23**) n'a aucun chiffrement et est déconseillé.",
       "page": 42
     }

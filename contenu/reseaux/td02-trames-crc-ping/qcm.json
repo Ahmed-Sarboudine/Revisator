@@ -13,9 +13,9 @@
       "enonce": "Quel protocole est transporté dans cette trame, et à qui est-elle envoyée ?",
       "choix": [
         "IPv4, à la machine 08:00:20:02:45:9E",
-        "ARP, à toutes les machines du réseau local (broadcast)",
+        "ARP, à FF:FF:FF:FF:FF:FF (broadcast)",
         "ARP, à la machine 08:00:20:02:45:9E",
-        "IPv6, en broadcast"
+        "IPv6, à FF:FF:FF:FF:FF:FF (broadcast)"
       ],
       "reponses": [1],
       "explication": "Les 6 premiers octets (MAC destination) sont `FF FF FF FF FF FF` : **broadcast**. Les 6 suivants sont la MAC source (08:00:20:02:45:9E). Le champ type, aux octets 13-14, vaut `08 06` : **ARP**.",
@@ -30,8 +30,8 @@
       "enonce": "Que contient le paquet ARP de cette trame ?",
       "choix": [
         "C'est une requête (opération 00 01)",
-        "L'adresse IP de l'émetteur est 129.104.254.6",
-        "L'adresse IP recherchée est 129.104.254.5",
+        "L'IP de l'émetteur est 129.104.254.6",
+        "L'IP recherchée est 129.104.254.5",
         "C'est une réponse (opération 00 02)"
       ],
       "reponses": [0, 1, 2],
@@ -44,10 +44,10 @@
       "exercice": "Trame 2 :\n\n```\n08 00 20 02 45 9E 08 00 20 07 0B 94 08 06 00 01 08 00\n06 04 00 02 08 00 20 07 0B 94 81 68 FE 05 08 00 20 02\n45 9E 81 68 FE 06\n```",
       "enonce": "Que représente cette trame, par rapport à la trame 1 (requête de 129.104.254.6 qui cherche 129.104.254.5) ?",
       "choix": [
-        "Une nouvelle requête ARP de 129.104.254.5",
-        "La réponse ARP : 129.104.254.5 a la MAC 08:00:20:07:0B:94",
-        "La réponse ARP : 129.104.254.5 a la MAC 08:00:20:02:45:9E",
-        "Un paquet IPv4 de données"
+        "Une requête ARP de 129.104.254.5 qui cherche 129.104.254.6",
+        "Réponse ARP : 129.104.254.5 a la MAC 08:00:20:07:0B:94",
+        "Réponse ARP : 129.104.254.5 a la MAC 08:00:20:02:45:9E",
+        "Un paquet IPv4 de données envoyé à 129.104.254.6"
       ],
       "reponses": [1],
       "explication": "Opération `00 02` = **réponse**. L'émetteur est 08:00:20:07:0B:94 avec l'IP `81 68 FE 05` = 129.104.254.5, et la trame est envoyée directement (unicast) au demandeur 08:00:20:02:45:9E.",
@@ -120,9 +120,9 @@
       "enonce": "Que peut-on déduire de ce résultat ?",
       "choix": [
         "La machine 193.93.28.7 est opérationnelle",
-        "Le délai de 0,7 ms indique une machine proche, sur le réseau local",
-        "Le paquet a traversé de nombreux routeurs",
-        "`icmp_seq=0` est le numéro de séquence de la première requête d'écho"
+        "0,7 ms : la machine est proche, sur le réseau local",
+        "Le paquet a traversé plusieurs routeurs en chemin",
+        "`icmp_seq=0` numérote la première requête d'écho"
       ],
       "reponses": [0, 1, 3],
       "explication": "1 paquet envoyé, 1 reçu : la machine répond. 0,7 ms aller-retour, c'est très court. **TTL = 255** (le maximum) n'a pas été décrémenté : **aucun routeur** n'a été traversé, chaque routeur retirant 1 au TTL.",
@@ -133,9 +133,9 @@
       "type": "unique",
       "enonce": "Sur quel principe repose l'outil **traceroute** ?",
       "choix": [
-        "Il envoie des paquets avec un TTL de 1, puis 2, puis 3… et chaque routeur où le TTL tombe à 0 renvoie un message ICMP « temps dépassé »",
-        "Il demande à chaque routeur sa table de routage",
-        "Il envoie une requête ARP à chaque routeur",
+        "Il envoie des paquets de TTL 1, 2, 3… et lit les ICMP « temps dépassé »",
+        "Il interroge un à un les routeurs du chemin pour obtenir leur table de routage",
+        "Il envoie une requête ARP à chaque routeur pour obtenir son adresse",
         "Il envoie un seul ping et lit la liste des routeurs dans la réponse"
       ],
       "reponses": [0],
@@ -148,10 +148,10 @@
       "exercice": "Extrait d'un traceroute :\n\n```\n 1  193.51.91.1      1 ms    1 ms    1 ms\n 7  193.48.53.49    39 ms   47 ms   44 ms\n 8  193.220.180.9   44 ms    *       *\n```",
       "enonce": "Que signifient les astérisques de la ligne 8 ?",
       "choix": [
-        "Le routeur est hors service",
-        "Aucune réponse n'a été reçue dans le délai imparti",
-        "Le paquet a atteint sa destination",
-        "Le délai dépasse 1000 ms"
+        "Le routeur de ce saut est hors service",
+        "Pas de réponse dans le délai d'attente",
+        "Le paquet a atteint sa destination finale",
+        "Le délai de réponse dépasse 1000 ms"
       ],
       "reponses": [1],
       "explication": "`*` = **pas de réponse dans le délai** (paquet ou réponse perdu, ou routeur qui filtre ou limite ses réponses ICMP). Le routeur répond d'ailleurs à la première tentative (44 ms) : il n'est pas en panne.",
@@ -162,10 +162,10 @@
       "type": "unique",
       "enonce": "Dans un traceroute, pourquoi la première ligne affiche-t-elle un délai d'au plus 1 ms ?",
       "choix": [
-        "C'est le serveur de destination",
-        "C'est le premier routeur, la passerelle du réseau local, très proche",
-        "Les premiers paquets sont prioritaires",
-        "Le TTL de départ est très élevé"
+        "C'est le serveur de destination final",
+        "C'est la passerelle par défaut, toute proche",
+        "Les premiers paquets sont traités en priorité",
+        "Le TTL du premier paquet est très élevé"
       ],
       "reponses": [1],
       "explication": "Le premier saut est la **passerelle par défaut**, sur le réseau local : l'aller-retour est donc très rapide.",

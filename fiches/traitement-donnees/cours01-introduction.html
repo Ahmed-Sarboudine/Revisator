@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Traitement de données, cours 1 : Introduction au machine learning</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Traitement de données · Fiche de révision · Cours 1</p>
+    <h1>Introduction au machine learning</h1>
+  </div>
+  <p class="source">Types d'apprentissage, train / validation / test,<br>sur-apprentissage, représentation, optimisation, métriques</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>Supervisé</strong> (vérité terrain) : régression = sortie <strong>quantitative</strong>, classification = sortie <strong>catégorielle</strong>. <strong>Non supervisé</strong> : clustering, détection d'anomalie.</li>
+    <li><strong>Paramètres µ</strong> = appris automatiquement sur train. <strong>Hyperparamètres λ</strong> = fixés avant (degré, k, régularisation α, choix de la méthode) → choisis sur <strong>validation</strong>.</li>
+    <li><strong>60 / 20 / 20</strong> : train apprend (extraction <strong>et</strong> modèle), validation choisit les hyperparamètres, test = <strong>une seule fois à la fin</strong>. Rien n'est réappris sur validation / test.</li>
+    <li>Erreur train <strong>baisse toujours</strong> avec la complexité ; erreur validation en <strong>creux</strong> : à gauche sous-apprentissage, à droite sur-apprentissage.</li>
+    <li>Précision = TP / (TP + FP) · Rappel = TP / (TP + FN) · Spécificité = TN / (TN + FP) · F<sub>1</sub> = 2PR / (P + R).</li>
+    <li>Biais fort = modèle trop simple ; variance forte = modèle trop complexe. EQM = Biais² + Var.</li>
+  </ul>
+</div>
+
+<h2>1. Les types d'apprentissage</h2>
+<p><strong>Machine learning</strong> : résoudre un problème automatiquement à partir d'<strong>exemples</strong>. La <strong>prédiction</strong> = réponse sur une <strong>nouvelle donnée</strong> (valeur, catégorie, groupe… pas forcément le futur).</p>
+<table>
+  <tr><th>Type</th><th>Données d'apprentissage</th><th>Applications</th><th>Exemples du cours</th></tr>
+  <tr><td><strong>Supervisé</strong></td><td>Couples (donnée, prédiction attendue) = <strong>vérité terrain</strong>, données labellisées</td><td><strong>Régression</strong> (sortie quantitative)<br><strong>Classification</strong> / discrimination (catégorielle)</td><td>Âge depuis une photo (régression) ; spam / non-spam, diagnostic, prix immobilier, visage</td></tr>
+  <tr><td><strong>Non supervisé</strong></td><td>Données seules, sans vérité terrain</td><td><strong>Clustering</strong> (groupes homogènes)<br><strong>Détection d'anomalie</strong></td><td>Regrouper des clients / acheteurs ; fraude bancaire, alarme de vidéosurveillance</td></tr>
+  <tr><td><strong>Semi-supervisé</strong></td><td>Petite partie labellisée <strong>à la main</strong>, grande partie non</td><td>Labelliser coûte cher, les données brutes abondent</td><td>Album photo classé par personne avec quelques photos annotées</td></tr>
+  <tr><td><strong>Auto-supervisé</strong></td><td><strong>Aucune étiquette humaine</strong> : le label est fabriqué à partir des données</td><td>Pré-entraînement massif puis affinage (fine-tuning) supervisé</td><td>Deviner le mot masqué / le mot suivant (GPT, BERT)</td></tr>
+</table>
+<p>Hors programme : renforcement (récompense), transfert, few-shot / zero-shot, et semi / auto-supervisé (panorama). L'UE porte sur le <strong>supervisé</strong> ; K-Means (cours 2) = exemple de non supervisé.</p>
+
+<h2>2. Démarche générale</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Deux étapes, toujours</strong> : (1) <strong>apprentissage</strong> (données + algorithme → modèle entraîné) : coût <strong>élevé</strong>, fait <strong>une seule fois</strong> ; (2) <strong>prédiction</strong> (modèle appliqué à une nouvelle donnée) : coût <strong>faible</strong>, fait <strong>à chaque fois</strong>.</p>
+  </div>
+  <div>
+    <p><strong>Chaîne de traitement</strong> : données brutes → <strong>extraction de représentation</strong> (vecteurs) → choix et apprentissage d'une méthode → <strong>évaluation</strong> (généralise-t-elle ?).</p>
+  </div>
+</div>
+<table>
+  <tr><th></th><th>Paramètres µ</th><th>Hyperparamètres λ</th></tr>
+  <tr><td>Fixés</td><td>Automatiquement, en minimisant un critère sur train (descente de gradient)</td><td><strong>Avant</strong> l'apprentissage, par essais successifs sur <strong>validation</strong></td></tr>
+  <tr><td>Exemples</td><td>Coefficients d'une droite de régression, a<sub>0</sub> … a<sub>D</sub></td><td>Degré D, nombre de voisins k, régularisation α, <strong>choix de la méthode</strong> ; pour l'extraction : taille du vocabulaire, nombre de bins, composantes PCA</td></tr>
+</table>
+<div class="boite piege"><span class="boite-titre">Piège : pourquoi ne pas tout apprendre sur train ?</span>Un critère évalué sur les <strong>mêmes données</strong> que celles qui servent à apprendre a toujours intérêt à devenir plus complexe : augmenter D ne peut que faire baisser l'erreur train, jusqu'à passer par tous les points. Le but est de bien marcher sur de <strong>nouvelles</strong> données.</div>
+
+<h2>3. Train, validation, test et validation croisée</h2>
+<table>
+  <tr><th>Ensemble</th><th>Part</th><th>Rôle</th></tr>
+  <tr><td><strong>Train</strong></td><td style="white-space:nowrap">60 %</td><td><strong>Apprend</strong> l'extraction de caractéristiques (dictionnaire, normalisation) <strong>et</strong> les paramètres du modèle</td></tr>
+  <tr><td><strong>Validation</strong></td><td style="white-space:nowrap">20 %</td><td><strong>Réapplique sans réapprendre</strong> ce qui a été appris sur train, mesure → choisit les <strong>hyperparamètres</strong> (répété)</td></tr>
+  <tr><td><strong>Test</strong></td><td style="white-space:nowrap">20 %</td><td>Mis de côté dès le départ, regardé <strong>une seule fois à la fin</strong> avec l'extraction et le modèle finaux → performance reportée</td></tr>
+</table>
+<div class="deux-colonnes">
+  <div class="boite piege"><span class="boite-titre">Piège : choisir sur le test</span>Garder le réglage qui a le meilleur score sur test, c'est <strong>adapter ses choix au test</strong> : son score n'est plus une estimation honnête, même sans avoir appris dessus. D'où le 3<sup>e</sup> ensemble, la validation. Train et validation très différents = <strong>signal d'alerte</strong> (sur-apprentissage) avant même le test.</div>
+  <div class="boite"><span class="boite-titre">Validation croisée k-fold</span>On découpe l'ensemble d'apprentissage (sans le test) en <strong>k parts égales</strong>. On répète k fois : <strong>k − 1 parts</strong> pour entraîner, la dernière pour valider (à tour de rôle), puis on <strong>moyenne</strong> les k scores. Toute la donnée sert à valider ; utile avec <strong>peu de données</strong> ; coût : <strong>k fois plus</strong> d'entraînements.</div>
+</div>
+<div class="boite methode">
+  <span class="boite-titre">Tuto : compter les exemples et les entraînements</span>
+  <div class="deux-colonnes">
+    <div class="exemple"><strong>Découpage 60 / 20 / 20 de N = 1200</strong><br>
+      Train = 0,6 × 1200 = <strong>720</strong> · validation = <strong>240</strong> · test = <strong>240</strong>.<br>Seuls les 720 de train apprennent µ (pas 960 = train + validation).</div>
+    <div class="exemple"><strong>k = 4 sur 800 exemples, 5 valeurs de D à comparer</strong><br>
+      Une part = 800 / 4 = 200. Chaque entraînement : 3 parts = <strong>600</strong> exemples.<br>Entraînements : k × nb de valeurs = 4 × 5 = <strong>20</strong>.</div>
+  </div>
+</div>
+
+<h2>4. Généralisation : risque, sous / sur-apprentissage</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Risque empirique</strong> (calculable, sur les P exemples) :<br><span class="formule">R<sub>emp</sub>(f) = (1/P) ∑<sub>i=1..P</sub> L(f(x<sub>i</sub>), y<sub>i</sub>)</span></p>
+    <p><strong>Risque réel</strong> (sur toute la distribution, inconnue) :<br><span class="formule">R(f) = E<sub>(x,y)</sub>[L(f(x), y)]</span></p>
+    <p><strong>Généraliser</strong> : faire que R<sub>emp</sub> soit un bon indicateur de R. On l'estime sur des exemples qui <strong>n'ont pas servi</strong> à apprendre. L = taux d'erreur, EQM…</p>
+    <p><strong>Métrique ≠ loss</strong> : la métrique la plus parlante n'est pas toujours dérivable, donc on entraîne sur une autre loss et on valide sur la métrique.</p>
+    <div class="exemple"><strong>Exemple</strong> : ŷ = (1,5 ; 2 ; 2 ; 4), y = (1 ; 2 ; 3 ; 4), L = (ŷ − y)²<br>Carrés : 0,25 ; 0 ; 1 ; 0 → somme 1,25 → R<sub>emp</sub> = 1,25 / 4 = <strong>0,3125</strong></div>
+  </div>
+  <div>
+    <table>
+      <tr><th></th><th>Sous-apprentissage</th><th>Sur-apprentissage</th></tr>
+      <tr><td>Cause</td><td>Modèle trop simple (ex. droite sur données non linéaires)</td><td>Modèle trop complexe, peu d'exemples : apprend <strong>par cœur</strong> le bruit</td></tr>
+      <tr><td>Erreur train</td><td><strong>Élevée</strong></td><td>Très faible</td></tr>
+      <tr><td>Erreur validation</td><td>Élevée</td><td><strong>Élevée</strong> (grand écart avec train)</td></tr>
+      <tr><td>Courbe validation</td><td>À gauche du creux</td><td>À droite du creux</td></tr>
+      <tr><td>Plus de données ?</td><td><strong>Ne corrige pas</strong> (D = 1 reste à 0,65)</td><td><strong>Compense</strong> la complexité (D = 16 : 2 500 → 0,03)</td></tr>
+    </table>
+    <div class="boite astuce"><span class="boite-titre">Choisir le degré</span>Le bon degré est au <strong>minimum de l'erreur de validation</strong>, jamais sur l'erreur train (baisse toujours) ni sur le test (réservé à la fin).</div>
+  </div>
+</div>
+<div class="boite"><span class="boite-titre">Malédiction de la dimension</span>En haute dimension, les données deviennent <strong>éparses</strong> : le volume à couvrir croît <strong>exponentiellement</strong> avec N. Avec 10 points par axe, il faut <strong>10<sup>N</sup></strong> points (10<sup>6</sup> en dimension 6, 10<sup>10</sup> en dimension 10). Les méthodes de <strong>voisinage</strong> (k plus proches voisins) en souffrent le plus. Plus de features ⇒ plus de données nécessaires.</div>
+
+<h2>5. Représenter les données (vectorisation, embedding)</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>La plupart des algorithmes veulent un vecteur <strong>x ∈ ℝ<sup>N</sup></strong>. Une bonne représentation :</p>
+    <ul>
+      <li>a une <strong>taille fixe N</strong>, quelle que soit la donnée brute ;</li>
+      <li><strong>préserve l'information utile</strong> pour la tâche ;</li>
+      <li>a une <strong>géométrie qui a du sens</strong> : données similaires → vecteurs proches, pas de fausse relation (ordre, distance, magnitude).</li>
+    </ul>
+    <table>
+      <tr><th>Donnée</th><th>Représentations citées</th></tr>
+      <tr><td>Catégorie</td><td><strong>One-hot</strong> (base canonique)</td></tr>
+      <tr><td>Texte</td><td>Nombre de mots, longueur moyenne (perdent beaucoup) ; <strong>bag-of-words</strong> (vocabulaire fixé à l'avance)</td></tr>
+      <tr><td>Image</td><td>Histogramme des <strong>couleurs</strong> (taille indépendante de la résolution) ; histogramme du <strong>gradient</strong> (contours, formes)</td></tr>
+      <tr><td>Son</td><td><strong>Spectre des fréquences</strong> sur une fenêtre de temps fixe</td></tr>
+    </table>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">One-hot plutôt que 1, 2, 3…</span>
+    <pre>XS = (1,0,0,0,0)   S  = (0,1,0,0,0)
+M  = (0,0,1,0,0)   L  = (0,0,0,1,0)
+XL = (0,0,0,0,1)</pre>
+    <p>Coder XS = 1 … XL = 5 imposerait des <strong>écarts et une magnitude</strong> (« XL = 5 × XS ») ; faux pour une catégorie sans ordre (couleur).</p>
+    <div class="exemple"><strong>Distance entre deux catégories</strong> : deux one-hot différents diffèrent sur 2 coordonnées → √(1² + 1²) = <strong>√2 ≈ 1,41</strong> pour <strong>toute</strong> paire : catégories équidistantes.</div>
+  </div>
+</div>
+
+<h2>6. Formulation et optimisation</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><span class="formule">ŷ = f<sub>µ,λ</sub>(x)</span> : x ∈ ℝ<sup>N</sup> donnée, ŷ ∈ ℝ ou {−1, 1}, <strong>µ paramètres</strong>, <strong>λ hyperparamètres</strong>.</p>
+    <p><span class="formule">g(f<sub>µ,λ</sub>, {X, Y})</span> : mesure à quel point f se trompe sur les données d'apprentissage (version calculable de R<sub>emp</sub>).</p>
+    <p><span class="formule">µ* = argmin<sub>µ</sub> g(f<sub>µ,λ</sub>, {X, Y})</span> : apprendre = minimiser g par rapport à µ (λ fixé).</p>
+    <table>
+      <tr><th>Convexe</th><th>Non convexe</th></tr>
+      <tr><td>Simple à analyser et résoudre, algorithme générique efficace, <strong>unique minimum global</strong></td><td>Difficile, pas d'algorithme générique, <strong>plusieurs minima</strong> locaux / globaux</td></tr>
+    </table>
+    <p>En pratique : pas de formule fermée, beaucoup de paramètres → méthode <strong>itérative</strong> (descente de gradient, TD 1).</p>
+  </div>
+  <div>
+    <div class="boite"><span class="boite-titre">Rasoir d'Ockham et régularisation</span>Même en convexe, trop de paramètres / trop peu de données ⇒ infinité de solutions. Entre solutions équivalentes, <strong>préférer la plus simple</strong> (moins de variables, petits coefficients). Deux leviers : un modèle assez simple (sans sous-apprendre), ou un modèle riche <strong>régularisé</strong> : ajouter <strong>α‖µ‖₂²</strong> au critère.</div>
+    <div class="boite methode"><span class="boite-titre">Exemple final : régression polynomiale</span>
+      <pre>f(x) = a0 + a1·x + … + aD·x^D
+µ = {a0, …, aD}   → D + 1 paramètres (train)
+λ = {D, α}        → choisis sur validation
+µ* = argmin  ∑ (f(xi) − yi)²  +  α‖µ‖²</pre>
+      <p>D = 5 → <strong>6 paramètres</strong> (ne pas oublier a<sub>0</sub>). α trop <strong>faible</strong> → sur-apprentissage (comme D trop grand) ; α trop <strong>fort</strong> → sous-apprentissage (comme D trop petit). Le test ne fait que <strong>confirmer a posteriori</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<h2>7. Évaluer un classifieur</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Le <strong>taux d'erreur</strong> (fausses prédictions / prédictions) est trop générique et <strong>trompeur</strong> : avec 990 positifs et 10 négatifs, répondre toujours « positif » donne <strong>1 %</strong> d'erreur mais une spécificité de <strong>0 %</strong>.</p>
+    <pre>                 Prédit Faux   Prédit Vrai
+Vérité Faux          TN            FP
+Vérité Vrai          FN            TP</pre>
+    <table>
+      <tr><th>Critère</th><th>Formule</th><th>Quand l'utiliser</th></tr>
+      <tr><td>Exactitude (accuracy)</td><td style="white-space:nowrap">(TP + TN) / total</td><td>Trompeuse si classes déséquilibrées</td></tr>
+      <tr><td><strong>Précision</strong></td><td style="white-space:nowrap">TP / (TP + FP)</td><td>Un <strong>faux positif</strong> coûte cher (anti-spam)</td></tr>
+      <tr><td><strong>Rappel</strong> = sensibilité</td><td style="white-space:nowrap">TP / (TP + FN)</td><td><strong>Rater un positif</strong> coûte cher (diagnostic)</td></tr>
+      <tr><td>Spécificité</td><td style="white-space:nowrap">TN / (TN + FP)</td><td>Taux de vrais négatifs</td></tr>
+      <tr><td>F<sub>1</sub></td><td style="white-space:nowrap">2PR / (P + R)</td><td>Moyenne <strong>harmonique</strong> de P et R</td></tr>
+      <tr><td>F<sub>β</sub></td><td>—</td><td><strong>β &gt; 1 → rappel</strong>, β &lt; 1 → précision</td></tr>
+    </table>
+    <p>Pas adaptés tels quels au <strong>multi-label</strong> : calcul par label, puis moyenne.</p>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Tuto : les deux tests de tumeur (positif = maligne)</span>
+    <pre>Test 1      préd. mal.  préd. bén.
+vraie mal.      98           2
+vraie bén.      50         850
+
+Test 2      préd. mal.  préd. bén.
+vraie mal.      55          45
+vraie bén.       5         895</pre>
+    <table>
+      <tr><th></th><th>Test 1</th><th>Test 2</th></tr>
+      <tr><td>Exactitude</td><td>948/1000 = 94,8 %</td><td>950/1000 = <strong>95,0 %</strong></td></tr>
+      <tr><td>Précision</td><td>98/148 = 66,2 %</td><td>55/60 = <strong>91,7 %</strong></td></tr>
+      <tr><td>Rappel</td><td>98/100 = <strong>98 %</strong></td><td>55/100 = 55 %</td></tr>
+      <tr><td>Spécificité</td><td>850/900 = 94,4 %</td><td>895/900 = 99,4 %</td></tr>
+      <tr><td>F<sub>1</sub></td><td><strong>79,0 %</strong></td><td>68,8 %</td></tr>
+    </table>
+    <p>Le test 2 gagne en exactitude mais <strong>rate 45 tumeurs sur 100</strong> : pour un diagnostic, on préfère le <strong>test 1</strong> (rappel).</p>
+  </div>
+</div>
+<div class="deux-colonnes">
+  <div class="boite piege"><span class="boite-titre">Pièges de calcul</span>
+    <ul>
+      <li>Précision : on divise par la <strong>colonne</strong> « prédit positif » ; rappel : par la <strong>ligne</strong> « vrai positif ».</li>
+      <li>MNIST (lignes = vraie classe) : rappel du 8 = 853 / 975 = <strong>87,5 %</strong>, précision = 853 / 956 = <strong>89,2 %</strong> ; exactitude = 9 272 / 10 000 = 92,7 %. Confusion max : <strong>vrai 4 prédit 9</strong> (36).</li>
+      <li>F<sub>1</sub> = moyenne <strong>harmonique</strong> : test 2 → 68,8 %, pas 73,3 %.</li>
+    </ul>
+  </div>
+  <div class="boite"><span class="boite-titre">Courbes et autres critères</span>
+    <ul>
+      <li><strong>Rappel-précision</strong> : on fait varier le <strong>seuil</strong> du score ; précision et rappel évoluent en sens opposé. Très informative si classes <strong>déséquilibrées</strong> ; résumée par son aire = <strong>précision moyenne</strong> (binaire et multi-label, pas multi-classes).</li>
+      <li><strong>ROC</strong> : sensibilité en fonction de <strong>1 − spécificité</strong>, pour tous les seuils → compare <strong>indépendamment du seuil</strong>. <strong>AUC</strong> : 1 = parfait, <strong>0,5 = aléatoire</strong>. Peut être trop optimiste sur classes très déséquilibrées.</li>
+      <li><strong>MCC</strong> (Matthews) : toute la matrice en un chiffre entre <strong>−1 et 1</strong>, robuste au déséquilibre.</li>
+    </ul>
+  </div>
+</div>
+<div class="boite astuce"><span class="boite-titre">No Free Lunch (Wolpert &amp; Macready)</span>Sur <strong>tous les problèmes possibles</strong>, aucun algorithme n'est meilleur qu'un autre (ni que l'aléatoire). Les vrais problèmes sont structurés : connaître <strong>plusieurs méthodes</strong>.</div>
+
+<h2>8. Annexe : biais et variance</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><span class="formule">EQM(ŷ) = E[(ŷ − y)²] = E[(E(ŷ) − y)²] + E[(E(ŷ) − ŷ)²] = Biais² + Var</span></p>
+    <p><strong>Biais</strong> = décalage du barycentre des prédictions par rapport à la vraie valeur → fort = modèle <strong>trop simple</strong> (sous-apprentissage). <strong>Variance</strong> = dispersion des prédictions d'un jeu d'entraînement à l'autre → forte = modèle <strong>trop complexe</strong>. Objectif : <strong>faible biais et faible variance</strong>.</p>
+  </div>
+  <div class="boite methode"><span class="boite-titre">Exemple</span>Biais = 0,3 et Var = 0,05 → EQM = 0,3² + 0,05 = 0,09 + 0,05 = <strong>0,14</strong>.<br>Piège : 0,35 = biais oublié au carré.</div>
+</div>
+
+</body>
+</html>
