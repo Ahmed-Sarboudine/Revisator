@@ -66,6 +66,7 @@ export async function trouverMatiere(idMatiere) {
 export const urlPdf = (idMatiere, idDoc) => `contenu/${idMatiere}/${idDoc}/document.pdf`;
 export const urlFiche = (idMatiere, idDoc) => `contenu/${idMatiere}/${idDoc}/fiche.pdf`;
 export const urlCorrige = (idMatiere, idDoc) => `contenu/${idMatiere}/${idDoc}/corrige.pdf`;
+export const urlSchema = (idMatiere, idDoc) => `contenu/${idMatiere}/${idDoc}/schema.pdf`;
 
 export async function chargerQcm(idMatiere, idDoc) {
   const chemin = `contenu/${idMatiere}/${idDoc}/qcm.json`;

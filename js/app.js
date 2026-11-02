@@ -19,6 +19,7 @@ import {
   urlPdf,
   urlFiche,
   urlCorrige,
+  urlSchema,
 } from "./donnees.js";
 import { lancerQuiz } from "./quiz.js";
 import { icones } from "./icones.js";
@@ -112,6 +113,11 @@ function ligneDocument(matiere, doc) {
       ${
         doc.corrige
           ? `<a class="bouton-fiche" href="${urlCorrige(matiere.id, doc.id)}" target="_blank" rel="noopener" aria-label="Corrigé de ${echapper(doc.titre)}">${icones.corrige}<span>Corrigé</span></a>`
+          : ""
+      }
+      ${
+        doc.schema
+          ? `<a class="bouton-fiche" href="${urlSchema(matiere.id, doc.id)}" target="_blank" rel="noopener" aria-label="Schéma de ${echapper(doc.titre)}">${icones.schema}<span>Schéma</span></a>`
           : ""
       }
       ${

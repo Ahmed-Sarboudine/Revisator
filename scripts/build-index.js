@@ -72,6 +72,7 @@ for (const idMatiere of sousDossiers(contenu)) {
       pdf: existsSync(join(dirMatiere, idDoc, "document.pdf")),
       fiche: existsSync(join(dirMatiere, idDoc, "fiche.pdf")),
       corrige: existsSync(join(dirMatiere, idDoc, "corrige.pdf")),
+      schema: existsSync(join(dirMatiere, idDoc, "schema.pdf")),
       nbQuestions: qcm.questions.length,
     });
   }

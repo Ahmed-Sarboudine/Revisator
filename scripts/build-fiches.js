@@ -1,6 +1,6 @@
 // Convertit les fiches HTML de fiches/<matiere>/<dossier>.html en PDF
 // dans contenu/<matiere>/<dossier>/fiche.pdf, avec Chrome (ou Edge) en mode headless.
-// Les corrigés de TD (fiches/<matiere>/<dossier>.corrige.html) donnent corrige.pdf.
+// Les corrigés de TD (<dossier>.corrige.html) donnent corrige.pdf, les schémas (<dossier>.schema.html) schema.pdf.
 // Usage : node scripts/build-fiches.js [motif]   (ex. node scripts/build-fiches.js cours03)
 // Variable d'environnement CHROME_PATH pour forcer le navigateur.
 
@@ -34,12 +34,13 @@ const fiches = readdirSync(dossierFiches)
     readdirSync(join(dossierFiches, matiere))
       .filter((f) => f.endsWith(".html") && f.includes(motif))
       .map((f) => {
+        // <dossier>.html → fiche.pdf ; <dossier>.corrige.html → corrige.pdf ; <dossier>.schema.html → schema.pdf
         const nom = basename(f, ".html");
-        const corrige = nom.endsWith(".corrige");
+        const suffixe = (nom.match(/\.(corrige|schema)$/) || [])[1];
         return {
           matiere,
-          dossier: corrige ? nom.slice(0, -".corrige".length) : nom,
-          sortie: corrige ? "corrige.pdf" : "fiche.pdf",
+          dossier: suffixe ? nom.slice(0, -(suffixe.length + 1)) : nom,
+          sortie: `${suffixe || "fiche"}.pdf`,
           source: join(dossierFiches, matiere, f),
         };
       })

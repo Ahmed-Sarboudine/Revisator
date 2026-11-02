@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Schéma — Les couches réseau (cours 1)</title>
+<style>
+  @page {
+    size: A4 landscape;
+    margin: 8mm 9mm;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  :root {
+    --app: #2a4bd7;
+    --app-doux: #e7ebfc;
+    --tra: #18763f;
+    --tra-doux: #e2f3e8;
+    --int: #b45d00;
+    --int-doux: #fbefdc;
+    --acc: #c0360f;
+    --acc-doux: #fbe8e1;
+    --texte: #1b1a17;
+    --texte-2: #6b6860;
+    --bordure: #e4e0d7;
+  }
+
+  body {
+    margin: 0;
+    color: var(--texte);
+    font: 8.4pt/1.35 "Segoe UI", system-ui, sans-serif;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+    border-bottom: 3px solid var(--texte);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 17pt;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  header p {
+    margin: 0;
+    color: var(--texte-2);
+    text-align: right;
+  }
+
+  /* Corps : flèche d'envoi | tableau des couches | flèche de réception */
+
+  .corps {
+    display: grid;
+    grid-template-columns: 26px 1fr 26px;
+    gap: 6px;
+  }
+
+  .fleche {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 8pt;
+    letter-spacing: 0.04em;
+  }
+
+  .fleche span {
+    writing-mode: vertical-rl;
+    white-space: nowrap;
+  }
+
+  .fleche.envoi {
+    background: linear-gradient(var(--app), var(--tra), var(--int), var(--acc));
+  }
+
+  .fleche.envoi span {
+    transform: rotate(180deg);
+  }
+
+  .fleche.reception {
+    background: linear-gradient(var(--acc), var(--int), var(--tra), var(--app));
+  }
+
+  .couches {
+    display: grid;
+    grid-template-columns: 74px 1.55fr 1.35fr 0.62fr 1.1fr 0.95fr 1.6fr;
+    border: 1px solid var(--bordure);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .couches > div {
+    padding: 5px 6px;
+    border-bottom: 1px solid var(--bordure);
+  }
+
+  .entete-col {
+    background: #f1efe9;
+    color: var(--texte-2);
+    font-size: 7pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .osi {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    font-size: 7.4pt;
+  }
+
+  .osi span {
+    display: flex;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .osi b {
+    min-width: 9px;
+  }
+
+  .nom {
+    font-size: 11pt;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 2px;
+  }
+
+  .pdu {
+    font-weight: 700;
+  }
+
+  .ajoute strong.c {
+    display: block;
+    font-size: 8.8pt;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 12px;
+  }
+
+  .app { background: var(--app-doux); }
+  .app .nom, .app.osi b, .app strong.c { color: var(--app); }
+  .tra { background: var(--tra-doux); }
+  .tra .nom, .tra.osi b, .tra strong.c { color: var(--tra); }
+  .int { background: var(--int-doux); }
+  .int .nom, .int.osi b, .int strong.c { color: var(--int); }
+  .acc { background: var(--acc-doux); }
+  .acc .nom, .acc.osi b, .acc strong.c { color: var(--acc); }
+
+  /* Encapsulation : le paquet qui grossit */
+
+  .paquet {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+  }
+
+  .bloc {
+    display: flex;
+    font-size: 7pt;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .bloc span {
+    padding: 4px 4px;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .bloc span:first-child {
+    border-radius: 3px 0 0 3px;
+  }
+
+  .bloc span:last-child {
+    border-radius: 0 3px 3px 0;
+  }
+
+  .b-app { background: var(--app); flex: 1; text-align: center; }
+  .b-tra { background: var(--tra); }
+  .b-int { background: var(--int); }
+  .b-acc { background: var(--acc); }
+
+  .bits {
+    font-family: Consolas, monospace;
+    font-size: 7.5pt;
+    color: var(--acc);
+    letter-spacing: 0.08em;
+  }
+
+  .note {
+    color: var(--texte-2);
+    font-size: 7.2pt;
+  }
+
+  /* Bas de page */
+
+  .bas {
+    display: grid;
+    grid-template-columns: 1.15fr 1.15fr 1fr;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .carte {
+    padding: 6px 8px;
+    border: 1px solid var(--bordure);
+    border-radius: 8px;
+  }
+
+  .carte h2 {
+    margin: 0 0 3px;
+    font-size: 9pt;
+  }
+
+  .carte ol {
+    margin: 0;
+    padding-left: 15px;
+  }
+
+  .adresses {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.8pt;
+  }
+
+  .adresses td {
+    padding: 2px 4px;
+    border-bottom: 1px solid var(--bordure);
+    vertical-align: top;
+  }
+
+  .adresses tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .mnemo {
+    margin-top: 4px;
+    padding: 3px 6px;
+    background: #f1efe9;
+    border-radius: 5px;
+  }
+
+  code {
+    font-family: Consolas, monospace;
+    font-size: 0.95em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Les couches du réseau : qui fait quoi ?</h1>
+  </div>
+  <p>Réseaux · cours 1 · modèle TCP/IP (4 couches) et correspondance OSI (7 couches)<br>
+  Exemple suivi dans tout le schéma : un <strong>serveur web envoie une page HTML</strong> à un navigateur</p>
+</header>
+
+<div class="corps">
+  <div class="fleche envoi"><span>ENVOI : on descend, chaque couche AJOUTE son en-tête (encapsulation) ↓</span></div>
+
+  <div class="couches">
+    <div class="entete-col">OSI</div>
+    <div class="entete-col">Couche TCP/IP et son rôle</div>
+    <div class="entete-col">Ce que la couche ajoute</div>
+    <div class="entete-col">PDU</div>
+    <div class="entete-col">Protocoles</div>
+    <div class="entete-col">Équipements</div>
+    <div class="entete-col">Le paquet à ce stade</div>
+
+    <!-- Application -->
+    <div class="app osi"><span><b>7</b> Application</span><span><b>6</b> Présentation</span><span><b>5</b> Session</span></div>
+    <div class="app">
+      <div class="nom">Application</div>
+      Rend le service à l'utilisateur : <strong>produit et met en forme les données</strong> (page web, e-mail, fichier…). Gère aussi le format (codage, chiffrement) et le dialogue.
+    </div>
+    <div class="app ajoute"><strong class="c">Les données</strong>Ex. : le code HTML de la page, envoyé par HTTP.</div>
+    <div class="app pdu">Données</div>
+    <div class="app">HTTP / HTTPS, FTP, SMTP, POP3, IMAP, DNS, DHCP, SSH, Telnet</div>
+    <div class="app">Ordinateurs et serveurs (logiciels : navigateur, serveur web…)</div>
+    <div class="app paquet">
+      <div class="bloc"><span class="b-app">Données (HTML)</span></div>
+    </div>
+
+    <!-- Transport -->
+    <div class="tra osi"><span><b>4</b> Transport</span></div>
+    <div class="tra">
+      <div class="nom">Transport</div>
+      Livre les données <strong>de bout en bout, à la bonne application</strong> : découpe en segments, les remet dans l'ordre ; TCP vérifie la réception (fiable), UDP non (rapide).
+    </div>
+    <div class="tra ajoute"><strong class="c">Ports source et destination</strong>Ex. : port 80 = HTTP côté serveur, un port aléatoire côté client.</div>
+    <div class="tra pdu">Segment (TCP)<br>Datagramme (UDP)</div>
+    <div class="tra">TCP, UDP</div>
+    <div class="tra note">Aucun équipement dédié : c'est le système des machines (client, serveur) qui le gère</div>
+    <div class="tra paquet">
+      <div class="bloc"><span class="b-tra">Ports</span><span class="b-app">Données</span></div>
+      <div class="note">= segment</div>
+    </div>
+
+    <!-- Internet -->
+    <div class="int osi"><span><b>3</b> Réseau</span></div>
+    <div class="int">
+      <div class="nom">Internet</div>
+      Trouve <strong>le meilleur chemin entre les réseaux</strong> (routage), d'une machine à l'autre, grâce aux adresses logiques.
+    </div>
+    <div class="int ajoute"><strong class="c">Adresses IP source et destination</strong>+ TTL, protocole transporté… L'adresse IP identifie la machine sur Internet.</div>
+    <div class="int pdu">Paquet</div>
+    <div class="int">IPv4, IPv6, ICMP (ping), protocoles de routage (RIP, OSPF)</div>
+    <div class="int"><strong>Routeur</strong> : lit l'IP et choisit le chemin</div>
+    <div class="int paquet">
+      <div class="bloc"><span class="b-int">IP</span><span class="b-tra">Ports</span><span class="b-app">Données</span></div>
+      <div class="note">= paquet</div>
+    </div>
+
+    <!-- Accès réseau -->
+    <div class="acc osi"><span><b>2</b> Liaison</span><span><b>1</b> Physique</span></div>
+    <div class="acc">
+      <div class="nom">Accès réseau</div>
+      <strong>Liaison</strong> : amène la trame jusqu'à la machine voisine du même réseau, contrôle les erreurs.<br>
+      <strong>Physique</strong> : transforme les bits en signaux (électriques, lumineux, ondes).
+    </div>
+    <div class="acc ajoute"><strong class="c">Adresses MAC source et destination</strong>+ type, et une <strong>queue</strong> (FCS : contrôle d'erreurs par CRC). Puis tout est codé en <strong>bits</strong>.</div>
+    <div class="acc pdu">Trame<br>puis bits</div>
+    <div class="acc">Ethernet, Wi-Fi ; ARP (trouve la MAC à partir de l'IP)</div>
+    <div class="acc"><strong>Switch</strong>, carte réseau (couche 2) ; <strong>hub</strong>, répéteur, câbles, fibre (couche 1)</div>
+    <div class="acc paquet">
+      <div class="bloc"><span class="b-acc">MAC</span><span class="b-int">IP</span><span class="b-tra">Ports</span><span class="b-app">Données</span><span class="b-acc">FCS</span></div>
+      <div class="note">= trame, puis sur le câble :</div>
+      <div class="bits">0110 1001 0100 0101 1100…</div>
+    </div>
+  </div>
+
+  <div class="fleche reception"><span>RÉCEPTION : on remonte, chaque couche RETIRE son en-tête (désencapsulation) ↑</span></div>
+</div>
+
+<div class="bas">
+  <div class="carte">
+    <h2>À l'envoi, sur le serveur web (on descend)</h2>
+    <ol>
+      <li><strong>Application</strong> : la page HTML est fournie par HTTP.</li>
+      <li><strong>Transport</strong> : découpée en segments TCP, chacun avec les <strong>ports</strong> (80 → port du client).</li>
+      <li><strong>Internet</strong> : chaque segment devient un paquet avec les <strong>IP</strong> du serveur et du client.</li>
+      <li><strong>Accès réseau</strong> : chaque paquet devient une trame avec les <strong>MAC</strong> et la queue FCS, puis la carte réseau l'envoie en <strong>bits</strong> sur le câble.</li>
+    </ol>
+  </div>
+  <div class="carte">
+    <h2>À la réception, sur le client (on remonte)</h2>
+    <ol>
+      <li><strong>Accès réseau</strong> : les bits redeviennent une trame ; si la <strong>MAC de destination</strong> est la sienne, il retire en-tête et queue → paquet.</li>
+      <li><strong>Internet</strong> : il retire l'en-tête IP → segment.</li>
+      <li><strong>Transport</strong> : il retire l'en-tête TCP et <strong>réassemble</strong> les segments dans l'ordre → données.</li>
+      <li><strong>Application</strong> : le navigateur affiche la page.</li>
+    </ol>
+  </div>
+  <div class="carte">
+    <h2>Quelle adresse sert à quoi ?</h2>
+    <table class="adresses">
+      <tr><td><strong style="color:var(--tra)">Port</strong></td><td><strong>Quelle application</strong> sur la machine (80 = web, 25 = mail…)</td></tr>
+      <tr><td><strong style="color:var(--int)">IP</strong></td><td><strong>Quelle machine</strong> sur Internet, de la source à la destination finale</td></tr>
+      <tr><td><strong style="color:var(--acc)">MAC</strong></td><td><strong>Quelle carte réseau</strong> sur le réseau local, d'un équipement au suivant</td></tr>
+    </table>
+    <div class="mnemo">OSI de 1 à 7 : <strong>P</strong>our <strong>L</strong>e <strong>R</strong>éseau, <strong>T</strong>out <strong>S</strong>e <strong>P</strong>asse <strong>A</strong>utomatiquement</div>
+  </div>
+</div>
+
+</body>
+</html>
