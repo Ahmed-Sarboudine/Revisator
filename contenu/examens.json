@@ -20,6 +20,7 @@
     },
     {
       "matiere": "Stats",
+      "revision": "probabilites",
       "epreuves": [{ "nom": "Exam", "date": "2026-11-16" }]
     },
     {

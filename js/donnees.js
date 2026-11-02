@@ -85,9 +85,10 @@ export async function questionsDuDocument(matiere, doc) {
   return qcm.questions.map((q) => ({ q, matiere, doc, cle: `${doc.id}/${q.id}` }));
 }
 
-// Questions de toute la matière, regroupées par document.
+// Questions de toute la matière, regroupées par document (les documents sans QCM sont ignorés).
 export async function questionsDeLaMatiere(matiere) {
-  return Promise.all(matiere.documents.map((doc) => questionsDuDocument(matiere, doc)));
+  const avecQcm = matiere.documents.filter((doc) => doc.nbQuestions > 0);
+  return Promise.all(avecQcm.map((doc) => questionsDuDocument(matiere, doc)));
 }
 
 export function melanger(liste) {

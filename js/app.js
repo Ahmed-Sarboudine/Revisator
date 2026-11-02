@@ -2,6 +2,8 @@
 //   #/                     accueil, liste des matières
 //   #/m/<matiere>          cours, TDs, examen et erreurs d'une matière
 //   #/q/<matiere>/<doc>    QCM d'un cours ou d'un TD
+//   #/d/<matiere>/<doc>    document sans QCM : énoncé, aide (cours, fiche), correction
+//   #/lire/<matiere>/<doc>/<fichier>[/<page>]  un PDF du site dans le lecteur intégré
 //   #/examen/<matiere>/<n> examen de n questions sur toute la matière
 //   #/erreurs/<matiere>    questions ratées de la matière
 //   #/examens              liste des exams du semestre
@@ -19,12 +21,12 @@ import {
   urlPdf,
   urlFiche,
   urlCorrige,
-  urlSchema,
 } from "./donnees.js";
 import { lancerQuiz } from "./quiz.js";
 import { icones } from "./icones.js";
 import { pageExamens, prochainExamen, texteCompteARebours } from "./examens.js";
 import { boutonMenu, rendreNav } from "./nav.js";
+import { monterLecteur } from "./lecteur.js";
 
 const app = document.getElementById("app");
 const TAILLES_EXAMEN = [20, 40, 60];
@@ -73,7 +75,7 @@ async function accueil() {
         ? `<p class="vide">Aucune matière pour l'instant. Ajoute un dossier dans <code>contenu/</code> pour commencer.</p>`
         : ""
     }
-    <ul class="liste apparition">
+    <ul class="liste grille-matieres apparition">
       ${matieres
         .map((m) => {
           const nbErreurs = erreursDe(m.id).length;
@@ -83,7 +85,9 @@ async function accueil() {
               <span class="monogramme" aria-hidden="true">${echapper(m.nom.charAt(0).toUpperCase())}</span>
               <span class="ligne-corps">
                 <span class="ligne-titre">${echapper(m.nom)}</span>
-                <span class="meta">${pluriel(m.documents.length, "document")} · ${pluriel(totalQuestions(m), "question")}</span>
+                <span class="meta">${[pluriel(m.documents.length, "document"), totalQuestions(m) > 0 ? pluriel(totalQuestions(m), "question") : ""]
+                  .filter(Boolean)
+                  .join(" · ")}</span>
               </span>
               ${nbErreurs > 0 ? `<span class="pastille">${nbErreurs} à revoir</span>` : ""}
               <span class="chevron">${icones.suivant}</span>
@@ -95,34 +99,41 @@ async function accueil() {
 }
 
 function ligneDocument(matiere, doc) {
+  const sansQcm = doc.nbQuestions === 0;
+  const meta = !sansQcm
+    ? pluriel(doc.nbQuestions, "question")
+    : doc.document === "td"
+      ? "Énoncé, aide et correction"
+      : "Cours et fiche";
   return `
     <div class="doc">
-      <a class="ligne" href="#/q/${matiere.id}/${doc.id}">
+      <a class="ligne" href="#/${sansQcm ? "d" : "q"}/${matiere.id}/${doc.id}">
         <span class="numero ${doc.document}" aria-hidden="true">${doc.document === "td" ? "TD" : ""}${numero(doc)}</span>
         <span class="ligne-corps">
           <span class="ligne-titre">${echapper(doc.titre)}</span>
-          <span class="meta">${pluriel(doc.nbQuestions, "question")}</span>
+          <span class="meta">${meta}</span>
         </span>
         <span class="chevron">${icones.suivant}</span>
       </a>
       ${
         doc.fiche
-          ? `<a class="bouton-fiche" href="${urlFiche(matiere.id, doc.id)}" target="_blank" rel="noopener" aria-label="Fiche de révision de ${echapper(doc.titre)}">${icones.fiche}<span>Fiche</span></a>`
+          ? `<a class="bouton-fiche" href="${routePdf(matiere.id, doc.id, "fiche.pdf")}" aria-label="Fiche de révision de ${echapper(doc.titre)}">${icones.fiche}<span>Fiche</span></a>`
           : ""
       }
       ${
-        doc.corrige
-          ? `<a class="bouton-fiche" href="${urlCorrige(matiere.id, doc.id)}" target="_blank" rel="noopener" aria-label="Corrigé de ${echapper(doc.titre)}">${icones.corrige}<span>Corrigé</span></a>`
+        // sans QCM, la correction se découvre sur la page de l'exercice, pas directement depuis la liste
+        doc.corrige && !sansQcm
+          ? `<a class="bouton-fiche" href="${routePdf(matiere.id, doc.id, "corrige.pdf")}" aria-label="Corrigé de ${echapper(doc.titre)}">${icones.corrige}<span>Corrigé</span></a>`
           : ""
       }
       ${
         doc.schema
-          ? `<a class="bouton-fiche" href="${urlSchema(matiere.id, doc.id)}" target="_blank" rel="noopener" aria-label="Schéma de ${echapper(doc.titre)}">${icones.schema}<span>Schéma</span></a>`
+          ? `<a class="bouton-fiche" href="${routePdf(matiere.id, doc.id, "schema.pdf")}" aria-label="Schéma de ${echapper(doc.titre)}">${icones.schema}<span>Schéma</span></a>`
           : ""
       }
       ${
         doc.pdf
-          ? `<a class="bouton-icone bouton-pdf" href="${urlPdf(matiere.id, doc.id)}" target="_blank" rel="noopener" aria-label="Ouvrir le PDF du cours ${echapper(doc.titre)}">${icones.document}</a>`
+          ? `<a class="bouton-icone bouton-pdf" href="${routePdf(matiere.id, doc.id, "document.pdf")}" aria-label="Ouvrir le PDF du cours ${echapper(doc.titre)}">${icones.document}</a>`
           : ""
       }
     </div>`;
@@ -147,13 +158,14 @@ async function pageMatiere(idMatiere) {
       <p class="meta">${[
         cours.length > 0 ? `${cours.length} cours` : "",
         tds.length > 0 ? pluriel(tds.length, "TD") : "",
-        pluriel(total, "question"),
+        total > 0 ? pluriel(total, "question") : "",
       ]
         .filter(Boolean)
         .join(" · ")}</p>
     </header>
 
-    <div class="apparition">
+    <div class="disposition-matiere apparition">
+    <aside class="panneau-matiere">
     ${
       total > 0
         ? `<form class="bloc bloc-examen">
@@ -193,7 +205,9 @@ async function pageMatiere(idMatiere) {
           </a>`
         : ""
     }
+    </aside>
 
+    <div class="contenu-matiere">
     ${
       cours.length > 0
         ? `<h2 class="titre-section">Cours</h2>
@@ -221,6 +235,7 @@ async function pageMatiere(idMatiere) {
           <ul class="liste">${tdsSeuls.map((td) => `<li>${ligneDocument(matiere, td)}</li>`).join("")}</ul>`
         : ""
     }
+    </div>
     </div>`;
 
   app.querySelector(".bloc-examen")?.addEventListener("submit", (e) => {
@@ -229,11 +244,136 @@ async function pageMatiere(idMatiere) {
   });
 }
 
+// Ouvre un PDF du site dans le lecteur intégré (jamais dans un nouvel onglet).
+const routePdf = (idMatiere, idDoc, fichier, page) =>
+  `#/lire/${idMatiere}/${idDoc}/${fichier}${page ? `/${page}` : ""}`;
+
+// Page d'un document sans QCM : les onglets au-dessus (énoncé, cours, fiche, correction)
+// et le document choisi en grand dans le lecteur. Pour un TD, la correction reste masquée
+// tant qu'on ne demande pas à la voir.
+async function pageDocument(idMatiere, idDoc) {
+  const matiere = await trouverMatiere(idMatiere);
+  const doc = matiere.documents.find((d) => d.id === idDoc);
+  if (!doc) throw new ErreurContenu(`Document « ${idDoc} » introuvable dans ${matiere.nom}.`);
+  document.title = `${doc.titre} · Revisator`;
+
+  const td = doc.document === "td";
+  const cours = td ? matiere.documents.find((d) => d.id === doc.cours) : doc;
+  const fichier = (d, nom) => `contenu/${matiere.id}/${d.id}/${nom}`;
+
+  const onglets = [];
+  if (td && doc.pdf) onglets.push({ libelle: "Énoncé", url: urlPdf(matiere.id, doc.id) });
+  if (cours?.pdf) onglets.push({ libelle: "Cours", url: urlPdf(matiere.id, cours.id) });
+  for (const c of cours?.complements || []) onglets.push({ libelle: c.titre, url: fichier(cours, c.fichier) });
+  if (cours?.fiche) onglets.push({ libelle: "Fiche du chapitre", url: urlFiche(matiere.id, cours.id) });
+  if (td && doc.fiche) onglets.push({ libelle: "Fiche de révision", url: urlFiche(matiere.id, doc.id) });
+  if (td && !cours) {
+    // sujet transversal (révision d'examen) : toutes les fiches de chapitre peuvent servir
+    for (const c of matiere.documents.filter((d) => d.document === "cours" && d.fiche)) {
+      onglets.push({ libelle: `Fiche : ${c.titre}`, url: urlFiche(matiere.id, c.id) });
+    }
+  }
+  if (td && doc.corrige) onglets.push({ libelle: "Correction", url: urlCorrige(matiere.id, doc.id), masquee: true });
+
+  const exercices = td ? [] : matiere.documents.filter((d) => d.document === "td" && d.cours === doc.id);
+
+  app.innerHTML = `
+    ${barreRetour(`#/m/${matiere.id}`, `Retour à ${matiere.nom}`)}
+    <header class="entete-page">
+      <p class="surtitre">${echapper(matiere.nom)}${td && cours ? ` · ${echapper(cours.titre)}` : ""}</p>
+      <h1>${echapper(doc.titre)}</h1>
+      ${
+        exercices.length > 0
+          ? `<p class="exercices-lies">Exercices du chapitre :
+              ${exercices.map((e) => `<a href="#/d/${matiere.id}/${e.id}">${echapper(e.titre)}</a>`).join("")}</p>`
+          : ""
+      }
+    </header>
+    ${
+      onglets.length > 0
+        ? `<div class="onglets" role="tablist" aria-label="Documents">
+            ${onglets
+              .map(
+                (o, i) => `<button type="button" role="tab" class="onglet${o.masquee ? " onglet-correction" : ""}" data-onglet="${i}" aria-selected="false">${o.masquee ? icones.cadenas : ""}${echapper(o.libelle)}</button>`
+              )
+              .join("")}
+          </div>
+          <div class="zone-document" role="tabpanel"></div>`
+        : `<p class="vide">Aucun document pour l'instant.</p>`
+    }`;
+
+  const zone = app.querySelector(".zone-document");
+  let correctionVue = false;
+
+  const ouvrir = (i) => {
+    const o = onglets[i];
+    app.querySelectorAll(".onglet").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.onglet === String(i))));
+    if (o.masquee && !correctionVue) {
+      zone.innerHTML = `
+        <div class="voile-correction">
+          <p class="voile-titre">La correction est prête.</p>
+          <p class="meta">Cherche l'exercice jusqu'au bout avant de la regarder : c'est comme ça qu'on retient.</p>
+          <button type="button" class="btn principal" data-afficher>Afficher la correction</button>
+        </div>`;
+      zone.querySelector("[data-afficher]").addEventListener("click", () => {
+        correctionVue = true;
+        app.querySelector(".onglet-correction")?.querySelector(".icone")?.remove();
+        ouvrir(i);
+      });
+      return;
+    }
+    monterLecteur(zone, { url: o.url });
+  };
+
+  app.querySelector(".onglets")?.addEventListener("click", (e) => {
+    const bouton = e.target.closest("[data-onglet]");
+    if (bouton) ouvrir(Number(bouton.dataset.onglet));
+  });
+  if (onglets.length > 0) ouvrir(0);
+}
+
+// Un PDF du site en plein écran dans le lecteur : #/lire/<matiere>/<doc>/<fichier>[/<page>]
+async function pageLecture(idMatiere, idDoc, nomFichier, page) {
+  const matiere = await trouverMatiere(idMatiere);
+  const doc = matiere.documents.find((d) => d.id === idDoc);
+  if (!doc || !/^[\w.-]+\.pdf$/i.test(nomFichier || "")) {
+    throw new ErreurContenu("Ce document n'existe pas.");
+  }
+  const noms = {
+    "document.pdf": doc.document === "td" ? "Énoncé" : "Cours",
+    "fiche.pdf": "Fiche de révision",
+    "corrige.pdf": "Correction",
+    "schema.pdf": "Schéma",
+  };
+  const libelle = noms[nomFichier] || doc.complements?.find((c) => c.fichier === nomFichier)?.titre || nomFichier;
+  document.title = `${libelle} · ${doc.titre} · Revisator`;
+
+  app.innerHTML = `
+    ${barreRetour(`#/m/${matiere.id}`, "Revenir en arrière")}
+    <header class="entete-page">
+      <p class="surtitre">${echapper(matiere.nom)} · ${echapper(doc.titre)}</p>
+      <h1>${echapper(libelle)}</h1>
+    </header>
+    <div class="zone-document"></div>`;
+
+  // le bouton retour revient là d'où l'on vient (QCM, exercice, liste) plutôt qu'à la matière
+  app.querySelector(".barre .bouton-icone").addEventListener("click", (e) => {
+    if (history.length > 1) {
+      e.preventDefault();
+      history.back();
+    }
+  });
+  monterLecteur(app.querySelector(".zone-document"), {
+    url: `contenu/${matiere.id}/${doc.id}/${nomFichier}`,
+    page: Number(page) || 1,
+  });
+}
+
 async function listeExamens() {
   const examens = await chargerExamens();
   if (!examens) throw new ErreurContenu("Aucune liste d'exams : crée le fichier contenu/examens.json.");
   document.title = "Exams · Revisator";
-  app.innerHTML = barreRetour("#/", "Retour à l'accueil") + pageExamens(examens);
+  app.innerHTML = barreRetour("#/", "Retour à l'accueil") + `<div class="page-examens">${pageExamens(examens)}</div>`;
 }
 
 async function quizDocument(idMatiere, idDoc) {
@@ -311,11 +451,14 @@ async function afficherRoute() {
     "": accueil,
     m: pageMatiere,
     q: quizDocument,
+    d: pageDocument,
+    lire: pageLecture,
     examen: quizExamen,
     erreurs: quizErreurs,
     examens: listeExamens,
   };
   const vue = vues[route] || accueil;
+  app.classList.toggle("page-lecture", route === "lire" || route === "d");
   try {
     await vue(...params);
   } catch (e) {

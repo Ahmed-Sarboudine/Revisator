@@ -165,6 +165,23 @@ Les PDF générés sont commités : la GitHub Action ne les régénère pas.
 
 Les **corrigés de TD** suivent le même principe : `fiches/<matiere>/<dossier>.corrige.html` → `contenu/<matiere>/<dossier>/corrige.pdf`, ouvert par le bouton « Corrigé » du TD.
 
+## Documents sans QCM (exercices + correction)
+
+Un dossier de cours ou de TD peut se passer de `qcm.json` : on le décrit alors avec un `document.json`. Sa page sur le site présente l'**énoncé**, l'**aide** (cours et fiche du chapitre) et un bouton **« Voir la correction »** qui affiche `corrige.pdf`.
+
+```json
+{ "document": "td", "titre": "TD Lois discrètes", "cours": "cours03-variables-aleatoires" }
+```
+
+| Champ | Obligatoire | Description |
+|---|---|---|
+| `document` | oui | `"cours"` ou `"td"` |
+| `titre` | oui | Titre affiché |
+| `cours` | non | Pour un TD : dossier du cours dont le PDF et la fiche servent d'aide |
+| `complements` | non | PDF supplémentaires du dossier : `[{ "fichier": "cours-j1.pdf", "titre": "Cours J1" }]` |
+
+Fichiers reconnus dans le dossier : `document.pdf` (énoncé ou cours), `corrige.pdf`, `fiche.pdf`. Ces documents n'entrent pas dans le mode examen. Exemple : `contenu/probabilites/`.
+
 ## Liste des exams
 
 La page « Liste des exams » (lien sur l'accueil) lit `contenu/examens.json` : les épreuves à venir triées par date avec un compte à rebours, celles dont la date reste à préciser, et les passées.

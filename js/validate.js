@@ -8,6 +8,24 @@ function texteNonVide(v) {
   return typeof v === "string" && v.trim() !== "";
 }
 
+// Vérifie un document.json : cours ou TD sans QCM (énoncé, corrigé, fiche, compléments).
+export function validerDocument(meta) {
+  const erreurs = [];
+  if (typeof meta !== "object" || meta === null || Array.isArray(meta)) return ["le fichier doit contenir un objet JSON"];
+  if (!TYPES_DOCUMENT.includes(meta.document)) erreurs.push("« document » doit valoir \"cours\" ou \"td\"");
+  if (!texteNonVide(meta.titre)) erreurs.push("« titre » manquant ou vide");
+  if (meta.cours !== undefined && (meta.document !== "td" || !texteNonVide(meta.cours))) {
+    erreurs.push("« cours » n'est autorisé que pour un TD, et doit être un nom de dossier");
+  }
+  if (meta.complements !== undefined) {
+    const ok =
+      Array.isArray(meta.complements) &&
+      meta.complements.every((c) => texteNonVide(c?.titre) && /^[\w.-]+\.pdf$/i.test(c?.fichier || ""));
+    if (!ok) erreurs.push("« complements » doit être une liste de { \"fichier\": \"x.pdf\", \"titre\": \"…\" }");
+  }
+  return erreurs;
+}
+
 export function validerQcm(qcm) {
   const erreurs = [];
 

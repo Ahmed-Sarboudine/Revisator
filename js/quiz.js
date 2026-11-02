@@ -2,7 +2,7 @@
 
 import { echapper, markdown, markdownEnLigne } from "./rendu.js";
 import { noterResultat, erreursDe } from "./erreurs.js";
-import { urlPdf, melanger } from "./donnees.js";
+import { melanger } from "./donnees.js";
 import { icones } from "./icones.js";
 
 const NOMS_DOCUMENT = { cours: "Cours", td: "TD" };
@@ -127,7 +127,7 @@ export function lancerQuiz(conteneur, options) {
       const correction = form.querySelector(".correction");
       const lienPage =
         q.page && doc.pdf
-          ? `<a class="lien-page" href="${urlPdf(matiere.id, doc.id)}#page=${q.page}" target="_blank" rel="noopener">${icones.document}Voir dans le ${doc.document === "td" ? "TD" : "cours"}, page ${q.page}${icones.externe}</a>`
+          ? `<a class="lien-page" href="#/lire/${matiere.id}/${doc.id}/document.pdf/${q.page}">${icones.document}Voir dans le ${doc.document === "td" ? "TD" : "cours"}, page ${q.page}</a>`
           : "";
       correction.classList.add(juste ? "ok" : "ko");
       correction.innerHTML = `
