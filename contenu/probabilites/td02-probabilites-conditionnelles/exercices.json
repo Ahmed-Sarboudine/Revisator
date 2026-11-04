@@ -1,0 +1,159 @@
+{
+  "exercices": [
+    {
+      "numero": 1,
+      "titre": "Usine d'ampoules (ateliers A, B, C)",
+      "enonce": [
+        {
+          "image": "ex01-enonce-1.png",
+          "largeur": 1381,
+          "hauteur": 786
+        },
+        {
+          "image": "ex01-enonce-2.png",
+          "largeur": 461,
+          "hauteur": 101
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex01-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 1171,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 8.3,
+              "l": 31.27,
+              "h": 3.04,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/1"
+            },
+            {
+              "x": 34.78,
+              "y": 8.3,
+              "l": 31.27,
+              "h": 3.04,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/2"
+            },
+            {
+              "x": 66.62,
+              "y": 8.3,
+              "l": 24.31,
+              "h": 3.04,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "titre": "Paire de dés, somme égale à 6",
+      "enonce": [
+        {
+          "image": "ex02-enonce-1.png",
+          "largeur": 1368,
+          "hauteur": 167
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex02-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 513,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 19.32,
+              "l": 31.27,
+              "h": 6.94,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/1"
+            },
+            {
+              "x": 34.78,
+              "y": 19.32,
+              "l": 31.27,
+              "h": 6.94,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "titre": "Test de contrôle des téléviseurs",
+      "enonce": [
+        {
+          "image": "ex03-enonce-1.png",
+          "largeur": 1368,
+          "hauteur": 909
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex03-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 1196,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 8.29,
+              "l": 31.27,
+              "h": 2.98,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/1"
+            },
+            {
+              "x": 34.78,
+              "y": 8.29,
+              "l": 24.31,
+              "h": 2.98,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/2"
+            },
+            {
+              "x": 59.66,
+              "y": 8.29,
+              "l": 24.31,
+              "h": 2.98,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "titre": "Machines M1 et M2",
+      "enonce": [
+        {
+          "image": "ex04-enonce-1.png",
+          "largeur": 1368,
+          "hauteur": 477
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex04-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 575,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 17.23,
+              "l": 31.27,
+              "h": 6.2,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/2"
+            },
+            {
+              "x": 34.78,
+              "y": 17.23,
+              "l": 24.31,
+              "h": 6.2,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

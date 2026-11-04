@@ -1,0 +1,316 @@
+{
+  "exercices": [
+    {
+      "numero": 1,
+      "titre": "Probabilités conditionnelles (enfants et télévision)",
+      "enonce": [
+        {
+          "image": "ex01-enonce-1.png",
+          "largeur": 1242,
+          "hauteur": 518
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex01-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 1082,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 9.02,
+              "l": 31.27,
+              "h": 3.29,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/2"
+            },
+            {
+              "x": 34.78,
+              "y": 9.02,
+              "l": 24.31,
+              "h": 3.29,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/2"
+            },
+            {
+              "x": 59.66,
+              "y": 9.02,
+              "l": 17.34,
+              "h": 3.29,
+              "href": "#/lire/probabilites/td05-revision-examen/fiche.pdf/1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "titre": "Quelle loi ? 3 ampoules sans remise parmi 15 (5 défectueuses)",
+      "enonce": [
+        {
+          "image": "ex02-enonce-1.png",
+          "largeur": 1242,
+          "hauteur": 342
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex02-correction-1.png",
+          "largeur": 1318,
+          "hauteur": 617,
+          "liens": [
+            {
+              "x": 2.86,
+              "y": 16.13,
+              "l": 35.14,
+              "h": 5.77,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/3"
+            },
+            {
+              "x": 38.57,
+              "y": 16.13,
+              "l": 17.64,
+              "h": 5.77,
+              "href": "#/lire/probabilites/td05-revision-examen/fiche.pdf/3"
+            }
+          ]
+        },
+        {
+          "image": "ex02-correction-2.png",
+          "largeur": 1318,
+          "hauteur": 264
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "titre": "V.a. discrète, gain selon la couleur",
+      "enonce": [
+        {
+          "image": "ex03-enonce-1.png",
+          "largeur": 1298,
+          "hauteur": 607
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex03-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 823,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 17.96,
+              "l": 30.71,
+              "h": 4.33,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/1"
+            },
+            {
+              "x": 34.21,
+              "y": 17.96,
+              "l": 35.25,
+              "h": 4.33,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "titre": "Dénombrement, urne de 5 B, 3 N, 6 R (14 boules), tirage de 3",
+      "enonce": [
+        {
+          "image": "ex04-enonce-1.png",
+          "largeur": 1242,
+          "hauteur": 676
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex04-correction-1.png",
+          "largeur": 1318,
+          "hauteur": 834,
+          "liens": [
+            {
+              "x": 2.86,
+              "y": 17.5,
+              "l": 29.59,
+              "h": 4.27,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            },
+            {
+              "x": 33.02,
+              "y": 17.5,
+              "l": 17.07,
+              "h": 4.27,
+              "href": "#/lire/probabilites/td05-revision-examen/fiche.pdf/1"
+            },
+            {
+              "x": 2.86,
+              "y": 30.77,
+              "l": 30.59,
+              "h": 4.27,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/1"
+            },
+            {
+              "x": 2.86,
+              "y": 82.7,
+              "l": 25.32,
+              "h": 4.27,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            }
+          ]
+        },
+        {
+          "image": "ex04-correction-2.png",
+          "largeur": 1318,
+          "hauteur": 914,
+          "liens": [
+            {
+              "x": 2.86,
+              "y": 41.78,
+              "l": 31.01,
+              "h": 3.9,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 5,
+      "titre": "Dénombrement, numéros de téléphone",
+      "enonce": [
+        {
+          "image": "ex05-enonce-1.png",
+          "largeur": 1242,
+          "hauteur": 487
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex05-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 883,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 11.22,
+              "l": 25.3,
+              "h": 4.03,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            },
+            {
+              "x": 28.81,
+              "y": 11.22,
+              "l": 30.56,
+              "h": 4.03,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 6,
+      "titre": "Variable continue, calcul intégral",
+      "enonce": [
+        {
+          "image": "ex06-enonce-1.png",
+          "largeur": 1242,
+          "hauteur": 321
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex06-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 356,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 27.84,
+              "l": 26.58,
+              "h": 10.01,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/4"
+            },
+            {
+              "x": 30.09,
+              "y": 27.84,
+              "l": 31.42,
+              "h": 10.01,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 7,
+      "titre": "Quelle loi ? Les 12 figures",
+      "enonce": [
+        {
+          "image": "ex07-enonce-1.png",
+          "largeur": 1332,
+          "hauteur": 515
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex07-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 1026,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 14.45,
+              "l": 35.11,
+              "h": 3.47,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/3"
+            },
+            {
+              "x": 38.62,
+              "y": 14.45,
+              "l": 27.72,
+              "h": 3.47,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 8,
+      "titre": "Loi normale",
+      "enonce": [
+        {
+          "image": "ex08-enonce-1.png",
+          "largeur": 1242,
+          "hauteur": 76
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex08-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 365,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 27.15,
+              "l": 30.14,
+              "h": 9.76,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/5"
+            },
+            {
+              "x": 33.5,
+              "y": 27.15,
+              "l": 17.63,
+              "h": 9.76,
+              "href": "#/lire/probabilites/td05-revision-examen/fiche.pdf/3"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

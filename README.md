@@ -180,7 +180,9 @@ Un dossier de cours ou de TD peut se passer de `qcm.json` : on le décrit alors 
 | `cours` | non | Pour un TD : dossier du cours dont le PDF et la fiche servent d'aide |
 | `complements` | non | PDF supplémentaires du dossier : `[{ "fichier": "cours-j1.pdf", "titre": "Cours J1" }]` |
 
-Fichiers reconnus dans le dossier : `document.pdf` (énoncé ou cours), `corrige.pdf`, `fiche.pdf`. Ces documents n'entrent pas dans le mode examen. Exemple : `contenu/probabilites/`.
+Fichiers reconnus dans le dossier : `document.pdf` (énoncé ou cours), `corrige.pdf`, `fiche.pdf`.
+
+**Exercice par exercice** : `python -P scripts/decouper-exercices.py contenu/<matiere>/<td...>` découpe l'énoncé et la correction autour des titres « N. Exercice … » / « Exercice N : … » et écrit `exercices.json` + les images `exNN-*.png`. La page du TD affiche alors chaque exercice, suivi d'un bouton « Voir la correction » qui la révèle juste en dessous (les liens des corrections restent cliquables). À relancer si l'énoncé ou la correction change. Ces documents n'entrent pas dans le mode examen. Exemple : `contenu/probabilites/`.
 
 ## Liste des exams
 

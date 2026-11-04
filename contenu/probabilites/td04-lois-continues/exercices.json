@@ -1,0 +1,204 @@
+{
+  "exercices": [
+    {
+      "numero": 1,
+      "titre": "Densité « en triangle »",
+      "enonce": [
+        {
+          "image": "ex01-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 449
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex01-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 984,
+          "liens": [
+            {
+              "x": 2.86,
+              "y": 14.77,
+              "l": 25.51,
+              "h": 3.47,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/4"
+            },
+            {
+              "x": 28.92,
+              "y": 14.77,
+              "l": 31.93,
+              "h": 3.47,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/4"
+            },
+            {
+              "x": 61.4,
+              "y": 14.77,
+              "l": 27.29,
+              "h": 3.47,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "titre": "Attente du métro (loi uniforme)",
+      "enonce": [
+        {
+          "image": "ex02-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 319
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex02-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 297,
+          "liens": [
+            {
+              "x": 2.86,
+              "y": 32.7,
+              "l": 29.61,
+              "h": 11.51,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "titre": "Densité exponentielle",
+      "enonce": [
+        {
+          "image": "ex03-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 284
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex03-correction-1.png",
+          "largeur": 1318,
+          "hauteur": 426,
+          "liens": [
+            {
+              "x": 2.79,
+              "y": 34.11,
+              "l": 25.53,
+              "h": 8.03,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/4"
+            },
+            {
+              "x": 28.87,
+              "y": 34.11,
+              "l": 30.18,
+              "h": 8.03,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/5"
+            },
+            {
+              "x": 59.59,
+              "y": 34.11,
+              "l": 22.12,
+              "h": 8.03,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/4"
+            }
+          ]
+        },
+        {
+          "image": "ex03-correction-2.png",
+          "largeur": 1318,
+          "hauteur": 469
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "titre": "Température en juin,",
+      "enonce": [
+        {
+          "image": "ex04-enonce-1.png",
+          "largeur": 1340,
+          "hauteur": 259
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex04-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 568,
+          "liens": [
+            {
+              "x": 2.86,
+              "y": 16.7,
+              "l": 28.93,
+              "h": 6.02,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 5,
+      "titre": "Poids de 800 étudiants,",
+      "enonce": [
+        {
+          "image": "ex05-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 224
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex05-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 452,
+          "liens": [
+            {
+              "x": 2.86,
+              "y": 21.4,
+              "l": 28.93,
+              "h": 7.56,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 6,
+      "titre": "Chargement de 200 sacs de ciment",
+      "enonce": [
+        {
+          "image": "ex06-enonce-1.png",
+          "largeur": 1340,
+          "hauteur": 398
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex06-correction-1.png",
+          "largeur": 1318,
+          "hauteur": 431,
+          "liens": [
+            {
+              "x": 2.79,
+              "y": 22.02,
+              "l": 35.64,
+              "h": 7.93,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/5"
+            }
+          ]
+        },
+        {
+          "image": "ex06-correction-2.png",
+          "largeur": 1319,
+          "hauteur": 259
+        }
+      ]
+    }
+  ]
+}

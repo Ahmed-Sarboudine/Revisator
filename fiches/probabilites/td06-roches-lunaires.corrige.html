@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Correction — Probabilités : roches lunaires et martiennes</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+  .pastille {
+    display: inline-block;
+    margin: 2px 0 4px;
+    padding: 1px 9px;
+    border: 1px solid #c9d2f6;
+    border-radius: 999px;
+    background: #eef1fd;
+    color: #2a4bd7;
+    font-size: 8.5pt;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .arbre {
+    display: block;
+    width: 100%;
+    max-width: 520px;
+    margin: 4px auto 8px;
+  }
+</style>
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Probabilités · Correction détaillée · Chapitre 2</p>
+    <h1>Roches lunaires et martiennes</h1>
+  </div>
+  <p class="source">Les pastilles bleues ouvrent la fiche<br>du chapitre 2 à la bonne page.</p>
+</header>
+
+<div class="boite methode">
+  <span class="boite-titre">On pose les événements</span>
+  <p><strong>L</strong> : « la roche est lunaire » ; <strong>L̄</strong> : « la roche est martienne » ; <strong>R</strong> : « la roche contient des métaux rares ».</p>
+  <p>L'énoncé donne : P(L) à calculer à partir des effectifs, et deux probabilités <strong>conditionnelles</strong> : « 30 % <em>des roches lunaires</em> » signifie P<sub>L</sub>(R) = 0,3 ; « 60 % <em>des roches martiennes</em> » signifie P<sub>L̄</sub>(R) = 0,6.</p>
+</div>
+
+<svg class="arbre" viewBox="0 0 520 210" font-family="Segoe UI, sans-serif" font-size="13" role="img" aria-label="Arbre pondéré : L 0,6 puis R 0,3 et non R 0,7 ; non L 0,4 puis R 0,6 et non R 0,4">
+  <g stroke="#6b6860" stroke-width="1.5" fill="none">
+    <line x1="40" y1="105" x2="190" y2="50"/>
+    <line x1="40" y1="105" x2="190" y2="160"/>
+    <line x1="215" y1="50" x2="360" y2="22"/>
+    <line x1="215" y1="50" x2="360" y2="78"/>
+    <line x1="215" y1="160" x2="360" y2="132"/>
+    <line x1="215" y1="160" x2="360" y2="188"/>
+  </g>
+  <circle cx="40" cy="105" r="4" fill="#1b1a17"/>
+  <g font-weight="700">
+    <text x="196" y="55" fill="#2a4bd7">L</text>
+    <text x="196" y="165" fill="#b45d00">L̄</text>
+    <text x="366" y="27">R</text>
+    <text x="366" y="83">R̄</text>
+    <text x="366" y="137">R</text>
+    <text x="366" y="193">R̄</text>
+  </g>
+  <g fill="#2a4bd7" font-weight="600">
+    <text x="92" y="66">0,6</text>
+    <text x="92" y="154">0,4</text>
+    <text x="270" y="28">0,3</text>
+    <text x="270" y="80">0,7</text>
+    <text x="270" y="138">0,6</text>
+    <text x="270" y="190">0,4</text>
+  </g>
+  <g fill="#6b6860" font-size="12">
+    <text x="392" y="27">0,6 × 0,3 = <tspan font-weight="700" fill="#18763f">0,18</tspan></text>
+    <text x="392" y="83">0,6 × 0,7 = 0,42</text>
+    <text x="392" y="137">0,4 × 0,6 = <tspan font-weight="700" fill="#18763f">0,24</tspan></text>
+    <text x="392" y="193">0,4 × 0,4 = 0,16</text>
+  </g>
+</svg>
+<p class="meta" style="text-align:center;color:#6b6860">Les branches issues d'un même nœud somment à 1 ; la probabilité d'un chemin est le produit de ses branches.</p>
+
+<h2>1. Probabilité de choisir une roche lunaire</h2>
+<a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours02-probabilites-conditionnelles/fiche.pdf#page=1">→ Fiche Ch.2 : probabilité d'un événement (p.1)</a>
+<div class="reponse">
+  Le choix se fait au hasard parmi 200 roches (équiprobabilité), dont 120 lunaires :
+  <p style="text-align:center"><span class="formule">P(L) = 120 / 200 = 0,6</span></p>
+</div>
+
+<h2>2. Roche lunaire <em>et</em> contenant des métaux rares</h2>
+<a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours02-probabilites-conditionnelles/fiche.pdf#page=1">→ Fiche Ch.2 §2 : probabilités composées (p.1)</a>
+<div class="reponse">
+  On cherche P(L ∩ R) : c'est le « et », donc la formule des probabilités composées, ou le chemin L → R de l'arbre :
+  <p style="text-align:center"><span class="formule">P(L ∩ R) = P(L) × P<sub>L</sub>(R) = 0,6 × 0,3 = 0,18</span></p>
+  <p><strong>Vérification par les effectifs :</strong> 30 % de 120 = 36 roches lunaires à métaux rares, et 36 / 200 = 0,18.</p>
+</div>
+<div class="boite piege"><span class="boite-titre">Piège</span>Ne pas répondre 0,3 : 0,3 est la probabilité <em>sachant que</em> la roche est lunaire (P<sub>L</sub>(R)), pas celle d'être lunaire <em>et</em> à métaux rares.</div>
+
+<h2>3. Montrer que P(R) = 0,42</h2>
+<a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours02-probabilites-conditionnelles/fiche.pdf#page=2">→ Fiche Ch.2 §3 : probabilités totales (p.2)</a>
+<div class="reponse">
+  L et L̄ forment une <strong>partition</strong> de l'univers (une roche est soit lunaire, soit martienne). Par la formule des probabilités totales, on additionne les chemins qui mènent à R :
+  <p style="text-align:center"><span class="formule">P(R) = P(L ∩ R) + P(L̄ ∩ R) = P(L) × P<sub>L</sub>(R) + P(L̄) × P<sub>L̄</sub>(R)</span></p>
+  <p style="text-align:center"><span class="formule">P(R) = 0,6 × 0,3 + 0,4 × 0,6 = 0,18 + 0,24 = 0,42</span></p>
+  <p><strong>Vérification par les effectifs :</strong> 36 roches lunaires + 60 % de 80 = 48 roches martiennes, soit 84 roches à métaux rares, et 84 / 200 = 0,42.</p>
+</div>
+
+<h2>4. Sachant que la roche contient des métaux rares, probabilité qu'elle soit lunaire</h2>
+<a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours02-probabilites-conditionnelles/fiche.pdf#page=2">→ Fiche Ch.2 §4 : formule de Bayes (p.2)</a>
+<div class="reponse">
+  On connaît « la cause → l'effet » (P<sub>L</sub>(R)) et on demande « l'effet → la cause » (P<sub>R</sub>(L)) : c'est la <strong>formule de Bayes</strong>. Numérateur = le chemin voulu ; dénominateur = la probabilité totale de la question 3.
+  <p style="text-align:center"><span class="formule">P<sub>R</sub>(L) = P(L ∩ R) / P(R) = 0,18 / 0,42 = 3/7 ≈ 0,429</span></p>
+  <p><strong>Vérification par les effectifs :</strong> parmi les 84 roches à métaux rares, 36 sont lunaires : 36 / 84 = 3/7.</p>
+</div>
+<div class="boite astuce"><span class="boite-titre">À retenir</span>Les roches lunaires sont majoritaires dans le hangar (60 %), mais elles ne représentent qu'environ 43 % des roches à métaux rares : les roches martiennes, moins nombreuses, en contiennent deux fois plus souvent (60 % contre 30 %).</div>
+
+</body>
+</html>

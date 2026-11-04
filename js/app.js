@@ -263,7 +263,9 @@ async function pageDocument(idMatiere, idDoc) {
   const fichier = (d, nom) => `contenu/${matiere.id}/${d.id}/${nom}`;
 
   const onglets = [];
-  if (td && doc.pdf) onglets.push({ libelle: "Énoncé", url: urlPdf(matiere.id, doc.id) });
+  const parExercice = td && doc.nbExercices > 0;
+  if (parExercice) onglets.push({ libelle: "Exercices", exercices: true });
+  if (td && doc.pdf) onglets.push({ libelle: parExercice ? "Énoncé complet" : "Énoncé", url: urlPdf(matiere.id, doc.id) });
   if (cours?.pdf) onglets.push({ libelle: "Cours", url: urlPdf(matiere.id, cours.id) });
   for (const c of cours?.complements || []) onglets.push({ libelle: c.titre, url: fichier(cours, c.fichier) });
   if (cours?.fiche) onglets.push({ libelle: "Fiche du chapitre", url: urlFiche(matiere.id, cours.id) });
@@ -274,7 +276,9 @@ async function pageDocument(idMatiere, idDoc) {
       onglets.push({ libelle: `Fiche : ${c.titre}`, url: urlFiche(matiere.id, c.id) });
     }
   }
-  if (td && doc.corrige) onglets.push({ libelle: "Correction", url: urlCorrige(matiere.id, doc.id), masquee: true });
+  if (td && doc.corrige) {
+    onglets.push({ libelle: parExercice ? "Correction complète" : "Correction", url: urlCorrige(matiere.id, doc.id), masquee: true });
+  }
 
   const exercices = td ? [] : matiere.documents.filter((d) => d.document === "td" && d.cours === doc.id);
 
@@ -323,7 +327,8 @@ async function pageDocument(idMatiere, idDoc) {
       });
       return;
     }
-    monterLecteur(zone, { url: o.url });
+    if (o.exercices) afficherExercices(zone, matiere, doc);
+    else monterLecteur(zone, { url: o.url });
   };
 
   app.querySelector(".onglets")?.addEventListener("click", (e) => {
@@ -331,6 +336,76 @@ async function pageDocument(idMatiere, idDoc) {
     if (bouton) ouvrir(Number(bouton.dataset.onglet));
   });
   if (onglets.length > 0) ouvrir(0);
+}
+
+// Une image découpée d'un énoncé ou d'une correction, avec ses liens (pastilles vers les fiches).
+const imageExercice = (dossier, img, legende) => `
+  <div class="exo-image" style="aspect-ratio: ${img.largeur} / ${img.hauteur}; max-width: ${img.largeur}px">
+    <img src="${dossier}/${img.image}" alt="${echapper(legende)}" loading="lazy" width="${img.largeur}" height="${img.hauteur}">
+    ${(img.liens || [])
+      .map((l) => `<a class="lecteur-lien" href="${l.href}" style="left:${l.x}%;top:${l.y}%;width:${l.l}%;height:${l.h}%" aria-label="Ouvrir la fiche"></a>`)
+      .join("")}
+  </div>`;
+
+// Les exercices d'un TD un par un : l'énoncé, puis un bouton qui révèle la correction juste en dessous.
+async function afficherExercices(zone, matiere, doc) {
+  const dossier = `contenu/${matiere.id}/${doc.id}`;
+  zone.innerHTML = `<p class="meta chargement">Chargement des exercices…</p>`;
+  let exercices;
+  try {
+    ({ exercices } = await (await fetch(`${dossier}/exercices.json`, { cache: "no-cache" })).json());
+  } catch {
+    zone.innerHTML = `<p class="vide">Impossible de charger les exercices. Les onglets « Énoncé complet » et « Correction complète » restent disponibles.</p>`;
+    return;
+  }
+  if (!zone.isConnected) return;
+
+  zone.innerHTML = `<div class="exos">
+    ${
+      exercices.length > 1
+        ? `<nav class="exos-sommaire" aria-label="Aller à un exercice">
+            ${exercices.map((e) => `<a href="#exo-${e.numero}" data-aller="${e.numero}" title="${echapper(e.titre)}">${e.numero}</a>`).join("")}
+          </nav>`
+        : ""
+    }
+    ${exercices
+      .map(
+        (e, i) => `
+      <article class="exo" id="exo-${e.numero}">
+        <h2 class="exo-titre"><span class="exo-numero">${e.numero}</span>${echapper(e.titre)}</h2>
+        <div class="exo-pages">${e.enonce.map((img) => imageExercice(dossier, img, `Énoncé de l'exercice ${e.numero}`)).join("")}</div>
+        ${
+          e.correction.length > 0
+            ? `<button type="button" class="btn exo-bouton" data-correction="${e.numero}" aria-expanded="false">${icones.cadenas}Voir la correction</button>
+              <section class="exo-correction" id="correction-${e.numero}" hidden>
+                <h3 class="exo-sous-titre">Correction de l'exercice ${e.numero}</h3>
+                <div class="exo-pages">${e.correction.map((img) => imageExercice(dossier, img, `Correction de l'exercice ${e.numero}`)).join("")}</div>
+                ${i + 1 < exercices.length ? `<a class="exo-suivant" href="#exo-${exercices[i + 1].numero}" data-aller="${exercices[i + 1].numero}">Exercice suivant${icones.suivant}</a>` : ""}
+              </section>`
+            : ""
+        }
+      </article>`
+      )
+      .join("")}</div>`;
+
+  // écouteur posé sur le contenu recréé à chaque affichage (la zone, elle, est réutilisée par les onglets)
+  zone.querySelector(".exos").addEventListener("click", (ev) => {
+    // les ancres internes ne doivent pas changer la route (#/d/...) : on défile simplement
+    const aller = ev.target.closest("[data-aller]");
+    if (aller) {
+      ev.preventDefault();
+      zone.querySelector(`#exo-${aller.dataset.aller}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    const bouton = ev.target.closest("[data-correction]");
+    if (!bouton) return;
+    const section = zone.querySelector(`#correction-${bouton.dataset.correction}`);
+    const ouvrir = section.hidden;
+    section.hidden = !ouvrir;
+    bouton.setAttribute("aria-expanded", String(ouvrir));
+    bouton.innerHTML = ouvrir ? "Masquer la correction" : `${icones.cadenas}Voir la correction`;
+    if (ouvrir) section.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 }
 
 // Un PDF du site en plein écran dans le lecteur : #/lire/<matiere>/<doc>/<fichier>[/<page>]

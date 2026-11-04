@@ -1,0 +1,59 @@
+{
+  "exercices": [
+    {
+      "numero": 1,
+      "titre": "roches lunaires et martiennes",
+      "enonce": [
+        {
+          "image": "ex01-enonce-1.png",
+          "largeur": 1333,
+          "hauteur": 1125
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex01-correction-1.png",
+          "largeur": 1333,
+          "hauteur": 1914,
+          "liens": [
+            {
+              "x": 1.04,
+              "y": 45.19,
+              "l": 36.71,
+              "h": 2.06,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/1"
+            },
+            {
+              "x": 1.04,
+              "y": 58.03,
+              "l": 35.87,
+              "h": 2.06,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/1"
+            },
+            {
+              "x": 1.04,
+              "y": 81.64,
+              "l": 32.91,
+              "h": 2.06,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/2"
+            }
+          ]
+        },
+        {
+          "image": "ex01-correction-2.png",
+          "largeur": 1333,
+          "hauteur": 470,
+          "liens": [
+            {
+              "x": 1.04,
+              "y": 13.96,
+              "l": 31.65,
+              "h": 8.38,
+              "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

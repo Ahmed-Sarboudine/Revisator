@@ -1,0 +1,183 @@
+{
+  "exercices": [
+    {
+      "numero": 1,
+      "titre": "Paire de dés jusqu'à obtenir une somme de 7",
+      "enonce": [
+        {
+          "image": "ex01-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 332
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex01-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 793,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 12.26,
+              "l": 33.12,
+              "h": 4.49,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "titre": "Le hamster et les 5 portillons",
+      "enonce": [
+        {
+          "image": "ex02-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 369
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex02-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 593,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 16.39,
+              "l": 33.12,
+              "h": 6.01,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "titre": "Code de la route au hasard",
+      "enonce": [
+        {
+          "image": "ex03-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 309
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex03-correction-1.png",
+          "largeur": 1318,
+          "hauteur": 313,
+          "liens": [
+            {
+              "x": 2.86,
+              "y": 31.66,
+              "l": 30.73,
+              "h": 11.38,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/2"
+            }
+          ]
+        },
+        {
+          "image": "ex03-correction-2.png",
+          "largeur": 1318,
+          "hauteur": 446
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "titre": "Médicament anti-douleur (5 opérés)",
+      "enonce": [
+        {
+          "image": "ex04-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 342
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex04-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 522,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 18.98,
+              "l": 30.71,
+              "h": 6.82,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 5,
+      "titre": "Standard téléphonique (Poisson)",
+      "enonce": [
+        {
+          "image": "ex05-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 314
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex05-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 656,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 15.11,
+              "l": 31.27,
+              "h": 5.43,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 6,
+      "titre": "Accidents mortels de conducteurs débutants",
+      "enonce": [
+        {
+          "image": "ex06-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 426
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex06-correction-1.png",
+          "largeur": 1318,
+          "hauteur": 296,
+          "liens": [
+            {
+              "x": 2.86,
+              "y": 32.84,
+              "l": 25.89,
+              "h": 12.04,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/3"
+            },
+            {
+              "x": 29.32,
+              "y": 32.84,
+              "l": 27.74,
+              "h": 12.04,
+              "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/2"
+            }
+          ]
+        },
+        {
+          "image": "ex06-correction-2.png",
+          "largeur": 1319,
+          "hauteur": 424
+        }
+      ]
+    }
+  ]
+}

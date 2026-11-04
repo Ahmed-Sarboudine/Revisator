@@ -52,6 +52,10 @@ function lireDocumentSansQcm(chemin, dir, fichier, idDoc) {
     ...(meta.cours ? { cours: meta.cours } : {}),
     ...(meta.complements ? { complements: meta.complements } : {}),
     ...fichiersPdf(dir),
+    // exercices.json (scripts/decouper-exercices.py) : énoncé et correction découpés exercice par exercice
+    ...(existsSync(join(dir, "exercices.json"))
+      ? { nbExercices: JSON.parse(readFileSync(join(dir, "exercices.json"), "utf8")).exercices.length }
+      : {}),
     nbQuestions: 0,
   };
 }

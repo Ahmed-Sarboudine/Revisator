@@ -34,13 +34,14 @@ const fiches = readdirSync(dossierFiches)
     readdirSync(join(dossierFiches, matiere))
       .filter((f) => f.endsWith(".html") && f.includes(motif))
       .map((f) => {
-        // <dossier>.html → fiche.pdf ; <dossier>.corrige.html → corrige.pdf ; <dossier>.schema.html → schema.pdf
+        // <dossier>.html → fiche.pdf ; .corrige.html → corrige.pdf ; .schema.html → schema.pdf ;
+        // .enonce.html → document.pdf (énoncé d'un exercice écrit à la main)
         const nom = basename(f, ".html");
-        const suffixe = (nom.match(/\.(corrige|schema)$/) || [])[1];
+        const suffixe = (nom.match(/\.(corrige|schema|enonce)$/) || [])[1];
         return {
           matiere,
           dossier: suffixe ? nom.slice(0, -(suffixe.length + 1)) : nom,
-          sortie: `${suffixe || "fiche"}.pdf`,
+          sortie: suffixe === "enonce" ? "document.pdf" : `${suffixe || "fiche"}.pdf`,
           source: join(dossierFiches, matiere, f),
         };
       })

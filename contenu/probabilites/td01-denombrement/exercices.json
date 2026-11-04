@@ -1,0 +1,331 @@
+{
+  "exercices": [
+    {
+      "numero": 1,
+      "titre": "Placement de livres",
+      "enonce": [
+        {
+          "image": "ex01-enonce-1.png",
+          "largeur": 1311,
+          "hauteur": 548
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex01-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 703,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 21.03,
+              "l": 30.28,
+              "h": 5.07,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "titre": "Main de cartes",
+      "enonce": [
+        {
+          "image": "ex02-enonce-1.png",
+          "largeur": 1301,
+          "hauteur": 297
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex02-correction-1.png",
+          "largeur": 1318,
+          "hauteur": 1029,
+          "liens": [
+            {
+              "x": 2.86,
+              "y": 14.37,
+              "l": 30.59,
+              "h": 3.46,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/1"
+            },
+            {
+              "x": 34.02,
+              "y": 14.37,
+              "l": 26.89,
+              "h": 3.46,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/3"
+            }
+          ]
+        },
+        {
+          "image": "ex02-correction-2.png",
+          "largeur": 1318,
+          "hauteur": 438
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "titre": "Élection de 7 membres",
+      "enonce": [
+        {
+          "image": "ex03-enonce-1.png",
+          "largeur": 1301,
+          "hauteur": 192
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex03-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 556,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 27.36,
+              "l": 30.56,
+              "h": 6.41,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "titre": "Modélisation",
+      "enonce": [
+        {
+          "image": "ex04-enonce-1.png",
+          "largeur": 1386,
+          "hauteur": 258
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex04-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 652,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 15.2,
+              "l": 25.3,
+              "h": 5.46,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            },
+            {
+              "x": 28.81,
+              "y": 15.2,
+              "l": 30.99,
+              "h": 5.46,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 5,
+      "titre": "Code à 8 chiffres",
+      "enonce": [
+        {
+          "image": "ex05-enonce-1.png",
+          "largeur": 1386,
+          "hauteur": 214
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex05-correction-1.png",
+          "largeur": 1318,
+          "hauteur": 272,
+          "liens": [
+            {
+              "x": 2.86,
+              "y": 36.58,
+              "l": 31.01,
+              "h": 13.1,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            },
+            {
+              "x": 34.45,
+              "y": 36.58,
+              "l": 30.59,
+              "h": 13.1,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/1"
+            }
+          ]
+        },
+        {
+          "image": "ex05-correction-2.png",
+          "largeur": 1318,
+          "hauteur": 469
+        }
+      ]
+    },
+    {
+      "numero": 6,
+      "titre": "Tirages avec remise puis simultané (5 R, 4 N, 3 V)",
+      "enonce": [
+        {
+          "image": "ex06-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 431
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex06-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 1269,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 11.65,
+              "l": 29.14,
+              "h": 2.81,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            },
+            {
+              "x": 32.65,
+              "y": 11.65,
+              "l": 29.57,
+              "h": 2.81,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            },
+            {
+              "x": 2.94,
+              "y": 61.59,
+              "l": 30.56,
+              "h": 2.81,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 7,
+      "titre": "Tirage successif sans remise (5 B, 3 R)",
+      "enonce": [
+        {
+          "image": "ex07-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 363
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex07-correction-1.png",
+          "largeur": 1318,
+          "hauteur": 182,
+          "liens": [
+            {
+              "x": 2.86,
+              "y": 53.64,
+              "l": 31.01,
+              "h": 19.57,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            },
+            {
+              "x": 34.45,
+              "y": 53.64,
+              "l": 29.59,
+              "h": 19.57,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            }
+          ]
+        },
+        {
+          "image": "ex07-correction-2.png",
+          "largeur": 1318,
+          "hauteur": 765
+        }
+      ]
+    },
+    {
+      "numero": 8,
+      "titre": "4 billets de théâtre pour 19 élèves",
+      "enonce": [
+        {
+          "image": "ex08-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 227
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex08-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 471,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 21.04,
+              "l": 33.26,
+              "h": 7.56,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 9,
+      "titre": "Trois lancers de dé",
+      "enonce": [
+        {
+          "image": "ex09-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 137
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex09-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 215,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 45.22,
+              "l": 25.3,
+              "h": 16.57,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 10,
+      "titre": "Équipe de football (11 joueurs parmi 20)",
+      "enonce": [
+        {
+          "image": "ex10-enonce-1.png",
+          "largeur": 1345,
+          "hauteur": 194
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex10-correction-1.png",
+          "largeur": 1319,
+          "hauteur": 401,
+          "liens": [
+            {
+              "x": 2.94,
+              "y": 25.78,
+              "l": 30.56,
+              "h": 8.88,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
