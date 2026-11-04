@@ -9,6 +9,8 @@ import { icones } from "./icones.js";
 
 const nav = document.getElementById("nav");
 const voile = document.getElementById("voile");
+// la navigation est redessinée à chaque page ; le lecteur d'ambiance (#ambiance) reste à côté, intact
+const contenuNav = document.getElementById("nav-contenu");
 const grandEcran = window.matchMedia("(min-width: 960px)");
 const MOIS_COURT = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" });
 
@@ -47,7 +49,7 @@ export async function rendreNav() {
   const matiereActive = (id) => (vue !== "examens" && idMatiere === id ? ' aria-current="page"' : "");
   const aVenir = examens ? epreuvesDatees(examens).filter((e) => e.jours >= 0) : [];
 
-  nav.innerHTML = `
+  contenuNav.innerHTML = `
     <div class="nav-entete">
       <a class="logo" href="#/">Revisator</a>
       <button type="button" class="bouton-icone nav-fermer" aria-label="Fermer le menu">${icones.fermer}</button>

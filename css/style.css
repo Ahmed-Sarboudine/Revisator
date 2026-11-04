@@ -1702,3 +1702,95 @@ button.bouton-icone {
   font: inherit;
   cursor: pointer;
 }
+
+/* ---------- Ambiance sonore (bas de la barre latérale) ---------- */
+
+.ambiance {
+  margin: 20px 0 0;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+}
+
+.ambiance-tete {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ambiance-lecture {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-texte);
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out);
+}
+
+.ambiance-lecture:active {
+  transform: scale(0.94);
+}
+
+.ambiance-texte {
+  min-width: 0;
+}
+
+.ambiance-titre {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.ambiance-texte .meta {
+  overflow: hidden;
+  font-size: 0.8125rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ambiance-volume {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 10px;
+  color: var(--texte-2);
+}
+
+.ambiance-volume input {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--accent);
+}
+
+.ambiance-sons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ambiance-son {
+  padding: 6px 10px;
+  border: 1px solid var(--bordure);
+  border-radius: 999px;
+  background: none;
+  color: var(--texte-2);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.ambiance-son[aria-pressed="true"] {
+  background: var(--accent-doux);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}

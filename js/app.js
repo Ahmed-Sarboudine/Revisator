@@ -27,6 +27,7 @@ import { icones } from "./icones.js";
 import { pageExamens, prochainExamen, texteCompteARebours } from "./examens.js";
 import { boutonMenu, rendreNav } from "./nav.js";
 import { monterLecteur } from "./lecteur.js";
+import "./ambiance.js";
 
 const app = document.getElementById("app");
 const TAILLES_EXAMEN = [20, 40, 60];
