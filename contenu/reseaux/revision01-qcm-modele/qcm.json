@@ -1,0 +1,375 @@
+{
+  "matiere": "Réseaux",
+  "document": "revision",
+  "titre": "QCM modèle de l'examen",
+  "questions": [
+    {
+      "id": "rev1-001",
+      "type": "unique",
+      "enonce": "Quelle information **ne peut pas** être obtenue avec la commande `ping` ?",
+      "choix": ["L'adresse IP de destination", "Le temps de réponse moyen", "La perte de paquets", "Le chemin emprunté par les paquets"],
+      "reponses": [3],
+      "explication": "`ping` envoie des requêtes d'écho ICMP et mesure les réponses : adresse IP, temps aller-retour (min/moy/max) et pourcentage de pertes. Pour connaître **le chemin** (les routeurs traversés), il faut `traceroute` (`tracert` sous Windows), qui joue sur le TTL."
+    },
+    {
+      "id": "rev1-002",
+      "type": "unique",
+      "enonce": "Quel est le rôle des serveurs DNS **secondaires** ?",
+      "choix": [
+        "Résoudre uniquement les requêtes DNS des domaines locaux",
+        "Stocker des copies de zone différentes de celles des serveurs primaires",
+        "À la fois résoudre les domaines locaux et stocker des copies de zone différentes",
+        "Remplacer les serveurs DNS primaires en cas de panne"
+      ],
+      "reponses": [3],
+      "explication": "Un serveur secondaire garde une **copie identique** de la zone du primaire, mise à jour régulièrement (temporisateur *Refresh*, voir le TD 4). Il sert de **secours** : si le primaire tombe, il continue à répondre. Ses copies ne sont donc pas « différentes »."
+    },
+    {
+      "id": "rev1-003",
+      "type": "unique",
+      "enonce": "Quel protocole permet de **synchroniser** les e-mails entre différents appareils et de les **conserver sur le serveur** ?",
+      "choix": ["POP3", "SMTP", "HTTP", "IMAP"],
+      "reponses": [3],
+      "explication": "**IMAP** synchronise la boîte sur tous les appareils et garde les e-mails sur le serveur. POP3 les télécharge sur l'appareil (pas de synchronisation) ; SMTP sert à **envoyer** les e-mails."
+    },
+    {
+      "id": "rev1-004",
+      "type": "unique",
+      "enonce": "Quel protocole est le plus adapté à une utilisation avec **plusieurs appareils** et une synchronisation constante des e-mails ?",
+      "choix": ["POP3", "HTTP", "IMAP", "SMTP"],
+      "reponses": [2],
+      "explication": "Même idée que la question précédente : **IMAP** permet l'accès multiple et la synchronisation. POP3 n'offre ni l'un ni l'autre."
+    },
+    {
+      "id": "rev1-005",
+      "type": "unique",
+      "enonce": "Quelle affirmation est correcte concernant la sécurité de SMTP, IMAP et POP3 ?",
+      "choix": [
+        "SMTP est plus sécurisé que IMAP et POP3",
+        "Tous ces protocoles peuvent être sécurisés avec des connexions chiffrées (TLS/SSL)",
+        "IMAP est plus sécurisé que SMTP et POP3",
+        "POP3 est plus sécurisé que SMTP et IMAP"
+      ],
+      "reponses": [1],
+      "explication": "Aucun n'est « plus sécurisé » par nature : tous transmettent en clair à l'origine, et **tous peuvent passer par TLS/SSL** (SMTPS ou SMTP sur 587 avec STARTTLS, IMAPS, POP3S)."
+    },
+    {
+      "id": "rev1-006",
+      "type": "unique",
+      "enonce": "Les principales caractéristiques du protocole IP sont :",
+      "choix": [
+        "Sans connexion, fiable et indépendant du support",
+        "Sans connexion, acheminement au mieux et dépendant du support",
+        "Sans connexion, peu fiable (au mieux) et indépendant du support",
+        "Avec connexion, acheminement au mieux et indépendant du support"
+      ],
+      "reponses": [2],
+      "explication": "Cours 3 : IP est **sans connexion**, achemine **au mieux** (peu fiable : aucune garantie de livraison, c'est TCP qui apporte la fiabilité) et est **indépendant du support** (fibre, cuivre, sans-fil…)."
+    },
+    {
+      "id": "rev1-007",
+      "type": "unique",
+      "enonce": "Quel masque de sous-réseau correspond à la notation **/24** ?",
+      "choix": ["255.255.255.0", "255.255.0.0", "255.0.0.0", "255.255.255.255"],
+      "reponses": [0],
+      "explication": "/24 = 24 bits à 1, soit trois octets à 255 : **255.255.255.0**. /16 donnerait 255.255.0.0 et /8 255.0.0.0."
+    },
+    {
+      "id": "rev1-008",
+      "type": "unique",
+      "enonce": "Combien d'adresses d'hôtes **utilisables** sur le réseau 192.168.10.0/24 ?",
+      "choix": ["64", "62", "254", "256"],
+      "reponses": [2],
+      "explication": "Il reste 32 − 24 = 8 bits d'hôte : $2^8 - 2 = 254$. On retire l'adresse du réseau (.0) et celle de diffusion (.255). 256, c'est le nombre total d'adresses."
+    },
+    {
+      "id": "rev1-009",
+      "type": "unique",
+      "enonce": "Que représente l'adresse **192.168.1.255/24** ?",
+      "choix": ["Une adresse de multidiffusion (multicast)", "Une adresse de monodiffusion (unicast)", "Une adresse de diffusion (broadcast)", "L'adresse du sous-réseau"],
+      "reponses": [2],
+      "explication": "En /24, la partie hôte est le dernier octet. 255 = tous les bits d'hôte à 1, donc **adresse de diffusion** du réseau 192.168.1.0. L'adresse du sous-réseau aurait sa partie hôte à 0 (.0)."
+    },
+    {
+      "id": "rev1-010",
+      "type": "unique",
+      "enonce": "Quel est le masque d'un réseau de classe C avec **254 hôtes** possibles ?",
+      "choix": ["255.255.255.252", "255.255.255.0", "255.255.255.128", "255.255.255.240"],
+      "reponses": [1],
+      "explication": "254 = $2^8 - 2$ : il faut 8 bits d'hôte, soit le masque par défaut de la classe C, **255.255.255.0** (/24). .128 laisserait 126 hôtes, .240 en laisserait 14 et .252 seulement 2."
+    },
+    {
+      "id": "rev1-011",
+      "type": "unique",
+      "enonce": "Quel est le masque de sous-réseau **par défaut** d'un réseau de classe A ?",
+      "choix": ["Cela dépend de la taille du réseau", "255.255.0.0", "255.0.0.0", "255.255.255.0"],
+      "reponses": [2],
+      "explication": "Masques par défaut : classe A **255.0.0.0 (/8)**, classe B 255.255.0.0 (/16), classe C 255.255.255.0 (/24)."
+    },
+    {
+      "id": "rev1-012",
+      "type": "unique",
+      "enonce": "Dans un réseau de classe B, quel est le nombre maximum d'hôtes par réseau ?",
+      "choix": ["$2^{24}$", "$2^{8}$", "$2^{16} - 2$", "$2^{8} - 2$"],
+      "reponses": [2],
+      "explication": "Classe B : 16 bits réseau et **16 bits d'hôte**, donc $2^{16} - 2 = 65\\,534$ hôtes (on retire réseau et diffusion)."
+    },
+    {
+      "id": "rev1-013",
+      "type": "unique",
+      "enonce": "Dans un réseau de classe C, quel est le nombre maximum d'hôtes par réseau ?",
+      "choix": ["$2^{8}$", "$2^{8} - 2$", "$2^{16} - 2$", "$2^{24}$"],
+      "reponses": [1],
+      "explication": "Classe C : 24 bits réseau et **8 bits d'hôte**, donc $2^8 - 2 = 254$ hôtes. Ne pas oublier le « − 2 »."
+    },
+    {
+      "id": "rev1-014",
+      "type": "unique",
+      "enonce": "Dans la classe B, combien de **réseaux** différents sont disponibles ?",
+      "choix": ["$2^{16} - 2$", "$2^{16}$", "$2^{14}$", "$2^{14} - 2$"],
+      "reponses": [2],
+      "explication": "Cours 3 : en classe B, la partie réseau fait 16 bits, mais les **2 premiers bits sont fixés** (10). Il reste 14 bits, soit $2^{14} = 16\\,384$ réseaux. Le « − 2 » ne concerne que les hôtes."
+    },
+    {
+      "id": "rev1-015",
+      "type": "unique",
+      "enonce": "Dans la classe C, combien de **réseaux** différents sont disponibles ?",
+      "choix": ["$2^{21}$", "$2^{24} - 2$", "$2^{21} - 2$", "$2^{24}$"],
+      "reponses": [0],
+      "explication": "Classe C : 24 bits réseau, dont les **3 premiers sont fixés** (110). Il reste 21 bits, soit $2^{21} = 2\\,097\\,152$ réseaux (sans « − 2 », réservé au comptage des hôtes)."
+    },
+    {
+      "id": "rev1-016",
+      "type": "unique",
+      "enonce": "Qu'est-ce qu'un routeur, et quel rôle joue-t-il dans l'adressage IP ?",
+      "choix": [
+        "Il attribue des adresses IP aux hôtes d'un réseau",
+        "Il convertit les noms de domaine en adresses IP",
+        "Il filtre les paquets en fonction de leur adresse MAC",
+        "Il relie des réseaux différents et fait suivre les paquets grâce à ses tables de routage"
+      ],
+      "reponses": [3],
+      "explication": "Le routeur (couche 3) **interconnecte des réseaux** et choisit le chemin des paquets avec sa **table de routage**. Attribuer des adresses, c'est DHCP ; traduire les noms, c'est DNS ; filtrer selon la MAC, c'est le switch (couche 2)."
+    },
+    {
+      "id": "rev1-017",
+      "type": "unique",
+      "enonce": "Quelle est la principale différence entre le modèle OSI et le modèle TCP/IP en termes de couches ?",
+      "choix": [
+        "Le modèle TCP/IP a plus de couches que le modèle OSI",
+        "Le modèle OSI a plus de couches que le modèle TCP/IP",
+        "Les deux modèles ont le même nombre de couches, avec des noms différents",
+        "Il n'y a pas de différence significative"
+      ],
+      "reponses": [1],
+      "explication": "OSI : **7 couches** ; TCP/IP : **4 couches**. TCP/IP regroupe les couches 5-6-7 d'OSI dans « Application » et les couches 1-2 dans « Accès réseau »."
+    },
+    {
+      "id": "rev1-018",
+      "type": "unique",
+      "enonce": "Quelle est la principale fonction d'une adresse MAC dans un réseau local (LAN) ?",
+      "choix": [
+        "Chiffrer les données transmises",
+        "Identifier de manière unique chaque appareil sur le LAN",
+        "Identifier de manière unique chaque hôte sur Internet",
+        "Fournir une adresse IP dynamique"
+      ],
+      "reponses": [1],
+      "explication": "L'adresse MAC (couche 2) identifie chaque carte réseau **sur le réseau local** : c'est elle qu'utilise le switch. Sur Internet, c'est l'**adresse IP** qui identifie un hôte ; la MAC ne traverse pas les routeurs."
+    },
+    {
+      "id": "rev1-019",
+      "type": "unique",
+      "enonce": "Comment les adresses MAC sont-elles attribuées aux interfaces réseau ?",
+      "choix": ["Dynamiquement par le serveur DHCP", "Par le protocole de routage", "Par le système d'exploitation", "Par le fabricant de l'interface réseau"],
+      "reponses": [3],
+      "explication": "L'adresse MAC est **fixée en usine par le fabricant** : les 3 premiers octets (OUI) identifient le constructeur, les 3 suivants la carte. DHCP attribue des adresses **IP**, pas des MAC."
+    },
+    {
+      "id": "rev1-020",
+      "type": "unique",
+      "enonce": "Qu'est-ce qu'une adresse MAC ?",
+      "choix": [
+        "Le nom que l'on donne à son ordinateur",
+        "L'adresse IP physique de l'ordinateur",
+        "Le type de connexion Internet utilisé",
+        "Une adresse unique attribuée à chaque carte réseau"
+      ],
+      "reponses": [3],
+      "explication": "C'est l'**adresse physique** de la carte réseau : 48 bits (6 octets), unique. Ce n'est pas une adresse IP : MAC (couche 2) et IP (couche 3) sont deux adressages distincts, reliés par ARP."
+    },
+    {
+      "id": "rev1-021",
+      "type": "unique",
+      "enonce": "L'adresse d'une machine est **193.48.200.49**. Le réseau est de :",
+      "choix": ["Classe C", "Classe D", "Classe B", "Classe A"],
+      "reponses": [0],
+      "explication": "Le premier octet, **193**, est compris entre 192 et 223 : **classe C**. Rappel : A 0–127, B 128–191, C 192–223, D (multicast) 224–239."
+    },
+    {
+      "id": "rev1-022",
+      "type": "unique",
+      "enonce": "Dans quel cas utilise-t-on généralement l'attribution **statique** d'un numéro de port ?",
+      "choix": ["Pour les processus clients", "Pour les processus serveurs", "Dans tous les cas", "Pour les protocoles sans connexion"],
+      "reponses": [1],
+      "explication": "Cours 4 : un **serveur** a un port fixe et connu (80 pour HTTP, 53 pour DNS…) pour que les clients sachent où le joindre. Les **clients** reçoivent un port dynamique, tiré au hasard."
+    },
+    {
+      "id": "rev1-023",
+      "type": "unique",
+      "enonce": "Quelle est la principale différence entre l'attribution statique et dynamique d'un numéro de port ?",
+      "choix": [
+        "La statique est utilisée pour TCP, la dynamique pour UDP",
+        "La statique est plus rapide, la dynamique plus sécurisée",
+        "Il n'y a pas de différence significative",
+        "La statique est configurée par défaut ou manuellement, la dynamique est générée aléatoirement"
+      ],
+      "reponses": [3],
+      "explication": "**Statique** : port configuré par défaut ou à la main (serveurs). **Dynamique** : port tiré au hasard, qui sert d'identifiant de retour (clients). Les deux existent en TCP comme en UDP."
+    },
+    {
+      "id": "rev1-024",
+      "type": "unique",
+      "enonce": "Trouver l'affirmation correcte :",
+      "choix": [
+        "Le n° d'ordre sert à identifier les applications",
+        "Les n° d'ordre et de reçu ne permettent pas d'identifier les segments manquants",
+        "Le n° de reçu est le n° du prochain octet attendu par le destinataire",
+        "Le n° d'ordre est décrémenté du nombre d'octets transmis"
+      ],
+      "reponses": [2],
+      "explication": "Cours 4 : le **n° de reçu** est le prochain octet attendu. Les applications sont identifiées par les **ports** ; le n° d'ordre est **incrémenté** du nombre d'octets transmis, et c'est justement grâce à ces numéros qu'on repère les segments manquants."
+    },
+    {
+      "id": "rev1-025",
+      "type": "unique",
+      "enonce": "Un réseau convergent est :",
+      "choix": [
+        "Un réseau garantissant une qualité de service élevée",
+        "Un réseau transportant des données informatiques",
+        "Un réseau transportant à la fois du temps réel et des données traditionnelles",
+        "Un réseau transportant des données audio et vidéo en temps réel"
+      ],
+      "reponses": [2],
+      "explication": "Cours 1 : un réseau convergent est un **réseau unique** qui intègre **à la fois** les données informatiques traditionnelles **et** l'audio/vidéo temps réel. Les deux propositions qui ne citent qu'un type de trafic sont incomplètes ; la QoS est un besoin de ce réseau, pas sa définition."
+    },
+    {
+      "id": "rev1-026",
+      "type": "multiple",
+      "enonce": "Choisir les réponses correctes :",
+      "choix": [
+        "Le modèle OSI est plus détaillé et plus précis que le modèle TCP/IP",
+        "Dans le modèle TCP/IP, la première couche s'appelle la couche physique",
+        "Le modèle OSI comporte 4 couches et le modèle TCP/IP 7 couches"
+      ],
+      "reponses": [0],
+      "explication": "Seule la première est vraie : OSI (7 couches) est plus détaillé. La couche basse de TCP/IP s'appelle **Accès réseau** (elle regroupe physique et liaison) ; et c'est l'inverse : OSI a 7 couches, TCP/IP 4."
+    },
+    {
+      "id": "rev1-027",
+      "type": "unique",
+      "enonce": "Quelle adresse de destination est utilisée dans une trame **ARP Request** ?",
+      "choix": ["0.0.0.0", "127.0.0.1", "01-00-5E-00-AA-23", "FFFF.FFFF.FFFF"],
+      "reponses": [3],
+      "explication": "La requête ARP est envoyée en **broadcast** : adresse MAC de destination **FF-FF-FF-FF-FF-FF** (notée ici FFFF.FFFF.FFFF). 01-00-5E… est une MAC multicast ; 0.0.0.0 et 127.0.0.1 sont des adresses IP."
+    },
+    {
+      "id": "rev1-028",
+      "type": "unique",
+      "enonce": "Quelle affirmation est correcte concernant les topologies physiques et logiques ?",
+      "choix": [
+        "Une topologie logique peut correspondre à plusieurs topologies physiques",
+        "Une topologie physique et une topologie logique sont toujours identiques",
+        "La topologie logique est indépendante de la topologie physique",
+        "Une topologie physique peut correspondre à plusieurs topologies logiques"
+      ],
+      "reponses": [3],
+      "explication": "Cours 1 : un même câblage **physique en étoile** peut fonctionner **logiquement en bus** ou de façon **maillée**. Une topologie physique peut donc porter plusieurs topologies logiques ; elles ne sont pas toujours identiques."
+    },
+    {
+      "id": "rev1-029",
+      "type": "unique",
+      "enonce": "Quelle est la principale caractéristique d'un réseau convergent ?",
+      "choix": [
+        "Une meilleure qualité de service (QoS)",
+        "Une gestion du réseau plus complexe",
+        "Des coûts d'infrastructure plus élevés",
+        "La convergence vers une technologie unique"
+      ],
+      "reponses": [3],
+      "explication": "Un réseau convergent est un **réseau unique** : voix, vidéo et données passent par la même technologie au lieu de réseaux séparés. La QoS est ce qu'il faut **mettre en place** pour qu'il fonctionne bien (prioriser le temps réel), ce n'est pas ce qui le caractérise. *Question piégeuse : c'est l'interprétation la plus proche du cours.*"
+    },
+    {
+      "id": "rev1-030",
+      "type": "unique",
+      "enonce": "Qu'est-ce qu'un réseau convergent ?",
+      "choix": [
+        "Un réseau qui converge vers une technologie unique",
+        "Un réseau qui converge vers une architecture en étoile",
+        "Un réseau qui fait converger les données vers un seul point central",
+        "Un réseau qui fait converger différents types de trafic (voix, données, vidéo) sur une même infrastructure"
+      ],
+      "reponses": [3],
+      "explication": "Définition complète : **différents types de trafic sur une même infrastructure**. « Technologie unique » en est une conséquence, mais la proposition qui décrit vraiment le réseau convergent est celle qui nomme les trafics. La topologie (étoile, point central) n'a rien à voir."
+    },
+    {
+      "id": "rev1-031",
+      "type": "unique",
+      "exercice": "**Exercice (sous-réseaux)** : on considère l'adresse IP **183.1.0.0**.",
+      "enonce": "À quelle classe appartient-elle, et quel est son masque par défaut ?",
+      "choix": [
+        "Classe B, masque par défaut 255.255.0.0",
+        "Classe C, masque par défaut 255.255.0.0",
+        "Classe B, masque par défaut 255.255.192.0",
+        "Classe C, masque par défaut 255.252.192.0"
+      ],
+      "reponses": [0],
+      "explication": "183 est entre 128 et 191 : **classe B**, masque par défaut **255.255.0.0** (/16). 255.255.192.0 n'est pas un masque par défaut : c'est celui qu'on obtient après découpage en sous-réseaux."
+    },
+    {
+      "id": "rev1-032",
+      "type": "unique",
+      "exercice": "**Exercice (sous-réseaux)** : on considère l'adresse IP **183.1.0.0** (classe B, /16).",
+      "enonce": "On modifie le masque pour créer **3 sous-réseaux**. Quel est le nouveau masque ?",
+      "choix": ["/20", "/14", "/18", "/16"],
+      "reponses": [2],
+      "explication": "Il faut n bits avec $2^n \\geq 3$ : $2^1 = 2$ ne suffit pas, $2^2 = 4$ oui, donc **2 bits** empruntés. /16 + 2 = **/18** (255.255.192.0). On obtient 4 sous-réseaux, dont on utilise 3."
+    },
+    {
+      "id": "rev1-033",
+      "type": "unique",
+      "exercice": "**Exercice (sous-réseaux)** : 183.1.0.0 découpé avec le masque /18 (255.255.192.0).",
+      "enonce": "Quelle est l'adresse du **3ᵉ sous-réseau** ?",
+      "choix": ["183.1.192.0", "183.1.3.0", "183.1.128.2", "183.1.128.0"],
+      "reponses": [3],
+      "explication": "Masque .192 sur le 3ᵉ octet → taille de bloc 256 − 192 = **64**. Sous-réseaux : 183.1.**0**.0, 183.1.**64**.0, **183.1.128.0**, 183.1.192.0. Le 3ᵉ est donc 183.1.128.0 (183.1.192.0 est le 4ᵉ)."
+    },
+    {
+      "id": "rev1-034",
+      "type": "unique",
+      "exercice": "**Exercice (CRC)** : message binaire `0011111101`, polynôme générateur $g(x) = x^2 + x + 1$.",
+      "enonce": "Quelle est la représentation binaire du polynôme générateur ?",
+      "choix": ["`101001`", "`110`", "`001`", "`111`"],
+      "reponses": [3],
+      "explication": "Un bit par puissance de $x^2$ à $x^0$ : $x^2$ → 1, $x^1$ → 1, $x^0$ (le « + 1 ») → 1, soit **`111`**."
+    },
+    {
+      "id": "rev1-035",
+      "type": "unique",
+      "exercice": "**Exercice (CRC)** : message binaire `0011111101`, polynôme générateur $g(x) = x^2 + x + 1$.",
+      "enonce": "Quelle est la taille du CRC à ajouter au message ?",
+      "choix": ["Cela dépend de la longueur du message", "3 bits", "4 bits", "2 bits"],
+      "reponses": [3],
+      "explication": "Le CRC a autant de bits que le **degré** du polynôme : ici degré 2, donc **2 bits**. Il ne dépend pas de la longueur du message ; 3 bits, c'est la taille du mot `111`, pas celle du CRC."
+    },
+    {
+      "id": "rev1-036",
+      "type": "unique",
+      "exercice": "**Exercice (CRC)** : message binaire `0011111101`, polynôme générateur $g(x) = x^2 + x + 1$ (`111`).",
+      "enonce": "Quel est le message codé (avec le CRC) ?",
+      "choix": ["`001111110100`", "`111111110111`", "`001111110111`", "`0011111101101`"],
+      "reponses": [2],
+      "explication": "On ajoute 2 zéros (`001111110100`) puis on fait des XOR avec `111` sous chaque premier 1 : le reste vaut **`11`**. Le message codé est le message suivi du CRC : **`0011111101 11`**. `001111110100` est seulement le message avec ses deux zéros, avant le calcul. (C'est aussi l'exercice 2.1 du TD 2.)"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 // Vérifie un qcm.json. Utilisé par le site et par scripts/build-index.js.
 // Renvoie la liste des erreurs (vide si le fichier est valide).
 
-const TYPES_DOCUMENT = ["cours", "td"];
+const TYPES_DOCUMENT = ["cours", "td", "revision"];
 const TYPES_QUESTION = ["unique", "multiple"];
 
 function texteNonVide(v) {
@@ -12,7 +12,7 @@ function texteNonVide(v) {
 export function validerDocument(meta) {
   const erreurs = [];
   if (typeof meta !== "object" || meta === null || Array.isArray(meta)) return ["le fichier doit contenir un objet JSON"];
-  if (!TYPES_DOCUMENT.includes(meta.document)) erreurs.push("« document » doit valoir \"cours\" ou \"td\"");
+  if (!TYPES_DOCUMENT.includes(meta.document)) erreurs.push("« document » doit valoir \"cours\", \"td\" ou \"revision\"");
   if (!texteNonVide(meta.titre)) erreurs.push("« titre » manquant ou vide");
   if (meta.cours !== undefined && (meta.document !== "td" || !texteNonVide(meta.cours))) {
     erreurs.push("« cours » n'est autorisé que pour un TD, et doit être un nom de dossier");

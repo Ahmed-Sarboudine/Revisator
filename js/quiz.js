@@ -5,7 +5,7 @@ import { noterResultat, erreursDe } from "./erreurs.js";
 import { melanger } from "./donnees.js";
 import { icones } from "./icones.js";
 
-const NOMS_DOCUMENT = { cours: "Cours", td: "TD" };
+const NOMS_DOCUMENT = { cours: "Cours", td: "TD", revision: "Révision examen" };
 const LETTRES = "ABCDEF";
 
 // options : { titre, retour, items, afficherOrigine, recommencer }

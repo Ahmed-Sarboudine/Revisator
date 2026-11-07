@@ -9,7 +9,7 @@ import { validerQcm, validerExamens, validerDocument } from "../js/validate.js";
 
 const racine = join(dirname(fileURLToPath(import.meta.url)), "..");
 const contenu = join(racine, "contenu");
-const PREFIXE_DOSSIER = /^(cours|td)\d+-/;
+const PREFIXE_DOSSIER = /^(cours|td|revision)\d+-/;
 
 const sousDossiers = (dir) =>
   readdirSync(dir)

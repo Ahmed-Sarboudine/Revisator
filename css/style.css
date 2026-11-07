@@ -1899,3 +1899,44 @@ button.bouton-icone {
   font-weight: 600;
   text-decoration: none;
 }
+
+/* ---------- Révision examen : section à part, couleur orange ---------- */
+
+:root {
+  --revision: #b4530a;
+  --revision-doux: #fdf0e1;
+  --revision-texte: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --revision: #f2a65a;
+    --revision-doux: #33230f;
+    --revision-texte: #1b1a17;
+  }
+}
+
+.section-revision {
+  margin-bottom: 8px;
+}
+
+.section-revision .titre-section {
+  color: var(--revision);
+}
+
+.section-revision .ligne {
+  border-color: var(--revision);
+  background: var(--revision-doux);
+}
+
+.numero.revision {
+  background: var(--revision);
+  color: var(--revision-texte);
+}
+
+/* pendant le QCM de révision, toute l'interface prend la couleur de la révision */
+.theme-revision {
+  --accent: var(--revision);
+  --accent-doux: var(--revision-doux);
+  --accent-texte: var(--revision-texte);
+}

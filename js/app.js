@@ -34,7 +34,8 @@ const TAILLES_EXAMEN = [20, 40, 60];
 
 const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 const totalQuestions = (matiere) => matiere.documents.reduce((n, d) => n + d.nbQuestions, 0);
-const numero = (doc) => (doc.id.match(/^(?:cours|td)(\d+)/) || [])[1] || "";
+const numero = (doc) => (doc.id.match(/^(?:cours|td|revision)(\d+)/) || [])[1] || "";
+const PREFIXES_NUMERO = { td: "TD", revision: "R", cours: "" };
 
 const barreRetour = (href, libelle) => `
   <header class="barre">
@@ -109,7 +110,7 @@ function ligneDocument(matiere, doc) {
   return `
     <div class="doc">
       <a class="ligne" href="#/${sansQcm ? "d" : "q"}/${matiere.id}/${doc.id}">
-        <span class="numero ${doc.document}" aria-hidden="true">${doc.document === "td" ? "TD" : ""}${numero(doc)}</span>
+        <span class="numero ${doc.document}" aria-hidden="true">${PREFIXES_NUMERO[doc.document]}${numero(doc)}</span>
         <span class="ligne-corps">
           <span class="ligne-titre">${echapper(doc.titre)}</span>
           <span class="meta">${meta}</span>
@@ -146,6 +147,7 @@ async function pageMatiere(idMatiere) {
 
   const cours = matiere.documents.filter((d) => d.document === "cours");
   const tds = matiere.documents.filter((d) => d.document === "td");
+  const revisions = matiere.documents.filter((d) => d.document === "revision");
   const tdsLies = (c) => tds.filter((d) => d.cours === c.id);
   const tdsSeuls = tds.filter((d) => !d.cours);
   const total = totalQuestions(matiere);
@@ -159,6 +161,7 @@ async function pageMatiere(idMatiere) {
       <p class="meta">${[
         cours.length > 0 ? `${cours.length} cours` : "",
         tds.length > 0 ? pluriel(tds.length, "TD") : "",
+        revisions.length > 0 ? `${revisions.length} révision${revisions.length > 1 ? "s" : ""}` : "",
         total > 0 ? pluriel(total, "question") : "",
       ]
         .filter(Boolean)
@@ -209,6 +212,14 @@ async function pageMatiere(idMatiere) {
     </aside>
 
     <div class="contenu-matiere">
+    ${
+      revisions.length > 0
+        ? `<section class="section-revision">
+            <h2 class="titre-section">Révision examen</h2>
+            <ul class="liste">${revisions.map((r) => `<li>${ligneDocument(matiere, r)}</li>`).join("")}</ul>
+          </section>`
+        : ""
+    }
     ${
       cours.length > 0
         ? `<h2 class="titre-section">Cours</h2>
@@ -457,6 +468,7 @@ async function quizDocument(idMatiere, idDoc) {
   const doc = matiere.documents.find((d) => d.id === idDoc);
   if (!doc) throw new ErreurContenu(`Document « ${idDoc} » introuvable dans ${matiere.nom}.`);
   document.title = `${doc.titre} · Revisator`;
+  app.classList.toggle("theme-revision", doc.document === "revision");
   lancerQuiz(app, {
     titre: doc.titre,
     retour: `#/m/${matiere.id}`,
@@ -534,6 +546,7 @@ async function afficherRoute() {
     examens: listeExamens,
   };
   const vue = vues[route] || accueil;
+  app.classList.remove("theme-revision");
   app.classList.toggle("page-lecture", route === "lire" || route === "d");
   try {
     await vue(...params);
