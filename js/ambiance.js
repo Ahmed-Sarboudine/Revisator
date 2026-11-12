@@ -305,20 +305,39 @@ function arreter(id) {
   actifs.delete(id);
 }
 
-async function lecture() {
+// La pause coupe tout le moteur audio (ctx.suspend) : plus aucun son ne peut
+// continuer, même un éclat ou un minuteur encore en route. L'état du bouton
+// change tout de suite, sans attendre le navigateur, pour éviter les doubles clics.
+let minuteurPause = null;
+
+function lecture() {
   initialiser();
-  if (ctx.state === "suspended") await ctx.resume();
-  if (reglages.sons.length === 0) reglages.sons = ["pluie"];
-  reglages.sons.forEach(demarrer);
+  clearTimeout(minuteurPause);
   enLecture = true;
+  if (reglages.sons.length === 0) reglages.sons = ["pluie"];
+  const t = ctx.currentTime;
+  maitre.gain.cancelScheduledValues(t);
+  maitre.gain.setValueAtTime(reglages.volume, t);
+  if (ctx.state !== "running") ctx.resume().catch(() => {});
+  reglages.sons.forEach(demarrer);
   sauver();
   rendre();
 }
 
 function pause() {
-  [...actifs.keys()].forEach(arreter);
   enLecture = false;
+  [...actifs.keys()].forEach(arreter);
   rendre();
+  if (!ctx) return;
+  // fondu rapide de tout le mélange, puis mise en veille du moteur audio
+  const t = ctx.currentTime;
+  maitre.gain.cancelScheduledValues(t);
+  maitre.gain.setValueAtTime(maitre.gain.value, t);
+  maitre.gain.linearRampToValueAtTime(0, t + 0.25);
+  clearTimeout(minuteurPause);
+  minuteurPause = setTimeout(() => {
+    if (!enLecture) ctx.suspend().catch(() => {});
+  }, 900);
 }
 
 function basculerSon(id) {
@@ -328,7 +347,7 @@ function basculerSon(id) {
   if (enLecture) {
     if (choisi) arreter(id);
     else demarrer(id);
-    if (reglages.sons.length === 0) enLecture = false;
+    if (reglages.sons.length === 0) return pause();
   } else if (!choisi) {
     // choisir un son quand rien ne joue lance la lecture
     lecture();
@@ -377,7 +396,7 @@ zone?.addEventListener("click", (e) => {
 zone?.addEventListener("input", (e) => {
   if (!e.target.matches("[data-volume]")) return;
   reglages.volume = Number(e.target.value);
-  if (maitre) maitre.gain.setTargetAtTime(reglages.volume, ctx.currentTime, 0.05);
+  if (maitre && enLecture) maitre.gain.setTargetAtTime(reglages.volume, ctx.currentTime, 0.05);
   sauver();
 });
 
