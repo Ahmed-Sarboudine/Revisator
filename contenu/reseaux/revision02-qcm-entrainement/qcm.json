@@ -1,0 +1,366 @@
+{
+  "matiere": "Réseaux",
+  "document": "revision",
+  "titre": "QCM d'entraînement (2ᵉ série)",
+  "questions": [
+    {
+      "id": "rev2-001",
+      "type": "unique",
+      "enonce": "Quelle commande permet de connaître **le chemin** (la liste des routeurs) emprunté par les paquets jusqu'à une destination ?",
+      "choix": ["`ping`", "`ipconfig`", "`traceroute` (`tracert` sous Windows)", "`nslookup`"],
+      "reponses": [2],
+      "explication": "`traceroute` envoie des paquets avec un **TTL** de 1, puis 2, puis 3… Chaque routeur qui fait tomber le TTL à 0 renvoie un message ICMP, ce qui le révèle. `ping` ne donne que la joignabilité, le temps de réponse et les pertes ; `ipconfig` affiche la configuration locale ; `nslookup` interroge le DNS."
+    },
+    {
+      "id": "rev2-002",
+      "type": "unique",
+      "enonce": "Quel est le rôle d'un serveur DNS **primaire** pour une zone ?",
+      "choix": [
+        "Il détient la version de référence de la zone, celle que l'on modifie et que les secondaires recopient",
+        "Il conserve uniquement une copie de secours de la zone",
+        "Il attribue les adresses IP aux machines du domaine",
+        "Il ne répond qu'aux requêtes venant de l'extérieur du domaine"
+      ],
+      "reponses": [0],
+      "explication": "Le primaire contient le **fichier de zone de référence** : c'est là que l'administrateur fait les modifications. Les secondaires en gardent une **copie identique** (transfert de zone) et servent de secours. Attribuer des adresses IP, c'est le rôle de DHCP."
+    },
+    {
+      "id": "rev2-003",
+      "type": "unique",
+      "enonce": "Quel protocole est utilisé pour **envoyer** un e-mail du client vers le serveur, puis de serveur à serveur ?",
+      "choix": ["IMAP", "POP3", "DNS", "SMTP"],
+      "reponses": [3],
+      "explication": "**SMTP** sert à l'**envoi** (client → serveur, puis serveur → serveur). IMAP et POP3 servent à la **réception** (le client récupère ses e-mails). DNS intervient seulement pour trouver le serveur de messagerie (enregistrement MX)."
+    },
+    {
+      "id": "rev2-004",
+      "type": "unique",
+      "enonce": "Un utilisateur ne consulte ses e-mails que depuis **un seul ordinateur** et veut les **télécharger** pour les lire hors connexion, sans les garder sur le serveur. Quel protocole convient ?",
+      "choix": ["SMTP", "POP3", "IMAP", "HTTP"],
+      "reponses": [1],
+      "explication": "**POP3** télécharge les e-mails sur l'appareil et les supprime en général du serveur : parfait pour un seul poste. IMAP garde tout sur le serveur et synchronise plusieurs appareils ; SMTP sert à envoyer."
+    },
+    {
+      "id": "rev2-005",
+      "type": "unique",
+      "enonce": "Quelle est la différence entre HTTP et HTTPS ?",
+      "choix": [
+        "HTTPS utilise UDP alors que HTTP utilise TCP",
+        "HTTPS est plus rapide car il compresse les pages",
+        "HTTPS chiffre les échanges avec TLS/SSL (port 443), HTTP les transmet en clair (port 80)",
+        "HTTPS sert uniquement à télécharger des fichiers"
+      ],
+      "reponses": [2],
+      "explication": "HTTPS = HTTP **dans une connexion chiffrée TLS/SSL**, sur le port **443** au lieu de **80**. Les deux reposent sur **TCP**. C'est la même logique que SMTPS, IMAPS ou POP3S."
+    },
+    {
+      "id": "rev2-006",
+      "type": "unique",
+      "enonce": "Les principales caractéristiques du protocole **TCP** sont :",
+      "choix": [
+        "Sans connexion, non fiable, rapide",
+        "Orienté connexion, fiable (accusés de réception, retransmission), avec contrôle de flux",
+        "Orienté connexion, non fiable, sans numérotation des segments",
+        "Sans connexion, fiable, sans accusé de réception"
+      ],
+      "reponses": [1],
+      "explication": "Cours 4 : TCP **établit une connexion** (poignée de main en 3 temps), est **fiable** (numéros d'ordre, accusés de réception, retransmission des segments perdus) et gère le **contrôle de flux** (fenêtre). UDP, lui, est sans connexion et non fiable."
+    },
+    {
+      "id": "rev2-007",
+      "type": "unique",
+      "enonce": "Quel masque de sous-réseau correspond à la notation **/26** ?",
+      "choix": ["255.255.255.128", "255.255.255.224", "255.255.255.0", "255.255.255.192"],
+      "reponses": [3],
+      "explication": "/26 = 24 + 2 bits : les trois premiers octets à 255, puis `11000000` = 128 + 64 = **192**. Masque **255.255.255.192**. /25 donnerait .128 et /27 donnerait .224."
+    },
+    {
+      "id": "rev2-008",
+      "type": "unique",
+      "enonce": "Combien d'adresses d'hôtes **utilisables** sur le réseau 192.168.5.0/26 ?",
+      "choix": ["62", "64", "126", "30"],
+      "reponses": [0],
+      "explication": "32 − 26 = 6 bits d'hôte : $2^6 - 2 = 62$. On retire l'adresse du réseau et celle de diffusion. 64 est le nombre total d'adresses ; 126 correspondrait à /25 et 30 à /27."
+    },
+    {
+      "id": "rev2-009",
+      "type": "unique",
+      "enonce": "Que représente l'adresse **172.16.0.0/16** ?",
+      "choix": ["Une adresse de diffusion (broadcast)", "L'adresse du réseau", "Une adresse de multidiffusion (multicast)", "L'adresse d'un hôte"],
+      "reponses": [1],
+      "explication": "En /16, la partie hôte correspond aux deux derniers octets. Ici ils valent **0.0** : tous les bits d'hôte à 0, c'est donc **l'adresse du réseau**. La diffusion serait 172.16.255.255 (bits d'hôte à 1)."
+    },
+    {
+      "id": "rev2-010",
+      "type": "unique",
+      "enonce": "Quel masque faut-il pour un sous-réseau devant accueillir **30 hôtes** au maximum, sans gaspiller d'adresses ?",
+      "choix": ["255.255.255.192", "255.255.255.240", "255.255.255.224", "255.255.255.248"],
+      "reponses": [2],
+      "explication": "Il faut h bits d'hôte avec $2^h - 2 \\geq 30$ : $2^5 - 2 = 30$, donc **5 bits**. 32 − 5 = /27, soit **255.255.255.224**. .240 (/28) ne laisse que 14 hôtes, .248 (/29) 6 hôtes ; .192 (/26) en laisse 62, c'est trop."
+    },
+    {
+      "id": "rev2-011",
+      "type": "unique",
+      "enonce": "Quel est le masque de sous-réseau **par défaut** d'un réseau de classe B ?",
+      "choix": ["255.0.0.0", "255.255.255.0", "255.255.0.0", "255.255.255.255"],
+      "reponses": [2],
+      "explication": "Classe A : 255.0.0.0 (/8) ; **classe B : 255.255.0.0 (/16)** ; classe C : 255.255.255.0 (/24)."
+    },
+    {
+      "id": "rev2-012",
+      "type": "unique",
+      "enonce": "Dans un réseau de classe A, quel est le nombre maximum d'hôtes par réseau ?",
+      "choix": ["$2^{24} - 2$", "$2^{24}$", "$2^{16} - 2$", "$2^{8} - 2$"],
+      "reponses": [0],
+      "explication": "Classe A : 8 bits réseau et **24 bits d'hôte**, donc $2^{24} - 2 = 16\\,777\\,214$ hôtes. Le « − 2 » retire l'adresse du réseau et celle de diffusion."
+    },
+    {
+      "id": "rev2-013",
+      "type": "unique",
+      "enonce": "Dans la classe A, combien de **réseaux** différents sont disponibles (sans retirer les réseaux réservés) ?",
+      "choix": ["$2^{8}$", "$2^{8} - 2$", "$2^{24}$", "$2^{7}$"],
+      "reponses": [3],
+      "explication": "Classe A : 8 bits réseau, dont **le premier est fixé** à 0. Il reste 7 bits, soit $2^7 = 128$ réseaux. Même raisonnement qu'en B ($2^{14}$, 2 bits fixés) et en C ($2^{21}$, 3 bits fixés). En pratique, 0.0.0.0 et 127.0.0.0 (boucle locale) sont réservés."
+    },
+    {
+      "id": "rev2-014",
+      "type": "unique",
+      "enonce": "L'adresse d'une machine est **138.25.4.7**. Le réseau est de :",
+      "choix": ["Classe A", "Classe C", "Classe D", "Classe B"],
+      "reponses": [3],
+      "explication": "Le premier octet, **138**, est compris entre 128 et 191 : **classe B**. Rappel : A 0–127, B 128–191, C 192–223, D (multicast) 224–239."
+    },
+    {
+      "id": "rev2-015",
+      "type": "unique",
+      "enonce": "L'adresse **230.1.2.3** appartient à quelle classe ?",
+      "choix": ["Classe C", "Classe D (multidiffusion)", "Classe B", "Classe E (réservée)"],
+      "reponses": [1],
+      "explication": "230 est compris entre 224 et 239 : **classe D**, réservée à la **multidiffusion** (multicast). Elle n'a pas de masque par défaut et ne désigne pas un hôte unique. La classe E (240–255) est réservée."
+    },
+    {
+      "id": "rev2-016",
+      "type": "unique",
+      "enonce": "Qu'est-ce qu'un commutateur (switch), et sur quoi se base-t-il pour transmettre les trames ?",
+      "choix": [
+        "Un équipement de couche 3 qui se base sur les adresses IP",
+        "Un équipement de couche 1 qui répète le signal sur tous les ports",
+        "Un serveur qui traduit les noms de domaine",
+        "Un équipement de couche 2 qui se base sur les adresses MAC (table de commutation)"
+      ],
+      "reponses": [3],
+      "explication": "Le switch travaille en **couche 2** : il apprend quelle adresse **MAC** se trouve derrière chaque port et n'envoie la trame que sur le bon port. Le concentrateur (hub, couche 1) répète tout sur tous les ports ; le routeur (couche 3) utilise les adresses IP."
+    },
+    {
+      "id": "rev2-017",
+      "type": "unique",
+      "enonce": "Dans le modèle OSI, comment s'appelle l'unité de données (PDU) de la **couche liaison de données** ?",
+      "choix": ["Le segment", "Le paquet", "La trame", "Le bit"],
+      "reponses": [2],
+      "explication": "PDU par couche : transport → **segment**, réseau → **paquet**, liaison → **trame**, physique → **bit**."
+    },
+    {
+      "id": "rev2-018",
+      "type": "unique",
+      "enonce": "Quel est le rôle du protocole **ARP** ?",
+      "choix": [
+        "Trouver l'adresse MAC correspondant à une adresse IP connue sur le réseau local",
+        "Trouver l'adresse IP correspondant à un nom de domaine",
+        "Attribuer automatiquement une adresse IP à une machine",
+        "Trouver le chemin le plus court vers un réseau distant"
+      ],
+      "reponses": [0],
+      "explication": "ARP fait le lien entre la couche 3 et la couche 2 : il trouve **l'adresse MAC** d'une machine **du réseau local** dont on connaît l'IP. Nom → IP, c'est DNS ; attribuer une IP, c'est DHCP ; le choix du chemin, c'est le routage."
+    },
+    {
+      "id": "rev2-019",
+      "type": "unique",
+      "enonce": "Quelle est la taille d'une adresse MAC ?",
+      "choix": ["32 bits (4 octets)", "48 bits (6 octets)", "64 bits (8 octets)", "128 bits (16 octets)"],
+      "reponses": [1],
+      "explication": "Une adresse MAC fait **48 bits = 6 octets**, écrits en hexadécimal (ex. 00-1A-2B-3C-4D-5E). Les 3 premiers octets (OUI) identifient le fabricant. 32 bits, c'est une adresse IPv4 ; 128 bits, une adresse IPv6."
+    },
+    {
+      "id": "rev2-020",
+      "type": "unique",
+      "enonce": "Quel service attribue **automatiquement** une adresse IP, un masque et une passerelle aux machines d'un réseau ?",
+      "choix": ["DNS", "ARP", "DHCP", "ICMP"],
+      "reponses": [2],
+      "explication": "**DHCP** distribue la configuration IP (adresse, masque, passerelle, serveur DNS). DNS traduit les noms, ARP trouve les adresses MAC, ICMP transporte les messages de contrôle (utilisés par `ping`)."
+    },
+    {
+      "id": "rev2-021",
+      "type": "unique",
+      "enonce": "Quel est le numéro de port **bien connu** du service DNS ?",
+      "choix": ["53", "80", "25", "110"],
+      "reponses": [0],
+      "explication": "Ports à connaître : DNS **53**, HTTP **80**, HTTPS 443, SMTP **25**, POP3 **110**, IMAP 143, FTP 20/21, SSH 22. Ce sont des ports **statiques** côté serveur."
+    },
+    {
+      "id": "rev2-022",
+      "type": "unique",
+      "enonce": "Quel est le rôle des **numéros de port** dans la couche transport ?",
+      "choix": [
+        "Identifier la machine de destination sur Internet",
+        "Identifier l'application (le processus) émettrice et destinataire sur une machine",
+        "Numéroter les octets transmis pour détecter les pertes",
+        "Identifier la carte réseau sur le LAN"
+      ],
+      "reponses": [1],
+      "explication": "Cours 4 : l'adresse IP désigne la **machine**, le port désigne **l'application** sur cette machine. Numéroter les octets, c'est le rôle du **n° d'ordre** ; identifier la carte réseau, celui de l'adresse MAC."
+    },
+    {
+      "id": "rev2-023",
+      "type": "unique",
+      "enonce": "Un segment TCP porte le **n° d'ordre 1000** et contient **500 octets** de données. Quel **n° de reçu** le destinataire renverra-t-il s'il a tout reçu ?",
+      "choix": ["1000", "1499", "501", "1500"],
+      "reponses": [3],
+      "explication": "Le n° de reçu est le **prochain octet attendu**. Le segment contient les octets 1000 à 1499, donc le destinataire attend l'octet **1500**. 1499 est le dernier octet reçu, pas le prochain attendu."
+    },
+    {
+      "id": "rev2-024",
+      "type": "unique",
+      "enonce": "Dans quel ordre se déroule l'**ouverture d'une connexion TCP** (poignée de main en 3 temps) ?",
+      "choix": [
+        "SYN → ACK → FIN",
+        "SYN → SYN-ACK → ACK",
+        "ACK → SYN → SYN-ACK",
+        "FIN → ACK → SYN"
+      ],
+      "reponses": [1],
+      "explication": "Le client envoie **SYN** (demande de connexion), le serveur répond **SYN-ACK** (accepte et accuse réception), le client confirme par **ACK**. Le drapeau **FIN** sert à **fermer** la connexion."
+    },
+    {
+      "id": "rev2-025",
+      "type": "unique",
+      "enonce": "Pourquoi utilise-t-on plutôt **UDP** que TCP pour la voix sur IP ou la vidéo en direct ?",
+      "choix": [
+        "Parce qu'UDP garantit que tous les paquets arrivent",
+        "Parce qu'UDP chiffre les données",
+        "Parce qu'UDP est plus léger et ne retransmet pas : un léger manque vaut mieux qu'un retard",
+        "Parce qu'UDP remet les paquets dans l'ordre"
+      ],
+      "reponses": [2],
+      "explication": "En temps réel, un paquet retransmis arriverait **trop tard** pour servir. UDP, **sans connexion et sans retransmission**, a un en-tête plus petit (8 octets contre 20 pour TCP) et ajoute moins de délai. Il ne garantit ni la livraison ni l'ordre, et ne chiffre rien."
+    },
+    {
+      "id": "rev2-026",
+      "type": "unique",
+      "enonce": "Choisir la réponse correcte :",
+      "choix": [
+        "IP est un protocole de la couche transport",
+        "Dans le modèle TCP/IP, la couche Application regroupe les couches 5, 6 et 7 du modèle OSI",
+        "UDP effectue un contrôle de flux grâce à une fenêtre",
+        "TCP appartient à la couche réseau"
+      ],
+      "reponses": [1],
+      "explication": "Seule la deuxième est vraie : la couche Application de TCP/IP regroupe **Session, Présentation et Application** d'OSI. Les autres sont fausses : IP appartient à la couche **réseau** ; la fenêtre et le contrôle de flux sont propres à **TCP** ; TCP appartient à la couche **transport**."
+    },
+    {
+      "id": "rev2-027",
+      "type": "unique",
+      "enonce": "Comment est envoyée la **réponse ARP** (ARP Reply) ?",
+      "choix": [
+        "En diffusion, à FF-FF-FF-FF-FF-FF",
+        "En monodiffusion (unicast), directement à la MAC de la machine qui a posé la question",
+        "En multidiffusion, à 01-00-5E-…",
+        "Elle n'est pas envoyée : la requête suffit"
+      ],
+      "reponses": [1],
+      "explication": "La **requête** ARP part en **broadcast** (on ne connaît pas encore la MAC du destinataire). La **réponse**, elle, est envoyée en **unicast** : la machine interrogée connaît la MAC du demandeur, présente dans la requête."
+    },
+    {
+      "id": "rev2-028",
+      "type": "unique",
+      "enonce": "À quoi correspond l'adresse **127.0.0.1** ?",
+      "choix": [
+        "À l'adresse de la passerelle par défaut",
+        "À l'adresse de diffusion du réseau local",
+        "À l'adresse de boucle locale (loopback) : la machine elle-même",
+        "À l'adresse du serveur DNS"
+      ],
+      "reponses": [2],
+      "explication": "Le réseau 127.0.0.0/8 est réservé à la **boucle locale** : un paquet envoyé à 127.0.0.1 ne quitte pas la machine. On s'en sert par exemple pour tester la pile TCP/IP avec `ping 127.0.0.1`."
+    },
+    {
+      "id": "rev2-029",
+      "type": "unique",
+      "enonce": "Parmi ces adresses, laquelle est une adresse **privée** ?",
+      "choix": ["8.8.8.8", "193.48.200.49", "172.40.1.1", "192.168.1.20"],
+      "reponses": [3],
+      "explication": "Plages privées : **10.0.0.0/8**, **172.16.0.0 à 172.31.255.255** (172.16.0.0/12) et **192.168.0.0/16**. 192.168.1.20 est donc privée. 172.40.1.1 est hors de la plage 172.16–172.31 ; 8.8.8.8 et 193.48.200.49 sont publiques."
+    },
+    {
+      "id": "rev2-030",
+      "type": "unique",
+      "enonce": "Lors de l'**encapsulation** à l'émission, dans quel ordre les données sont-elles transformées ?",
+      "choix": [
+        "Données → segment → paquet → trame → bits",
+        "Bits → trame → paquet → segment → données",
+        "Données → paquet → segment → trame → bits",
+        "Données → trame → paquet → segment → bits"
+      ],
+      "reponses": [0],
+      "explication": "On descend les couches : l'application produit les **données**, le transport ajoute son en-tête (**segment**), le réseau ajoute l'en-tête IP (**paquet**), la liaison encadre le tout (**trame**), la couche physique envoie des **bits**. L'ordre inverse correspond à la **désencapsulation** à la réception."
+    },
+    {
+      "id": "rev2-031",
+      "type": "unique",
+      "exercice": "**Exercice (sous-réseaux)** : on considère l'adresse IP **150.10.0.0**.",
+      "enonce": "À quelle classe appartient-elle, et quel est son masque par défaut ?",
+      "choix": [
+        "Classe A, masque par défaut 255.0.0.0",
+        "Classe C, masque par défaut 255.255.255.0",
+        "Classe B, masque par défaut 255.255.224.0",
+        "Classe B, masque par défaut 255.255.0.0"
+      ],
+      "reponses": [3],
+      "explication": "150 est entre 128 et 191 : **classe B**, masque par défaut **255.255.0.0** (/16). 255.255.224.0 n'est pas un masque par défaut : c'est celui qu'on obtiendra après découpage."
+    },
+    {
+      "id": "rev2-032",
+      "type": "unique",
+      "exercice": "**Exercice (sous-réseaux)** : on considère l'adresse IP **150.10.0.0** (classe B, /16).",
+      "enonce": "On modifie le masque pour créer **5 sous-réseaux**. Quel est le nouveau masque ?",
+      "choix": ["/18", "/19", "/21", "/17"],
+      "reponses": [1],
+      "explication": "Il faut n bits avec $2^n \\geq 5$ : $2^2 = 4$ ne suffit pas, $2^3 = 8$ oui, donc **3 bits** empruntés. /16 + 3 = **/19**, soit 255.255.**224**.0 (`11100000` = 224). On obtient 8 sous-réseaux, dont on utilise 5."
+    },
+    {
+      "id": "rev2-033",
+      "type": "unique",
+      "exercice": "**Exercice (sous-réseaux)** : 150.10.0.0 découpé avec le masque /19 (255.255.224.0).",
+      "enonce": "Quelle est l'adresse de **diffusion du 2ᵉ sous-réseau** ?",
+      "choix": ["150.10.32.255", "150.10.64.0", "150.10.63.255", "150.10.31.255"],
+      "reponses": [2],
+      "explication": "Masque .224 sur le 3ᵉ octet → taille de bloc 256 − 224 = **32**. Sous-réseaux : 150.10.**0**.0, 150.10.**32**.0, 150.10.**64**.0… Le 2ᵉ va de 150.10.32.0 à **150.10.63.255** (juste avant le 3ᵉ) : c'est sa diffusion. 150.10.31.255 est la diffusion du 1ᵉʳ, 150.10.64.0 l'adresse du 3ᵉ."
+    },
+    {
+      "id": "rev2-034",
+      "type": "unique",
+      "exercice": "**Exercice (CRC)** : message binaire `1101011`, polynôme générateur $g(x) = x^3 + x + 1$.",
+      "enonce": "Quelle est la représentation binaire du polynôme générateur ?",
+      "choix": ["`1101`", "`111`", "`1011`", "`0111`"],
+      "reponses": [2],
+      "explication": "Un bit par puissance de $x^3$ à $x^0$ : $x^3$ → 1, $x^2$ → **0** (absent), $x^1$ → 1, $x^0$ (le « + 1 ») → 1, soit **`1011`**. Attention à ne pas oublier les puissances absentes : `1101` correspondrait à $x^3 + x^2 + 1$."
+    },
+    {
+      "id": "rev2-035",
+      "type": "unique",
+      "exercice": "**Exercice (CRC)** : message binaire `1101011`, polynôme générateur $g(x) = x^3 + x + 1$.",
+      "enonce": "Quelle est la taille du CRC à ajouter au message ?",
+      "choix": ["4 bits", "3 bits", "7 bits", "Cela dépend de la longueur du message"],
+      "reponses": [1],
+      "explication": "Le CRC a autant de bits que le **degré** du polynôme : degré 3, donc **3 bits**. On ajoute donc 3 zéros au message avant la division. 4 bits, c'est la taille du mot `1011`, pas celle du CRC."
+    },
+    {
+      "id": "rev2-036",
+      "type": "unique",
+      "exercice": "**Exercice (CRC)** : message binaire `1101011`, polynôme générateur $g(x) = x^3 + x + 1$ (`1011`).",
+      "enonce": "Quel est le message codé (avec le CRC) ?",
+      "choix": ["`1101011000`", "`1101011110`", "`1101011011`", "`11010110110`"],
+      "reponses": [1],
+      "explication": "On ajoute 3 zéros (`1101011000`) puis on fait des XOR avec `1011` sous chaque premier 1 : le reste vaut **`110`**. Le message codé est le message suivi du CRC : **`1101011 110`**. `1101011000` est seulement le message avec ses trois zéros, avant le calcul."
+    }
+  ]
+}
