@@ -56,6 +56,25 @@ export async function chargerExamens() {
   return examens;
 }
 
+let nouveautes;
+
+// contenu/nouveautes.json est facultatif : la liste des versions (la plus récente d'abord),
+// ou une liste vide si le fichier manque ou n'est pas valide (l'accueil s'affiche quand même).
+export async function chargerNouveautes() {
+  if (nouveautes === undefined) {
+    try {
+      const rep = await fetch("contenu/nouveautes.json", { cache: "no-cache" });
+      const donnees = rep.ok ? await rep.json() : null;
+      nouveautes = Array.isArray(donnees?.versions)
+        ? donnees.versions.filter((v) => typeof v?.date === "string" && Array.isArray(v.ajouts))
+        : [];
+    } catch {
+      nouveautes = [];
+    }
+  }
+  return nouveautes;
+}
+
 export async function trouverMatiere(idMatiere) {
   const { matieres } = await chargerIndex();
   const matiere = matieres.find((m) => m.id === idMatiere);

@@ -5,6 +5,15 @@ description: Publie les changements de Revisator sur GitHub (commit + push), ce 
 
 # Publier sur GitHub Pages
 
+## 0. Mettre à jour les nouveautés
+
+L'accueil affiche l'encadré « Nouveautés » à partir de `contenu/nouveautes.json`. Avant chaque publication qui apporte quelque chose de visible pour l'utilisateur (nouveau cours, QCM, fiche, corrigé, fonctionnalité, correction notable) :
+
+- si la version du jour existe déjà en tête de `versions`, y ajouter les nouveaux points ;
+- sinon, ajouter **en tête** une version `{ "date": "AAAA-MM-JJ", "titre": "…", "ajouts": [ … ] }` (date du jour, titre court qui résume la version).
+
+Chaque ajout est une phrase courte, du point de vue de l'utilisateur (« Réseaux : 2ᵉ QCM de révision, 36 questions »), sous forme de texte ou de `{ "texte": "…", "lien": "#/m/<matiere>" }` pour mener à la matière concernée. Ne pas y mettre les changements purement techniques. Une nouvelle date fait réapparaître le badge « Nouveau » chez l'utilisateur.
+
 ## 1. Valider d'abord
 
 ```bash

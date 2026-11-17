@@ -14,6 +14,7 @@ import {
   ErreurContenu,
   chargerIndex,
   chargerExamens,
+  chargerNouveautes,
   trouverMatiere,
   questionsDuDocument,
   questionsDeLaMatiere,
@@ -24,7 +25,7 @@ import {
 } from "./donnees.js";
 import { lancerQuiz } from "./quiz.js";
 import { icones } from "./icones.js";
-import { pageExamens, prochainExamen, texteCompteARebours } from "./examens.js";
+import { pageExamens, prochainExamen, epreuvesDatees, texteCompteARebours } from "./examens.js";
 import { boutonMenu, rendreNav } from "./nav.js";
 import { monterLecteur } from "./lecteur.js";
 import "./ambiance.js";
@@ -43,61 +44,142 @@ const barreRetour = (href, libelle) => `
     ${boutonMenu()}
   </header>`;
 
+// Une teinte par matière (angle OKLCH), dans l'ordre de la liste : couleurs stables et distinctes.
+const TEINTES = [264, 28, 160, 80, 320, 205, 120, 350];
+const CLE_NOUVEAUTES = "revisator:nouveautes-vues";
+const DATE_LONGUE = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" });
+const DATE_COURTE = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long" });
+const dateVersion = (texte) => {
+  const [a, m, j] = texte.split("-").map(Number);
+  return DATE_COURTE.format(new Date(a, m - 1, j));
+};
+
+function salutation() {
+  const h = new Date().getHours();
+  if (h < 5 || h >= 18) return "Bonsoir";
+  return "Bonjour";
+}
+
+function ligneNouveaute(ajout) {
+  const texte = typeof ajout === "string" ? ajout : ajout.texte;
+  const lien = typeof ajout === "object" && ajout.lien;
+  return `<li>${
+    lien
+      ? `<a href="${echapper(lien)}">${echapper(texte)}<span class="chevron">${icones.suivant}</span></a>`
+      : `<span>${echapper(texte)}</span>`
+  }</li>`;
+}
+
+// Encadré « Nouveautés » : la dernière version en clair, les précédentes repliées.
+// Le badge « Nouveau » s'affiche tant que la dernière version n'a pas été vue sur cet appareil.
+function blocNouveautes(versions) {
+  if (versions.length === 0) return "";
+  const [derniere, ...anciennes] = versions;
+  let vue = null;
+  try {
+    vue = localStorage.getItem(CLE_NOUVEAUTES);
+    localStorage.setItem(CLE_NOUVEAUTES, derniere.date);
+  } catch {}
+  const inedite = vue !== derniere.date;
+  return `
+    <section class="nouveautes${inedite ? " inedite" : ""}" aria-labelledby="titre-nouveautes">
+      <div class="nouveautes-tete">
+        <span class="nouveautes-icone" aria-hidden="true">${icones.etincelle}</span>
+        <div class="nouveautes-titres">
+          <h2 id="titre-nouveautes">Nouveautés</h2>
+          <p class="meta">Version du ${dateVersion(derniere.date)}</p>
+        </div>
+        ${inedite ? `<span class="badge-nouveau">Nouveau</span>` : ""}
+      </div>
+      ${derniere.titre ? `<p class="nouveautes-titre-version">${echapper(derniere.titre)}</p>` : ""}
+      <ul class="nouveautes-liste">${derniere.ajouts.map(ligneNouveaute).join("")}</ul>
+      ${
+        anciennes.length > 0
+          ? `<details class="nouveautes-anciennes">
+              <summary>Versions précédentes</summary>
+              ${anciennes
+                .map(
+                  (v) => `
+                <div class="nouveautes-version">
+                  <p class="nouveautes-date">${dateVersion(v.date)}${v.titre ? ` · ${echapper(v.titre)}` : ""}</p>
+                  <ul class="nouveautes-liste">${v.ajouts.map(ligneNouveaute).join("")}</ul>
+                </div>`
+                )
+                .join("")}
+            </details>`
+          : ""
+      }
+    </section>`;
+}
+
+function carteMatiere(m, i, examens) {
+  const nbErreurs = erreursDe(m.id).length;
+  const compte = (type) => m.documents.filter((d) => d.document === type).length;
+  const details = [
+    compte("cours") && `${compte("cours")} cours`,
+    compte("td") && `${compte("td")} TD`,
+    compte("revision") && pluriel(compte("revision"), "révision"),
+  ].filter(Boolean);
+  const exam = examens && epreuvesDatees(examens).find((e) => e.jours >= 0 && e.ex.revision === m.id);
+  const nbQuestions = totalQuestions(m);
+  return `
+    <li>
+      <a class="carte-matiere" href="#/m/${m.id}" style="--teinte: ${TEINTES[i % TEINTES.length]}">
+        <span class="carte-haut">
+          <span class="monogramme" aria-hidden="true">${echapper(m.nom.charAt(0).toUpperCase())}</span>
+          <span class="chevron">${icones.suivant}</span>
+        </span>
+        <span class="carte-titre">${echapper(m.nom)}</span>
+        <span class="meta">${details.length > 0 ? echapper(details.join(" · ")) : pluriel(m.documents.length, "document")}</span>
+        <span class="carte-bas">
+          ${nbQuestions > 0 ? `<span class="puce">${pluriel(nbQuestions, "question")}</span>` : ""}
+          ${exam ? `<span class="puce ${exam.jours <= 7 ? "puce-urgente" : ""}">Exam ${texteCompteARebours(exam.jours)}</span>` : ""}
+          ${nbErreurs > 0 ? `<span class="puce puce-erreurs">${nbErreurs} à revoir</span>` : ""}
+        </span>
+      </a>
+    </li>`;
+}
+
 async function accueil() {
-  const [{ matieres }, examens] = await Promise.all([chargerIndex(), chargerExamens()]);
+  const [{ matieres }, examens, versions] = await Promise.all([chargerIndex(), chargerExamens(), chargerNouveautes()]);
   const prochain = examens && prochainExamen(examens);
+  const nbQuestions = matieres.reduce((n, m) => n + totalQuestions(m), 0);
+  const aujourdhui = DATE_LONGUE.format(new Date());
   document.title = "Revisator";
   app.innerHTML = `
-    <header class="accueil-entete apparition">
-      <div class="accueil-haut mobile-seulement">
-        <p class="logo">Revisator</p>
-        ${boutonMenu()}
+    <div class="accueil">
+      <header class="accueil-entete apparition">
+        <div class="accueil-haut mobile-seulement">
+          <p class="logo">Revisator</p>
+          ${boutonMenu()}
+        </div>
+        <p class="accueil-date">${salutation()} · ${aujourdhui.charAt(0).toUpperCase() + aujourdhui.slice(1)}</p>
+        <h1>Qu'est-ce qu'on révise <span class="accent">aujourd'hui</span> ?</h1>
+        <div class="accueil-chiffres">
+          <span><strong>${matieres.length}</strong> ${matieres.length > 1 ? "matières" : "matière"}</span>
+          <span><strong>${nbQuestions}</strong> questions</span>
+          ${
+            prochain
+              ? `<a class="accueil-exam" href="#/examens">${icones.calendrier}<span>Prochain exam : <strong>${echapper(prochain.ex.matiere)}</strong>, ${texteCompteARebours(prochain.jours)}</span></a>`
+              : examens
+                ? `<a class="accueil-exam" href="#/examens">${icones.calendrier}<span>Liste des exams</span></a>`
+                : ""
+          }
+        </div>
+      </header>
+
+      <div class="accueil-colonnes">
+        <aside class="accueil-cote apparition">${blocNouveautes(versions)}</aside>
+        <section class="accueil-matieres apparition" aria-labelledby="titre-matieres">
+          <h2 class="titre-section" id="titre-matieres">Matières</h2>
+          ${
+            matieres.length === 0
+              ? `<p class="vide">Aucune matière pour l'instant. Ajoute un dossier dans <code>contenu/</code> pour commencer.</p>`
+              : `<ul class="liste grille-matieres">${matieres.map((m, i) => carteMatiere(m, i, examens)).join("")}</ul>`
+          }
+        </section>
       </div>
-      <h1>Qu'est-ce qu'on révise aujourd'hui ?</h1>
-    </header>
-    ${
-      examens
-        ? `<a class="bloc bloc-lien apparition mobile-seulement" href="#/examens">
-            <span class="bloc-icone">${icones.calendrier}</span>
-            <span class="ligne-corps">
-              <span class="ligne-titre">Liste des exams</span>
-              <span class="meta">${
-                prochain
-                  ? `Prochain : ${echapper(prochain.ex.matiere)}, ${texteCompteARebours(prochain.jours)}`
-                  : "Aucun exam à venir"
-              }</span>
-            </span>
-            <span class="chevron">${icones.suivant}</span>
-          </a>
-          <h2 class="titre-section mobile-seulement">Matières</h2>`
-        : ""
-    }
-    ${
-      matieres.length === 0
-        ? `<p class="vide">Aucune matière pour l'instant. Ajoute un dossier dans <code>contenu/</code> pour commencer.</p>`
-        : ""
-    }
-    <ul class="liste grille-matieres apparition">
-      ${matieres
-        .map((m) => {
-          const nbErreurs = erreursDe(m.id).length;
-          return `
-          <li>
-            <a class="carte-matiere" href="#/m/${m.id}">
-              <span class="monogramme" aria-hidden="true">${echapper(m.nom.charAt(0).toUpperCase())}</span>
-              <span class="ligne-corps">
-                <span class="ligne-titre">${echapper(m.nom)}</span>
-                <span class="meta">${[pluriel(m.documents.length, "document"), totalQuestions(m) > 0 ? pluriel(totalQuestions(m), "question") : ""]
-                  .filter(Boolean)
-                  .join(" · ")}</span>
-              </span>
-              ${nbErreurs > 0 ? `<span class="pastille">${nbErreurs} à revoir</span>` : ""}
-              <span class="chevron">${icones.suivant}</span>
-            </a>
-          </li>`;
-        })
-        .join("")}
-    </ul>`;
+    </div>`;
 }
 
 function ligneDocument(matiere, doc) {

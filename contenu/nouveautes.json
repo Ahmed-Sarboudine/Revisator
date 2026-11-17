@@ -1,0 +1,31 @@
+{
+  "versions": [
+    {
+      "date": "2026-11-17",
+      "titre": "Traitement de données au complet",
+      "ajouts": [
+        { "texte": "Traitement de données : cours 3 (régression) et cours 4 (régression logistique), avec fiche et QCM de 40 questions chacun", "lien": "#/m/traitement-donnees" },
+        { "texte": "Traitement de données : TD 3 (épidémies de grippe) et TD 4 (spam SMS), avec énoncé, corrigé, fiche et QCM", "lien": "#/m/traitement-donnees" },
+        "Traitement de données : les notebooks des cours 2 à 4 et les énoncés et corrigés des TD 1 et 2 sont lisibles en PDF",
+        { "texte": "Probabilités : correction détaillée des exercices de dénombrement (4 et 5) de la révision, chiffre par chiffre", "lien": "#/m/probabilites" },
+        "Nouvelle page d'accueil, avec cet encadré des nouveautés"
+      ]
+    },
+    {
+      "date": "2026-11-12",
+      "titre": "Ciel étoilé et 2ᵉ QCM de réseaux",
+      "ajouts": [
+        { "texte": "Réseaux : 2ᵉ QCM de révision, 36 questions dans le style de l'examen", "lien": "#/m/reseaux" },
+        "Fond étoilé : ciel de nuit en mode sombre, étoiles discrètes en mode clair",
+        "Ambiance sonore : le bouton pause coupe le son à coup sûr"
+      ]
+    },
+    {
+      "date": "2026-11-07",
+      "titre": "Révision examen de réseaux",
+      "ajouts": [
+        { "texte": "Réseaux : le QCM modèle de l'examen, dans une nouvelle section « Révision examen »", "lien": "#/m/reseaux" }
+      ]
+    }
+  ]
+}

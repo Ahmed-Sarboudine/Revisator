@@ -2019,3 +2019,363 @@ button.bouton-icone {
   --accent-doux: var(--revision-doux);
   --accent-texte: var(--revision-texte);
 }
+
+/* ---------- Accueil ---------- */
+
+.accueil-date {
+  margin: 0 0 6px;
+  color: var(--texte-2);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.accueil-entete h1 .accent {
+  background: linear-gradient(100deg, var(--accent), oklch(62% 0.2 320));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.accueil-chiffres {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.accueil-chiffres > span,
+.accueil-exam {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--bordure);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--texte-2);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.accueil-chiffres strong {
+  color: var(--texte);
+}
+
+.accueil-exam {
+  border-color: transparent;
+  background: var(--accent-doux);
+  color: var(--accent);
+  transition: transform 160ms var(--ease-out);
+}
+
+.accueil-exam strong {
+  color: inherit;
+}
+
+.accueil-exam svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.accueil-exam:active {
+  transform: scale(0.97);
+}
+
+.accueil-colonnes {
+  display: grid;
+  gap: 24px;
+}
+
+.accueil-cote:empty {
+  display: none;
+}
+
+/* Cartes des matières : une teinte par matière (--teinte, angle OKLCH) */
+
+.grille-matieres .carte-matiere {
+  --fond-teinte: oklch(96% 0.03 var(--teinte, 264));
+  --texte-teinte: oklch(48% 0.16 var(--teinte, 264));
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  padding: 18px;
+}
+
+.grille-matieres .carte-matiere::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--texte-teinte);
+  opacity: 0.85;
+}
+
+.carte-haut {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.grille-matieres .monogramme {
+  background: var(--fond-teinte);
+  color: var(--texte-teinte);
+}
+
+.carte-titre {
+  font-weight: 650;
+  font-size: 1.0625rem;
+  line-height: 1.3;
+}
+
+.carte-bas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.carte-bas:empty {
+  display: none;
+}
+
+.puce {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--texte-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.puce-urgente {
+  background: var(--ko-doux);
+  color: var(--ko);
+}
+
+.puce-erreurs {
+  background: var(--manquee-doux);
+  color: var(--manquee);
+}
+
+@media (prefers-color-scheme: dark) {
+  .grille-matieres .carte-matiere {
+    --fond-teinte: oklch(32% 0.06 var(--teinte, 264));
+    --texte-teinte: oklch(80% 0.12 var(--teinte, 264));
+  }
+}
+
+/* Encadré « Nouveautés » */
+
+.nouveautes {
+  position: relative;
+  padding: 18px;
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  background:
+    radial-gradient(120% 80% at 100% 0%, color-mix(in oklch, var(--accent) 12%, transparent), transparent 60%),
+    var(--surface);
+  box-shadow: var(--ombre);
+}
+
+.nouveautes.inedite {
+  border-color: color-mix(in oklch, var(--accent) 45%, var(--bordure));
+}
+
+.nouveautes-tete {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.nouveautes-icone {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--accent);
+  color: var(--accent-texte);
+}
+
+.nouveautes-titres {
+  flex: 1;
+  min-width: 0;
+}
+
+.nouveautes-titres h2 {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.nouveautes-titres .meta {
+  margin: 2px 0 0;
+  font-size: 0.8125rem;
+}
+
+.badge-nouveau {
+  flex-shrink: 0;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-texte);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  animation: badge-pulse 2.4s ease-in-out 3;
+}
+
+@keyframes badge-pulse {
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in oklch, var(--accent) 18%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge-nouveau {
+    animation: none;
+  }
+}
+
+.nouveautes-liste {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nouveautes-liste li > a,
+.nouveautes-liste li > span {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 8px 7px 22px;
+  border-radius: 8px;
+  color: var(--texte);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  text-decoration: none;
+  position: relative;
+}
+
+.nouveautes-liste li > a::before,
+.nouveautes-liste li > span::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 14px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.nouveautes-liste li > a .chevron {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--texte-2);
+}
+
+.nouveautes-liste li > a .chevron svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nouveautes-liste li > a:hover {
+    background: var(--surface-2);
+  }
+}
+
+.nouveautes-anciennes {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--bordure);
+}
+
+.nouveautes-anciennes summary {
+  cursor: pointer;
+  color: var(--texte-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.nouveautes-version {
+  margin-top: 10px;
+}
+
+.nouveautes-date {
+  margin: 0 0 2px;
+  color: var(--texte-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.nouveautes-version .nouveautes-liste li > a,
+.nouveautes-version .nouveautes-liste li > span {
+  color: var(--texte-2);
+}
+
+/* Grand écran : matières à gauche, nouveautés à droite */
+@media (min-width: 960px) {
+  .accueil-colonnes {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+    gap: 32px;
+  }
+
+  .accueil-cote {
+    order: 2;
+    position: sticky;
+    top: 24px;
+  }
+
+  .accueil-matieres .grille-matieres {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+.nouveautes-titre-version {
+  margin: -4px 0 8px;
+  font-weight: 650;
+  font-size: 0.9375rem;
+}
+
+.grille-matieres > li {
+  display: grid;
+}
+
+@media (min-width: 960px) {
+  .accueil-cote {
+    margin-top: 38px;
+  }
+}
+
+.accueil-colonnes {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.accueil-colonnes > * {
+  min-width: 0;
+}
+
+@media (min-width: 960px) {
+  .accueil-colonnes {
+    grid-template-columns: minmax(0, 1fr) 360px;
+  }
+}
+
+/* Sur petit écran, une fois la version vue, les nouveautés passent sous les matières */
+@media (max-width: 959px) {
+  .accueil-cote:has(.nouveautes:not(.inedite)) {
+    order: 2;
+  }
+}
