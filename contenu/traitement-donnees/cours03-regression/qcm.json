@@ -1,0 +1,619 @@
+{
+  "matiere": "Traitement de données",
+  "document": "cours",
+  "titre": "Régression",
+  "questions": [
+    {
+      "id": "reg-001",
+      "type": "unique",
+      "enonce": "Une variable suit une loi exponentielle (beaucoup de petites valeurs, quelques très grandes). Comment se placent sa moyenne et sa médiane ?",
+      "choix": [
+        "On ne peut rien dire sans tracer l'histogramme",
+        "Elles sont presque égales, comme pour une gaussienne",
+        "La médiane est nettement supérieure à la moyenne",
+        "La moyenne est nettement supérieure à la médiane"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 1, §2.2 : les quelques très grandes valeurs **tirent la moyenne vers le haut**, pas la médiane (valeur du milieu). Dans le cours : moyenne 3,0 contre médiane 2,0. Égalité seulement pour une distribution symétrique."
+    },
+    {
+      "id": "reg-002",
+      "type": "multiple",
+      "enonce": "Parmi ces indicateurs, lesquels sont **robustes** (peu sensibles à une valeur aberrante) ?",
+      "choix": [
+        "La moyenne arithmétique",
+        "L'écart type (racine de la variance)",
+        "L'étendue $\\max - \\min$ des valeurs",
+        "La médiane",
+        "L'écart interquartile $Q_3 - Q_1$"
+      ],
+      "reponses": [
+        3,
+        4
+      ],
+      "explication": "Notebook 1, §2.3 et §3.2 : une seule erreur (10 000 au lieu de 10) double la moyenne et fait exploser l'écart type et l'étendue, alors que la **médiane** et l'**écart interquartile** ne bougent pas. Les quantiles sont robustes, sauf min et max, qui sont justement les valeurs extrêmes."
+    },
+    {
+      "id": "reg-003",
+      "type": "unique",
+      "enonce": "La médiane est aussi :",
+      "choix": [
+        "La moyenne des valeurs minimale et maximale de la variable",
+        "Le quantile à 50 %, soit le quartile $Q_2$",
+        "La valeur la plus fréquente de la variable",
+        "Le quantile à 25 %, c'est-à-dire le premier quartile $Q_1$"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "La médiane laisse 50 % des valeurs en dessous : c'est le quantile à 50 %, le 50ᵉ centile, le quartile $Q_2$. La valeur la plus fréquente est le **mode** ; $(\\min + \\max)/2$ n'a pas de nom particulier dans le cours."
+    },
+    {
+      "id": "reg-004",
+      "type": "unique",
+      "enonce": "Pourquoi utilise-t-on souvent l'écart type plutôt que la variance ?",
+      "choix": [
+        "Il est robuste aux valeurs aberrantes",
+        "Il est toujours inférieur à la variance",
+        "Il est dans la même unité que la variable",
+        "Il se calcule sans avoir besoin de la moyenne"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "La variance s'exprime dans le **carré** de l'unité (des g², des kJ²) : difficile à lire. L'écart type $\\sigma = \\sqrt{\\mathrm{Var}}$ revient à l'unité de la variable. Il n'est pas robuste, et il n'est inférieur à la variance que si celle-ci dépasse 1."
+    },
+    {
+      "id": "reg-005",
+      "type": "unique",
+      "enonce": "Par défaut, `np.std(x)` et `x.std()` (pandas) donnent-ils le même résultat ?",
+      "choix": [
+        "Oui : les deux divisent par $P-1$, l'estimateur non biaisé",
+        "Non : numpy divise par $P-1$, pandas par $P$ (option `ddof`)",
+        "Oui : les deux divisent par $P$, l'estimateur biaisé",
+        "Non : numpy divise par $P$, pandas par $P-1$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 1, §3.1 : `np.var`/`np.std` divisent par $P$ par défaut ; `ddof=1` donne $P-1$. Pandas divise par $P-1$ par défaut. La différence est négligeable quand $P$ est grand."
+    },
+    {
+      "id": "reg-006",
+      "type": "unique",
+      "enonce": "Que montre mal une **boîte à moustaches** ?",
+      "choix": [
+        "Une distribution à deux bosses (bimodale)",
+        "La différence de distribution entre deux classes",
+        "La médiane de la variable",
+        "Les valeurs atypiques au-delà des moustaches"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 1, §4.2 : la boîte de la variable bimodale paraît banale, juste très large. **La boîte à moustaches cache les bosses** : elle ne remplace pas l'histogramme. Elle reste idéale pour comparer des classes."
+    },
+    {
+      "id": "reg-007",
+      "type": "unique",
+      "enonce": "Dans une boîte à moustaches, jusqu'où vont les moustaches ?",
+      "choix": [
+        "Jusqu'au minimum et au maximum de la variable, sans exception",
+        "Jusqu'aux quantiles à 5 % et à 95 %, quelle que soit la distribution",
+        "Jusqu'à la moyenne plus ou moins deux écarts types de la variable",
+        "Jusqu'aux valeurs extrêmes à moins de $1{,}5\\,(Q_3 - Q_1)$ de la boîte"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "La boîte va de $Q_1$ à $Q_3$, le trait central est la médiane, les moustaches s'arrêtent aux valeurs les plus extrêmes à moins de **1,5 écart interquartile** de la boîte ; au-delà, les points sont dessinés un par un (valeurs atypiques)."
+    },
+    {
+      "id": "reg-008",
+      "type": "unique",
+      "enonce": "On exprime `x1` en mm au lieu de m (× 1000). Que deviennent la covariance et la corrélation entre `x1` et `x3` ?",
+      "choix": [
+        "Les deux sont multipliées par 1000",
+        "Aucune des deux ne change, car le lien est le même",
+        "Covariance × 1000, corrélation inchangée",
+        "Covariance inchangée, corrélation × 1000"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 1, §6 : la covariance **dépend des unités** (7,41 → 7 412,98). La corrélation $\\rho = \\mathrm{Cov}/(\\sigma_X\\sigma_Y)$ est calculée sur des variables standardisées : elle est **sans unité** (0,971 dans les deux cas)."
+    },
+    {
+      "id": "reg-009",
+      "type": "unique",
+      "enonce": "$x$ suit une loi normale centrée et $y = x^2 + \\text{bruit}$. Que vaut à peu près la corrélation $\\rho(x, y)$ ?",
+      "choix": [
+        "Environ 1",
+        "Environ 0,5",
+        "Environ 0",
+        "Environ −1"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 1, §7 : la corrélation ne mesure qu'un lien **linéaire**. Pour une parabole symétrique, elle vaut −0,02 alors que $y$ dépend fortement de $x$. En revanche $\\rho(x^2, y) = 0{,}92$."
+    },
+    {
+      "id": "reg-010",
+      "type": "multiple",
+      "enonce": "Que montre le **quartet d'Anscombe** ?",
+      "choix": [
+        "Une corrélation de 0,82 garantit que le lien entre les variables est linéaire",
+        "Les quatre jeux ont des droites de régression et des R² différents",
+        "Des jeux de mêmes moyenne, variance et corrélation peuvent différer",
+        "Une statistique résumée ne remplace pas le tracé des données"
+      ],
+      "reponses": [
+        2,
+        3
+      ],
+      "explication": "Les 4 jeux ont la même moyenne, variance, corrélation (0,816), et même la même droite de régression et le même R². Pourtant seul le jeu I est une droite bruitée (II : courbe, III : un point aberrant, IV : tout repose sur un point). **Il faut tracer les données.**"
+    },
+    {
+      "id": "reg-011",
+      "type": "multiple",
+      "enonce": "Sur une figure **t-SNE**, que peut-on interpréter ?",
+      "choix": [
+        "Le sens des deux axes de la figure",
+        "La taille relative des groupes de points",
+        "La distance entre deux groupes éloignés",
+        "Les voisinages entre points"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 1, §8 : t-SNE conserve les **voisinages** ; les axes n'ont pas de sens, et les distances entre groupes comme leur taille changent avec la perplexité. C'est un outil de **visualisation**, pas de prédiction."
+    },
+    {
+      "id": "reg-012",
+      "type": "unique",
+      "enonce": "Dans la table Ciqual, pourquoi les colonnes de teneurs (lipides, énergie…) sont-elles lues par pandas comme du **texte** ?",
+      "choix": [
+        "Pandas lit toujours les fichiers Excel en texte, il faut tout convertir à la main",
+        "Elles mêlent des nombres à virgule et des « - », « traces », « < 0,5 »",
+        "Les unités (g, mg, µg) sont écrites dans chaque case après le nombre",
+        "Le fichier Excel est mal encodé et pandas ne reconnaît pas les chiffres"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 2, §3 : une colonne pandas n'a **qu'un seul type**. Les nombres sont stockés avec une **virgule** décimale, et il suffit d'une case non numérique (`-`, `traces`, `< x`) pour que toute la colonne soit de type `str`."
+    },
+    {
+      "id": "reg-013",
+      "type": "unique",
+      "enonce": "Pour la vitamine D, on remplace les valeurs censurées « < x » par une valeur manquante (on les ignore). Quel est l'effet sur la moyenne ?",
+      "choix": [
+        "Elle est sous-estimée : on retire les valeurs les plus grandes",
+        "Elle ne change pas : les valeurs censurées sont trop rares pour compter",
+        "Elle devient négative, car « < x » vaut −x par convention",
+        "Surestimée : on ne garde que les aliments les plus riches"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 2, §3 : ignorer les valeurs censurées est le **pire choix** : on ne garde que les aliments où le constituant est détectable, donc les plus riches (+30 % pour la vitamine D). Le cours retient `-` → manquant, `traces` → 0, `< x` → x/2."
+    },
+    {
+      "id": "reg-014",
+      "type": "unique",
+      "enonce": "L'énergie manque presque uniquement pour les fruits et légumes. Ces valeurs manquantes sont-elles **MCAR** ?",
+      "choix": [
+        "Non : elles s'expliquent par le groupe de l'aliment, c'est du MAR",
+        "Oui : MCAR signifie seulement que plus de 1 % des valeurs de la colonne manquent",
+        "Oui : elles manquent au hasard, on peut supprimer les lignes sans biais",
+        "Non : elles dépendent de la valeur de l'énergie elle-même, c'est du MNAR"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 2, §4 : **MCAR** = par pur hasard ; **MAR** = expliqué par d'autres variables observées (ici le groupe) ; **MNAR** = dépend de la valeur elle-même (teneur trop faible pour être mesurée). Supprimer ces lignes crée un **biais de sélection**."
+    },
+    {
+      "id": "reg-015",
+      "type": "unique",
+      "enonce": "Quel est le défaut principal de l'imputation des valeurs manquantes **par la moyenne** ?",
+      "choix": [
+        "Elle réduit artificiellement la dispersion de la colonne",
+        "Elle augmente artificiellement la moyenne de la colonne imputée",
+        "Elle supprime les lignes incomplètes, d'où une perte de données",
+        "Elle est impossible si la colonne contient des valeurs négatives"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Toutes les valeurs imputées sont égales à la moyenne : elles n'ajoutent aucune dispersion. Pour l'eau, l'écart type passe de 30,20 à 27,63. La moyenne, elle, ne change pas. Mieux : imputer par une loi connue (eau ≈ 100 − autres constituants) ou par un modèle de régression."
+    },
+    {
+      "id": "reg-016",
+      "type": "unique",
+      "enonce": "On veut prédire la teneur en **sel** et on garde le **sodium** comme variable explicative. Le modèle est parfait. Pourquoi est-ce un piège ?",
+      "choix": [
+        "Une fuite de données : le sel est calculé à partir du sodium",
+        "C'est de la colinéarité : il faudrait régulariser le modèle avec Ridge",
+        "C'est du sur-apprentissage : il faudrait davantage de données de test",
+        "Ce n'est pas un piège : le sodium explique vraiment le sel"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 2, §5.1 : certaines colonnes sont **calculées** à partir d'autres (kJ/kcal, sel/sodium). Utiliser l'une pour prédire l'autre donne un résultat parfait sans rien apprendre : c'est une **fuite de données** (*data leakage*)."
+    },
+    {
+      "id": "reg-017",
+      "type": "unique",
+      "enonce": "Une huile contient 100 g de lipides pour 100 g. Que faut-il faire de ce point extrême ?",
+      "choix": [
+        "Le garder : ce n'est pas une erreur de mesure ni de saisie",
+        "Le supprimer, car il aura trop d'influence sur la régression",
+        "Le remplacer par la médiane des lipides de la table",
+        "Le supprimer, car il déforme les histogrammes"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 2, §7.4 : on ne supprime un point que s'il s'agit d'une **erreur** ou s'il sort du **domaine d'étude**, jamais parce qu'il « gêne ». Une huile contient bien près de 100 % de lipides."
+    },
+    {
+      "id": "reg-018",
+      "type": "unique",
+      "enonce": "Pourquoi l'**eau** est-elle un facteur de confusion dans la table Ciqual ?",
+      "choix": [
+        "L'eau n'apporte aucune énergie, elle doit être retirée du modèle",
+        "Un aliment très hydraté est pauvre en tous les autres constituants",
+        "L'eau est mesurée en mL alors que les autres constituants sont en g",
+        "L'eau est la variable la plus souvent manquante de toute la table"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 2, §8.4 : l'eau influence toutes les teneurs (contrainte des 100 g) et brouille les liens. Ramenées à la **matière sèche**, la corrélation glucides/énergie **change de signe**. Une variable cachée peut créer, masquer ou inverser un lien."
+    },
+    {
+      "id": "reg-019",
+      "type": "unique",
+      "enonce": "On évalue la même règle sur la base d'apprentissage (2 387 aliments) et sur le test (772 aliments). La SSE de test est 3 fois plus petite. Que conclure ?",
+      "choix": [
+        "La règle sur-apprend, car l'erreur d'apprentissage est plus grande",
+        "Rien : la SSE grandit avec le nombre d'exemples de la base",
+        "La règle prédit 3 fois mieux sur le test que sur l'apprentissage",
+        "La règle sous-apprend, car l'erreur de test est la plus petite des deux"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 3, §2 : la SSE **cumule** les erreurs, elle grandit avec $P$. Le MSE $= \\mathrm{SSE}/P$, la RMSE et la MAE sont comparables d'une base à l'autre. Ici MSE, RMSE et MAE sont du même ordre sur les deux bases."
+    },
+    {
+      "id": "reg-020",
+      "type": "unique",
+      "enonce": "Un modèle obtient $R^2 = -0{,}5$ sur la base de test. Qu'est-ce que cela signifie ?",
+      "choix": [
+        "Il prédit moins bien que la moyenne constante $\\bar{y}$",
+        "C'est impossible, le $R^2$ est toujours compris entre 0 et 1",
+        "Il explique 50 % de la variance de $Y$, mais avec un signe inversé",
+        "Il a une RMSE négative, ce qui indique un bug"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "$R^2 = 1 - \\mathrm{MSE}/\\mathrm{Var}(Y)$ compare le modèle à la prédiction naïve (la moyenne). $R^2 < 0$ : MSE > Var(Y), le modèle fait **pire** que la moyenne. Impossible pour une régression linéaire sur sa base d'apprentissage, fréquent en test pour un modèle qui sur-apprend."
+    },
+    {
+      "id": "reg-021",
+      "type": "multiple",
+      "enonce": "Quels indicateurs s'expriment **dans l'unité de la cible** (par exemple en kJ) ?",
+      "choix": [
+        "La SSE",
+        "Le $R^2$",
+        "Le MSE",
+        "La RMSE",
+        "La MAE"
+      ],
+      "reponses": [
+        3,
+        4
+      ],
+      "explication": "**RMSE** $=\\sqrt{\\mathrm{MSE}}$ et **MAE** (moyenne des |erreurs|) sont en kJ : « on se trompe typiquement de tant de kJ ». MSE et SSE sont en kJ², le R² est sans unité. La MAE est moins sensible aux grosses erreurs isolées que la RMSE."
+    },
+    {
+      "id": "reg-022",
+      "type": "unique",
+      "enonce": "En régression linéaire simple $y = \\mu_0 + \\mu_1 x$, que vaut la pente des moindres carrés ?",
+      "choix": [
+        "$\\mu_1 = \\bar{y} / \\bar{x}$, rapport des moyennes",
+        "$\\mu_1 = \\rho(X, Y)$, la corrélation",
+        "$\\mu_1 = \\mathrm{Cov}(X, Y) / \\mathrm{Var}(X)$",
+        "$\\mu_1 = \\mathrm{Cov}(X, Y) / \\mathrm{Var}(Y)$"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 3, §3.1 : en annulant les dérivées du MSE, $\\mu_1 = \\frac{\\sum (x_i-\\bar x)(y_i-\\bar y)}{\\sum (x_i - \\bar x)^2} = \\frac{\\mathrm{Cov}(X,Y)}{\\mathrm{Var}(X)}$ et $\\mu_0 = \\bar y - \\mu_1 \\bar x$."
+    },
+    {
+      "id": "reg-023",
+      "type": "unique",
+      "enonce": "Pour une régression linéaire **simple**, sur la base d'apprentissage, que vaut le $R^2$ ?",
+      "choix": [
+        "La corrélation elle-même : $R^2 = \\rho(X, Y)$",
+        "Le carré de la corrélation : $\\rho(X, Y)^2$",
+        "La pente $\\mu_1$ divisée par l'ordonnée à l'origine $\\mu_0$",
+        "Toujours 1, puisque la droite est ajustée sur ces données"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 3, §3.2 : $\\mathrm{MSE} = \\mathrm{Var}(Y)(1 - \\rho^2)$, donc $R^2 = \\rho^2$. Plus le lien linéaire est fort, meilleure est la régression."
+    },
+    {
+      "id": "reg-024",
+      "type": "unique",
+      "enonce": "La régression de l'énergie sur les lipides donne $\\text{Energie} = 489{,}5 + 36{,}85 \\times \\text{Lipides}$. Comment lire 36,85 ?",
+      "choix": [
+        "Un gramme de lipides en plus apporte en moyenne environ 37 kJ",
+        "Les lipides expliquent environ 37 % de la variance de l'énergie",
+        "L'erreur typique du modèle est d'environ 37 kJ",
+        "Un aliment sans lipides apporte en moyenne environ 37 kJ"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "La **pente** est l'accroissement moyen de $Y$ quand $X$ augmente d'une unité : ~37 kJ par gramme de lipides (le facteur réglementaire). L'ordonnée à l'origine (489,5) est l'énergie prédite pour un aliment sans lipides."
+    },
+    {
+      "id": "reg-025",
+      "type": "unique",
+      "enonce": "Quelle est la solution des moindres carrés en régression multiple ($\\mathbf{X}$ inclut une colonne de 1) ?",
+      "choix": [
+        "$\\mu^* = \\mathbf{X}^T\\mathbf{y} / P$, la moyenne pondérée",
+        "$\\mu^* = \\mathbf{X}^{-1}\\mathbf{y}$, l'inverse de $\\mathbf{X}$",
+        "$\\mu^* = (\\mathbf{X}^T\\mathbf{X})^{-1}\\mathbf{X}^T\\mathbf{y}$",
+        "$\\mu^* = (\\mathbf{X}\\mathbf{X}^T)^{-1}\\mathbf{X}\\mathbf{y}$"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Annuler le gradient $-\\frac{2}{P}\\mathbf{X}^T(\\mathbf{y} - \\mathbf{X}\\mu)$ donne les **équations normales** $\\mathbf{X}^T\\mathbf{X}\\mu = \\mathbf{X}^T\\mathbf{y}$, solubles si les colonnes de $\\mathbf{X}$ sont linéairement indépendantes. En pratique on résout le système (`np.linalg.solve`) sans calculer l'inverse."
+    },
+    {
+      "id": "reg-026",
+      "type": "unique",
+      "enonce": "La corrélation entre protéines et énergie est faible, mais la régression multiple donne un coefficient de 17 kJ/g pour les protéines. Que retenir ?",
+      "choix": [
+        "La régression multiple s'est trompée : il faut retirer les protéines",
+        "Le coefficient 17 est dû au sur-apprentissage du modèle",
+        "La corrélation est fausse, car elle n'a pas été calculée sur la base de test",
+        "Une corrélation faible ne veut pas dire une variable inutile"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §4.2 : l'effet des protéines était **masqué** par les autres variables (aliments protéinés pauvres en glucides, effet de l'eau). La régression multiple mesure l'effet de chaque variable « toutes choses égales par ailleurs » et retrouve le facteur réglementaire 17 kJ/g."
+    },
+    {
+      "id": "reg-027",
+      "type": "unique",
+      "enonce": "Le coefficient des **polyols** vaut −7 kJ/g. Pourquoi ?",
+      "choix": [
+        "C'est une erreur numérique due à la colinéarité avec l'eau",
+        "Les glucides incluent déjà les polyols : 10 − 17 = −7",
+        "Les polyols sont trop rares dans la table : leur coefficient n'a aucun sens",
+        "Les polyols consomment plus d'énergie qu'ils n'en apportent lors de la digestion"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Interpréter un coefficient demande de comprendre « les autres variables restant fixées » : à glucides constants, ajouter des polyols remplace d'autres glucides. 10 − 17 = −7 kJ/g."
+    },
+    {
+      "id": "reg-028",
+      "type": "unique",
+      "enonce": "L'analyse des résidus montre que les aliments riches en protéines végétales sont mal prédits. Quelle correction le cours applique-t-il ?",
+      "choix": [
+        "Passer à une régression polynomiale de degré 2 sur les protéines",
+        "Retirer ces aliments de la base d'apprentissage",
+        "Utiliser la colonne protéines « N × 6,25 »",
+        "Ajouter l'eau comme variable explicative"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 3, §4.3 : le règlement calcule l'énergie avec les protéines **N × 6,25**, alors que le modèle utilisait le facteur de Jones. Avec la bonne colonne, la RMSE de test est divisée par plus de 2 et les coefficients tombent sur 17, 17, 37, 8, 29. **L'analyse des résidus révèle un défaut, la connaissance du domaine le corrige.**"
+    },
+    {
+      "id": "reg-029",
+      "type": "multiple",
+      "enonce": "On ajoute l'**eau** au modèle de l'énergie. Le R² ne change pas, mais les coefficients deviennent méconnaissables. Quelles affirmations sont vraies ?",
+      "choix": [
+        "La matrice de corrélation montre forcément une corrélation proche de ±1 entre deux variables",
+        "C'est de la colinéarité (contrainte des 100 g)",
+        "Le conditionnement de $\\mathbf{X}^T\\mathbf{X}$ augmente fortement",
+        "Les coefficients deviennent instables d'un échantillon à l'autre"
+      ],
+      "reponses": [
+        1,
+        2,
+        3
+      ],
+      "explication": "L'eau est une combinaison linéaire de la **somme** des autres : les coefficients ne sont plus identifiables, ils varient de ~6 kJ/g d'un échantillon à l'autre et le conditionnement passe de $3\\cdot10^3$ à $3\\cdot10^6$. Mais aucune corrélation deux à deux n'est proche de ±1 (max −0,71) : la **multicolinéarité** échappe à la matrice de corrélation."
+    },
+    {
+      "id": "reg-030",
+      "type": "unique",
+      "enonce": "Le modèle $y = \\mu_0 + \\mu_1 x + \\mu_2 x^2$ est-il une régression **linéaire** ?",
+      "choix": [
+        "Oui : il est linéaire en les paramètres $\\mu$",
+        "Non : il contient $x^2$, il faut une méthode itérative comme la descente de gradient",
+        "Non : une régression linéaire n'a qu'une seule variable explicative",
+        "Oui, mais seulement si $x$ est positif"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 3, §5.1 : ce qui compte pour obtenir les équations normales, c'est d'être **linéaire en les paramètres**. On fabrique des variables transformées $h_j(x)$ (ici $x$, $x^2$) puis on fait une régression multiple."
+    },
+    {
+      "id": "reg-031",
+      "type": "unique",
+      "enonce": "On régresse $z = \\sqrt{y}$ au lieu de $y$. Comment obtient-on la prédiction de $y$ ?",
+      "choix": [
+        "$\\hat{y} = \\sqrt{\\hat{z}}$ : on applique de nouveau la transformation",
+        "$\\hat{y} = \\hat{z}^2$ : on applique la réciproque de la transformation",
+        "On ne peut pas revenir à $y$, il faut évaluer le modèle sur $z$",
+        "$\\hat{y} = \\hat{z}$ : la transformation ne change pas la prédiction finale"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "On transforme la sortie par une fonction **inversible** $u$, on prédit $\\hat z$, puis $\\hat y = u^{-1}(\\hat z)$. Pour $u = \\sqrt{\\cdot}$, $u^{-1}(z) = z^2$ ; pour $u = \\log$ (TD 3), $u^{-1} = \\exp$."
+    },
+    {
+      "id": "reg-032",
+      "type": "unique",
+      "enonce": "Un polynôme de degré 15 ajusté sur 25 points a un $R^2$ de test très négatif. De quoi s'agit-il ?",
+      "choix": [
+        "D'un problème de valeurs manquantes",
+        "De sur-apprentissage",
+        "De sous-apprentissage",
+        "D'une fuite de données"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 3, §5.2 : le polynôme passe au plus près des points d'apprentissage mais **oscille** entre eux. L'erreur d'apprentissage baisse toujours avec le degré ; l'erreur de test forme un creux (ici en $q = 2$). Le degré est un **hyperparamètre**."
+    },
+    {
+      "id": "reg-033",
+      "type": "multiple",
+      "enonce": "Quelles affirmations sur la **régression Ridge** sont vraies ?",
+      "choix": [
+        "Elle met exactement à zéro les coefficients des variables les moins utiles",
+        "Pour $\\alpha > 0$, $\\mathbf{X}^T\\mathbf{X} + \\alpha\\mathbf{I}$ est inversible",
+        "Il faut standardiser les variables avant de l'appliquer",
+        "Elle pénalise $\\|\\mu\\|_2^2$, la somme des carrés des coefficients"
+      ],
+      "reponses": [
+        1,
+        2,
+        3
+      ],
+      "explication": "Ridge pénalise la norme 2 : les équations normales deviennent $(\\mathbf{X}^T\\mathbf{X} + \\alpha\\mathbf{I})\\mu = \\mathbf{X}^T\\mathbf{y}$, toujours inversibles et mieux conditionnées. La pénalité dépend de l'unité des variables, d'où la standardisation. C'est le **Lasso** qui annule des coefficients."
+    },
+    {
+      "id": "reg-034",
+      "type": "unique",
+      "enonce": "Quand $\\alpha$ augmente, quels coefficients du **Lasso** s'annulent les premiers dans le modèle de l'énergie ?",
+      "choix": [
+        "Ceux des constituants rares (acides organiques, polyols)",
+        "Ceux des lipides, car leur coefficient (37) est le plus grand",
+        "Tous en même temps, quand $\\alpha$ dépasse un seuil",
+        "Aucun : le Lasso réduit les coefficients sans jamais les annuler"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 3, §6.3 : le Lasso (pénalité $\\|\\mu\\|_1$) met des coefficients **exactement à zéro** : il sélectionne les variables. Les constituants rares tombent d'abord ; lipides, glucides et protéines résistent le plus longtemps."
+    },
+    {
+      "id": "reg-035",
+      "type": "unique",
+      "enonce": "Avec les **K plus proches voisins** et $K = 1$, que vaut le $R^2$ sur la base d'apprentissage ?",
+      "choix": [
+        "Il est égal au $R^2$ de test",
+        "0 : la prédiction est la moyenne de la base",
+        "1 : chaque point est son propre voisin",
+        "Il est négatif, car le modèle sur-apprend"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 3, §7.1 : avec K = 1, chaque exemple est prédit par lui-même, R² = 1. C'est du **sur-apprentissage** : il faut impérativement évaluer sur une base de test. (Même chose avec `weights=\"distance\"` quel que soit K.)"
+    },
+    {
+      "id": "reg-036",
+      "type": "unique",
+      "enonce": "On ajoute le **sodium** (en mg, jusqu'à des dizaines de milliers) aux variables d'un KNN qui utilise des teneurs en g. Le R² chute de 0,98 à 0,90. Que faire ?",
+      "choix": [
+        "Augmenter fortement K pour lisser la prédiction",
+        "Retirer les aliments les plus salés de la base",
+        "Passer à `weights=\"distance\"` pour pondérer les voisins",
+        "Standardiser les variables"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §7.3 : le KNN repose sur une **distance**, sensible aux unités. Sans standardisation, les « voisins » sont des aliments de même teneur en sel. Avec `StandardScaler`, le R² remonte à 0,98. **Toujours standardiser avant une méthode fondée sur des distances.**"
+    },
+    {
+      "id": "reg-037",
+      "type": "multiple",
+      "enonce": "Quels sont des défauts de la méthode des K plus proches voisins ?",
+      "choix": [
+        "Elle demande de résoudre les équations normales à chaque prédiction",
+        "Elle suppose que la fonction à prédire est linéaire",
+        "Une prédiction coûte $\\sim P \\times N$ opérations",
+        "Elle n'extrapole pas en dehors des données",
+        "Il faut garder toute la base en mémoire"
+      ],
+      "reponses": [
+        2,
+        3,
+        4
+      ],
+      "explication": "Notebook 3, §7.4 : le modèle **est** la base (mémoire, confidentialité), la prédiction calcule la distance à tous les exemples, et hors des données il recopie des voisins lointains. Mais il ne suppose **aucune forme** pour la fonction (non paramétrique) et n'apprend rien par moindres carrés."
+    },
+    {
+      "id": "reg-038",
+      "type": "unique",
+      "enonce": "Avec `weights=\"distance\"` ($w_i = 1/d_i$), comment se comporte la prédiction du KNN ?",
+      "choix": [
+        "Elle prolonge la tendance en dehors des données",
+        "Elle est un escalier qui saute quand un voisin change",
+        "Elle est toujours plus lisse qu'avec `weights=\"uniform\"`",
+        "Elle passe par chaque point, bruit compris"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §7.2 : un voisin à distance nulle a un poids **infini**, la courbe passe par chaque point et forme des pointes. `uniform` donne un escalier ; le **noyau gaussien** $w = e^{-d^2/2h^2}$, borné, donne une courbe lisse réglée par la largeur $h$."
+    },
+    {
+      "id": "reg-039",
+      "type": "unique",
+      "enonce": "Dans ce cours, les hyperparamètres (degré, $\\alpha$, K) sont choisis directement sur la base de test. Pourquoi n'est-ce pas la bonne pratique ?",
+      "choix": [
+        "Choisir sur le test provoque du sous-apprentissage",
+        "Le test est trop petit pour calculer un R² fiable",
+        "Le test sert à choisir et à évaluer : score optimiste",
+        "Les hyperparamètres doivent être choisis sur la base d'apprentissage"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 3, §0 : en toute rigueur, on choisit les hyperparamètres sur une base de **validation** ou par **validation croisée**, et on n'utilise le test qu'une seule fois, à la fin. Le cours s'en passe volontairement pour alléger."
+    },
+    {
+      "id": "reg-040",
+      "type": "unique",
+      "enonce": "Pour une série temporelle, comment faut-il séparer apprentissage et test ?",
+      "choix": [
+        "En mettant une semaine sur deux dans chaque base, pour équilibrer",
+        "Au hasard, avec `train_test_split`, comme pour des données indépendantes",
+        "Peu importe, du moment que les variables retardées sont calculées",
+        "Dans l'ordre du temps : passé en apprentissage"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §5.1 (variables retardées, `shift`) : avec un découpage aléatoire, le modèle « voit » l'avenir. On apprend sur le passé et on teste sur le futur ; c'est ce que fait le TD 3."
+    }
+  ]
+}

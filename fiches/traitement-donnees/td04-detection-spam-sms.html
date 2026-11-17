@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Traitement de données, TD 4 : Détection de spam SMS</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Traitement de données · Fiche de révision · TD 4</p>
+    <h1>Détection de spam SMS</h1>
+  </div>
+  <p class="source">Doublons, sac de mots, régression logistique,<br>courbes ROC et précision-rappel, choix du seuil</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>Fil rouge</strong> : bloquer un SMS légitime est bien plus grave que laisser passer un spam ⇒ on surveille la <strong>précision</strong> des spams / la <strong>spécificité</strong>.</li>
+    <li>13,4 % de spams : le naïf « tout légitime » a déjà <strong>86,6 %</strong> d'accuracy.</li>
+    <li><strong>Doublons</strong> (403 lignes) : tous les SMS répétés vont en <strong>apprentissage</strong> ; le test ne contient que des SMS jamais vus.</li>
+    <li>Le <strong>dictionnaire s'apprend sur l'apprentissage seul</strong> (pipeline) ; les mots inconnus du test sont ignorés.</li>
+    <li>Au seuil 0,5 : précision 1, rappel 0,86 (aucun faux positif). AUC 0,995, AP 0,978.</li>
+    <li>Le <strong>seuil</strong> se choisit selon l'exigence de l'opérateur (spécificité ≥ 0,999…), par <strong>validation croisée</strong>, puis on évalue une fois sur le test.</li>
+    <li><code>class_weight="balanced"</code> ne classe pas mieux : il déplace le seuil et fausse les probabilités.</li>
+  </ul>
+</div>
+
+<h2>1. Les données</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li>SMS Spam Collection : 5 574 SMS anglais (2011), <em>spam</em> / <em>ham</em>. Lecture avec <code>quoting=csv.QUOTE_NONE</code> (sinon des lignes fusionnent).</li>
+      <li>Spams : presque tous juste sous <strong>160 caractères</strong> (médiane 149), anglais standard, montants, numéros, codes courts. Légitimes : courts (médiane 52), langage SMS.</li>
+      <li>403 lignes en double (309 ham, 94 spam), <strong>aucun texte à deux étiquettes</strong> : ce ne sont pas des erreurs (réponses automatiques, campagnes).</li>
+    </ul>
+  </div>
+  <div class="boite piege"><span class="boite-titre">Pourquoi les doublons posent problème</span>Un SMS du test déjà vu à l'apprentissage est reconnu, pas généralisé : score biaisé vers l'optimisme (accuracy 1 sur les déjà-vus contre 0,98 sur les nouveaux). Règle : <strong>ce qui est lié (même texte, même personne, même source) reste du même côté du découpage</strong>, ici en apprentissage. Conséquence : 14,0 % de spams en apprentissage, 11,6 % en test (les répétés sont à 26,5 % de spams).</div>
+</div>
+
+<h2>2. Sac de mots</h2>
+<table>
+  <tr><th>Étape</th><th>Taille du dictionnaire</th><th>Remarque</th></tr>
+  <tr><td><code>CountVectorizer()</code> brut</td><td>7 298</td><td>beaucoup de numéros, abréviations, fautes</td></tr>
+  <tr><td>+ minuscules, mots vides, racinisation (<code>tokenizer=tokeniser, token_pattern=None</code>)</td><td>6 021</td><td>« claims are closing » → <code>claim, close</code></td></tr>
+  <tr><td>+ <code>min_df=2</code> (mot présent dans ≥ 2 SMS)</td><td>2 929</td><td>3 092 mots n'apparaissaient que dans 1 SMS</td></tr>
+</table>
+<ul>
+  <li>35 % des mots du test sont <strong>hors vocabulaire</strong>, surtout des numéros propres à chaque campagne : ignorés par <code>transform</code>.</li>
+  <li>Mots typiques des spams : <em>free, txt, claim, prize, stop, www</em> ; des ham : <em>ok, come, got, love</em>, et <em>gt, lt</em> (restes HTML). <em>just, ur</em> : présents partout, inutiles.</li>
+  <li><strong>t-SNE</strong> (après <code>TruncatedSVD</code> à 50 dimensions) : les spams se regroupent ; seuls les voisinages s'interprètent.</li>
+</ul>
+
+<h2>3. Régression logistique</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><code>make_pipeline(CountVectorizer(…, min_df=2), LogisticRegression())</code> : le pipeline garantit que le dictionnaire est réappris sur l'apprentissage seul, y compris dans chaque pli de validation croisée.</p>
+    <ul>
+      <li>Seuil 0,5 : 0 faux positif, 24 spams manqués sur 170 ⇒ <strong>précision 1, rappel 0,86</strong>, accuracy 98,4 % (naïf 88,4 % sur ce test).</li>
+      <li>Coefficients : <em>uk</em> multiplie la <strong>cote</strong> par ≈ 11 par occurrence ; μ<sub>0</sub> ≈ −4 ⇒ σ(−4) ≈ 0,02 pour un SMS sans mot connu.</li>
+      <li>Mots corrélés et modèle régularisé (<code>C=1</code>) : ne pas sur-interpréter un coefficient isolé.</li>
+    </ul>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Spams non détectés</span>
+    <ul>
+      <li>Très courts, avec un numéro inconnu (« ringtoneking 84484 »).</li>
+      <li>Notifications de facturation (« you have been billed 150p ») sans vocabulaire de gain.</li>
+      <li>Rédigés comme des messages personnels.</li>
+    </ul>
+    <p>Arnaques récentes (faux colis ≈ 0,06, « Hi mum… » ≈ 0,38) : le filtre de 2011 a vieilli ⇒ <strong>réentraîner régulièrement</strong>.</p>
+  </div>
+</div>
+
+<h2>4. Juger le score et choisir le seuil</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li>Échelle <strong>logit</strong> (<code>ax.set_xscale("logit")</code>) pour voir les probabilités proches de 0 ou 1 : ham entre 10<sup>−3</sup> et 10<sup>−1</sup>, spams surtout au-dessus de 0,9.</li>
+      <li>AUC 0,995 (hasard 0,5), AP 0,978 (hasard 0,116). La <strong>ROC</strong> écrase la zone utile (quelques ‰ de faux positifs) ; la <strong>précision-rappel</strong> montre un palier de précision 1 jusqu'au rappel 0,86.</li>
+      <li>Exigence « ≤ 1 légitime sur 1 000 bloqué » = <strong>spécificité ≥ 0,999</strong> ; on prend le <strong>plus petit seuil</strong> qui la respecte (il détecte le plus de spams).</li>
+      <li>Validation croisée sur les SMS <strong>uniques</strong> de l'apprentissage, les répétés restant toujours en apprentissage (<code>clone</code> du pipeline, 5 parts stratifiées).</li>
+    </ul>
+  </div>
+  <div>
+    <table>
+      <tr><th>Exigence</th><th>Seuil</th><th>Spams détectés</th><th>Faux positifs</th></tr>
+      <tr><td>défaut</td><td>0,5</td><td>146</td><td>0</td></tr>
+      <tr><td>1 sur 1 000</td><td>0,46</td><td>147</td><td>0</td></tr>
+      <tr><td>1 sur 200</td><td>0,25</td><td>154</td><td>4</td></tr>
+      <tr><td>1 sur 100</td><td>0,17</td><td>158</td><td>9</td></tr>
+    </table>
+    <p>Chaque spam en plus se paie en SMS légitimes perdus : <strong>le compromis est fixé par l'opérateur</strong>, pas par le modèle.</p>
+  </div>
+</div>
+<div class="boite piege"><span class="boite-titre"><code>class_weight="balanced"</code></span>AUC 0,995 → 0,994, AP inchangée : pas meilleur pour classer. Au seuil 0,5 : rappel 0,91 mais précision 0,96 (des faux positifs) ⇒ comme un seuil plus bas. Probabilité moyenne 0,137 pour 11,6 % de spams réels (0,112 sans rééquilibrage) : probabilités faussées. Effet moins fort que pour les vins (spams moins rares et bien séparés). <strong>Mieux : garder le modèle et choisir le seuil.</strong></div>
+
+<h2>5. Comparer des représentations (validation croisée)</h2>
+<table>
+  <tr><th>Représentation</th><th>Dictionnaire</th><th>AP</th></tr>
+  <tr><td>brut</td><td>7 298</td><td>0,950</td></tr>
+  <tr><td>référence (<code>min_df=2</code>)</td><td>2 929</td><td>0,959</td></tr>
+  <tr><td><code>min_df=5</code></td><td>1 218</td><td>0,954</td></tr>
+  <tr><td>sans les nombres</td><td>2 524</td><td>0,953</td></tr>
+  <tr><td>jeton <code>&lt;nombre&gt;</code></td><td>2 525</td><td><strong>0,964</strong></td></tr>
+</table>
+<p>Écarts faibles : <strong>le seuil compte bien plus que la représentation</strong>. Le jeton <code>&lt;nombre&gt;</code> garde l'indice « contient un numéro » sans le numéro exact (hors vocabulaire). Supprimer les nombres, utile au cours 2, ne l'est pas ici : <strong>un prétraitement dépend du problème et se mesure</strong>. TF-IDF n'aide pas sur ces textes courts.</p>
+
+</body>
+</html>

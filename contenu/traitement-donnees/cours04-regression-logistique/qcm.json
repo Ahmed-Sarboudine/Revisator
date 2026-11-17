@@ -1,0 +1,619 @@
+{
+  "matiere": "Traitement de données",
+  "document": "cours",
+  "titre": "Régression logistique",
+  "questions": [
+    {
+      "id": "log-001",
+      "type": "unique",
+      "enonce": "On veut étiqueter les thèmes d'un article, qui peut parler à la fois de politique **et** d'économie. De quel type de problème s'agit-il ?",
+      "choix": [
+        "Multi-classes",
+        "Binaire",
+        "Régression",
+        "Multi-label"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 1, §1.1 : en **multi-label**, un exemple peut avoir **plusieurs** classes à la fois (classes non disjointes). En binaire ou multi-classes, chaque exemple a une et une seule classe. Le cours ne traite que des classes disjointes."
+    },
+    {
+      "id": "log-002",
+      "type": "unique",
+      "enonce": "Combien de classifieurs binaires faut-il pour la stratégie **un contre un** avec $K = 10$ classes ?",
+      "choix": [
+        "45",
+        "10",
+        "100",
+        "9"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Un contre un : un classifieur par **paire** de classes, soit $K(K-1)/2 = 10 \\times 9 / 2 = 45$, puis un vote. Le un contre tous n'en demande que $K = 10$."
+    },
+    {
+      "id": "log-003",
+      "type": "unique",
+      "enonce": "Un classifieur annonce $\\pi(\\mathbf{x}) = 0{,}7$. Si l'on prédit la classe 1, quelle est la probabilité de se tromper ?",
+      "choix": [
+        "Elle dépend du seuil choisi",
+        "0,3",
+        "0,5",
+        "0,7"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 1, §2.2 : prédire 1 est une erreur quand la vraie classe est 0, ce qui arrive avec probabilité $1 - \\pi = 0{,}3$. D'où la règle des 50 % : prédire la classe la plus probable minimise le nombre d'erreurs."
+    },
+    {
+      "id": "log-004",
+      "type": "multiple",
+      "enonce": "La règle des 50 % (prédire la classe la plus probable) minimise le nombre d'erreurs **à condition que** :",
+      "choix": [
+        "Le modèle utilisé soit une régression logistique",
+        "Les deux classes aient la même proportion dans la base",
+        "Les deux types d'erreur aient le même coût",
+        "La probabilité soit juste (calibrée)"
+      ],
+      "reponses": [
+        2,
+        3
+      ],
+      "explication": "Notebook 1, §2.2 : deux conditions, une probabilité **juste** et des erreurs de **même coût**. Si rater un malade est plus grave, on baisse le seuil. Le déséquilibre des classes n'est pas une condition de la règle, et elle vaut pour n'importe quel modèle qui fournit des probabilités."
+    },
+    {
+      "id": "log-005",
+      "type": "unique",
+      "enonce": "Qu'est-ce qu'une probabilité **calibrée** ?",
+      "choix": [
+        "Une probabilité dont la somme sur tous les exemples vaut 1",
+        "Une probabilité toujours supérieure à 0,5 pour la classe majoritaire",
+        "Parmi les exemples notés 0,8, environ 80 % sont positifs",
+        "Une probabilité qui donne la meilleure AUC possible"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 1, §2.3 et §5 : on regroupe les exemples par tranches de probabilité annoncée et on compare à la proportion réelle de positifs. Le diagramme de calibration d'un modèle calibré suit la diagonale."
+    },
+    {
+      "id": "log-006",
+      "type": "unique",
+      "enonce": "Dans la matrice de confusion, un **faux négatif** est :",
+      "choix": [
+        "Un vrai négatif prédit positif (on inquiète une personne saine)",
+        "Un vrai positif prédit négatif (on rate un malade)",
+        "Un vrai négatif prédit négatif",
+        "Un exemple dont la classe est inconnue"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 1, §3.1 : **FN** = vrai 1 prédit 0 (erreur de seconde espèce) ; **FP** = vrai 0 prédit 1 (première espèce). Avec `confusion_matrix(y_vrai, y_predit)`, les vraies classes sont en lignes : inverser les arguments échange FP et FN."
+    },
+    {
+      "id": "log-007",
+      "type": "unique",
+      "enonce": "Avec 67 % d'hommes, la règle « taille > 170 » a une accuracy de 0,833. Quelle est la bonne référence pour juger ce score ?",
+      "choix": [
+        "Le hasard pur, qui a une accuracy de 0,5",
+        "Le classifieur « toujours femme », qui a 0,33",
+        "Le classifieur « toujours homme » : 0,67",
+        "Le classifieur parfait, dont l'accuracy vaut 1"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 1, §3.2 : une accuracy n'a de sens que **comparée au classifieur naïf** qui prédit toujours la classe majoritaire. Plus les classes sont déséquilibrées, plus cette référence est haute (99 % de négatifs → 99 % d'accuracy sans rien faire)."
+    },
+    {
+      "id": "log-008",
+      "type": "unique",
+      "enonce": "Quelle formule donne la **précision** ?",
+      "choix": [
+        "$\\dfrac{VP}{VP + FP}$",
+        "$\\dfrac{VN}{VN + FP}$",
+        "$\\dfrac{VP}{VP + FN}$",
+        "$\\dfrac{VP + VN}{P}$ (sur tous les exemples)"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Précision = parmi les exemples **déclarés positifs**, la part vraiment positive (colonne « prédit 1 »). $VP/(VP+FN)$ est le **rappel**, $VN/(VN+FP)$ la **spécificité**, $(VP+VN)/P$ l'accuracy."
+    },
+    {
+      "id": "log-009",
+      "type": "unique",
+      "enonce": "Pour un test médical, que mesure le **rappel** (sensibilité) ?",
+      "choix": [
+        "La proportion de personnes saines reconnues comme saines",
+        "La probabilité qu'une personne testée positive soit réellement malade",
+        "La proportion de bonnes réponses du test",
+        "La proportion de malades que le test détecte"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Rappel $= VP/(VP+FN)$ : calculé **dans la vraie classe positive** (les malades). La probabilité qu'un positif soit malade est la **précision** ; la part de sains reconnus est la **spécificité**."
+    },
+    {
+      "id": "log-010",
+      "type": "unique",
+      "enonce": "Le classifieur « toujours homme » a un rappel de 1. Pourquoi n'est-il pas bon pour autant ?",
+      "choix": [
+        "Un rappel de 1 signifie forcément du sur-apprentissage",
+        "Sa spécificité est nulle : il ne reconnaît aucune femme",
+        "Son rappel est mal calculé, il devrait valoir 0,67",
+        "Sa précision vaut 0, ce qui annule complètement le rappel"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 1, §3.3 : **un indicateur seul se triche facilement**. Déclarer tout le monde positif donne un rappel parfait mais une spécificité nulle ; déclarer homme seulement au-delà de 1,90 m donne une précision de 1 mais un rappel de 0,02."
+    },
+    {
+      "id": "log-011",
+      "type": "unique",
+      "enonce": "Une précision de 1 et un rappel de 0,1 donnent quel score F1 ?",
+      "choix": [
+        "≈ 0,18",
+        "0,55 (moyenne)",
+        "0,1",
+        "1"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "$F_1 = \\frac{2 \\cdot 1 \\cdot 0{,}1}{1 + 0{,}1} \\approx 0{,}18$. La **moyenne harmonique** est tirée vers la plus petite valeur : un bon F1 exige que précision **et** rappel soient bons. La moyenne ordinaire donnerait 0,55."
+    },
+    {
+      "id": "log-012",
+      "type": "unique",
+      "enonce": "Quelle est l'accuracy **équilibrée** du classifieur naïf qui prédit toujours la classe majoritaire ?",
+      "choix": [
+        "0, car il ne reconnaît jamais la classe minoritaire",
+        "1, car il ne se trompe jamais sur la classe majoritaire",
+        "La proportion de la classe majoritaire",
+        "0,5, quel que soit le déséquilibre"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Accuracy équilibrée $= (\\text{rappel} + \\text{spécificité})/2$ : chaque classe pèse autant. Le naïf a 1 dans une classe et 0 dans l'autre, soit **0,5** toujours. L'accuracy ordinaire, elle, vaut $q_1 \\cdot \\text{rappel} + q_0 \\cdot \\text{spécificité}$ : pondérée par la taille des classes."
+    },
+    {
+      "id": "log-013",
+      "type": "multiple",
+      "enonce": "Dans un `classification_report`, quelles affirmations sont vraies ?",
+      "choix": [
+        "Le rappel « macro avg » est l'accuracy équilibrée",
+        "Le « support » est le nombre d'exemples prédits dans chaque classe",
+        "Dans la ligne de la classe négative, le rappel est la spécificité",
+        "Le rappel « weighted avg » est égal à l'accuracy"
+      ],
+      "reponses": [
+        0,
+        2,
+        3
+      ],
+      "explication": "Notebook 1, §3.5 : une ligne par classe, prise à tour de rôle comme positive. **macro** = moyenne simple (chaque classe compte autant), **weighted** = moyenne pondérée par le support. Le support est le nombre d'exemples de chaque **vraie** classe."
+    },
+    {
+      "id": "log-014",
+      "type": "unique",
+      "enonce": "Quand on **augmente** le seuil de décision sur le score :",
+      "choix": [
+        "L'AUC augmente",
+        "Le rappel et la spécificité augmentent tous les deux",
+        "Le rappel baisse et la spécificité augmente",
+        "Le rappel augmente et la spécificité baisse"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 1, §4.1 : un seuil plus haut déclare moins d'exemples positifs, donc détecte moins de positifs (rappel ↓) mais reconnaît mieux les négatifs (spécificité ↑). L'AUC ne dépend d'aucun seuil."
+    },
+    {
+      "id": "log-015",
+      "type": "unique",
+      "enonce": "Que représente l'**AUC** (aire sous la courbe ROC) ?",
+      "choix": [
+        "P(score d'un positif > score d'un négatif), tirés au hasard",
+        "La moyenne de la précision et du rappel sur tous les seuils",
+        "La proportion de bonnes réponses au seuil 0,5",
+        "La proportion de positifs dans la base d'apprentissage"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 1, §4.3 : l'AUC vaut 1 pour un score parfait, 0,5 pour le hasard. Pour la taille, c'est la probabilité qu'un homme pris au hasard soit plus grand qu'une femme prise au hasard (0,920, vérifié sur toutes les paires)."
+    },
+    {
+      "id": "log-016",
+      "type": "multiple",
+      "enonce": "Quelles affirmations sur la courbe ROC sont vraies ?",
+      "choix": [
+        "Elle ne dépend que de l'ordre des scores",
+        "Elle ne dépend pas des proportions des classes",
+        "Abscisse : taux de faux positifs ; ordonnée : rappel",
+        "Elle se calcule à partir des classes prédites, pas du score"
+      ],
+      "reponses": [
+        0,
+        1,
+        2
+      ],
+      "explication": "`roc_curve(y_vrai, score)` prend le **score** et essaie tous les seuils. La taille en cm ou en m, ou une probabilité croissante en la taille, donnent la même courbe. Rappel et spécificité étant calculés dans chaque classe, la ROC ne dépend pas du déséquilibre."
+    },
+    {
+      "id": "log-017",
+      "type": "unique",
+      "enonce": "Pour la courbe précision-rappel, quelle est la référence d'un score qui répond au hasard ?",
+      "choix": [
+        "Une précision nulle",
+        "La diagonale, comme pour la courbe ROC",
+        "Une précision égale à $q_1$",
+        "Une précision de 0,5 pour tout rappel"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 1, §4.4 : un score au hasard a une précision égale à $q_1$ quel que soit le rappel. Cette référence **dépend du déséquilibre**, contrairement à la diagonale de la courbe ROC."
+    },
+    {
+      "id": "log-018",
+      "type": "unique",
+      "enonce": "Trois classifieurs ont la même accuracy et la même AUC, mais des probabilités plus ou moins justes. Quelle métrique les distingue ?",
+      "choix": [
+        "L'entropie croisée",
+        "Le rappel de la classe positive",
+        "Le score F1",
+        "L'accuracy équilibrée"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 1, §5.2 : l'accuracy juge des décisions, l'AUC un ordre. Seule l'**entropie croisée** juge la justesse des probabilités : le classifieur calibré a la plus petite (0,504), l'hésitant et le trop sûr de lui sont punis."
+    },
+    {
+      "id": "log-019",
+      "type": "unique",
+      "enonce": "Combien coûte, dans l'entropie croisée, un exemple auquel le modèle donne une probabilité de 0,01 pour sa **vraie** classe ?",
+      "choix": [
+        "Environ 0,01",
+        "Environ 4,6",
+        "Environ 0,99",
+        "Environ 0,69"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Chaque exemple coûte $-\\log(\\text{probabilité de la vraie classe})$ : $-\\log 0{,}01 \\approx 4{,}6$. Être sûr de soi et avoir tort coûte très cher ; hésiter (0,5) coûte 0,69 ; être sûr et avoir raison (0,99) coûte 0,01."
+    },
+    {
+      "id": "log-020",
+      "type": "unique",
+      "enonce": "Pourquoi ne pas utiliser la **régression linéaire** pour prédire une classe codée 0/1 ?",
+      "choix": [
+        "Elle donne toujours la même prédiction pour tous les exemples",
+        "Ses prédictions sortent de [0, 1] et ne suivent pas la forme en S",
+        "Elle ne peut pas être apprise sur une sortie qui ne prend que deux valeurs",
+        "Elle est beaucoup plus lente à apprendre que la régression logistique"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 3, §1 : la proportion d'hommes par tranche de taille suit une **courbe en S**, alors que la droite prédit des valeurs négatives ou supérieures à 1, qui ne peuvent pas être des probabilités."
+    },
+    {
+      "id": "log-021",
+      "type": "unique",
+      "enonce": "Que vaut la **log-cote** (logit) quand $\\pi = 0{,}75$ ?",
+      "choix": [
+        "$\\log 3 \\approx 1{,}1$",
+        "0,75, la probabilité elle-même",
+        "3, la cote",
+        "$\\log 0{,}75 \\approx -0{,}29$"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Cote $= \\pi/(1-\\pi) = 0{,}75/0{,}25 = 3$ (« 3 contre 1 »), log-cote $= \\log 3 \\approx 1{,}1$. La log-cote va de $-\\infty$ à $+\\infty$, vaut 0 pour $\\pi = 0{,}5$, et change de signe quand on remplace $\\pi$ par $1 - \\pi$."
+    },
+    {
+      "id": "log-022",
+      "type": "multiple",
+      "enonce": "Quelles sont les hypothèses de la régression logistique binaire ?",
+      "choix": [
+        "La log-cote $\\log\\frac{\\pi}{1-\\pi}$ est une fonction affine des variables",
+        "Les variables explicatives suivent des lois gaussiennes de même variance",
+        "$Y$ suit une loi de Bernoulli $\\pi(\\mathbf{x})$",
+        "La probabilité $\\pi(\\mathbf{x})$ est une fonction affine des variables"
+      ],
+      "reponses": [
+        0,
+        2
+      ],
+      "explication": "Notebook 3, §2.2 : Bernoulli + log-cote affine. On en déduit $\\pi = \\sigma(\\mu_0 + \\mu_1 x_1 + \\dots)$ : c'est la **log-cote** qui est affine, pas la probabilité. Des classes gaussiennes de même écart-type vérifient l'hypothèse, mais ce n'en est pas une."
+    },
+    {
+      "id": "log-023",
+      "type": "unique",
+      "enonce": "Quelle est l'expression de la **sigmoïde** ?",
+      "choix": [
+        "$\\sigma(z) = \\dfrac{e^{-z}}{1 + e^{z}}$",
+        "$\\sigma(z) = \\log \\dfrac{z}{1 - z}$",
+        "$\\sigma(z) = \\dfrac{1}{1 + e^{z}}$",
+        "$\\sigma(z) = \\dfrac{1}{1 + e^{-z}}$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "En inversant la log-cote : $\\frac{\\pi}{1-\\pi} = e^z \\iff \\pi = \\frac{e^z}{1+e^z} = \\frac{1}{1 + e^{-z}}$. La sigmoïde est la réciproque du logit ; $\\log\\frac{z}{1-z}$ est le logit lui-même."
+    },
+    {
+      "id": "log-024",
+      "type": "unique",
+      "enonce": "Avec une variable, où se trouve la **frontière de décision** (probabilité 1/2) du modèle $\\sigma(\\mu_0 + \\mu_1 x)$ ?",
+      "choix": [
+        "En $x = 1/2$, quel que soit $\\mu$",
+        "En $x = -\\mu_0 / \\mu_1$",
+        "En $x = \\mu_0 / \\mu_1$",
+        "En $x = 0$, à l'origine"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "$\\pi = 1/2 \\iff$ log-cote nulle $\\iff \\mu_0 + \\mu_1 x = 0 \\iff x = -\\mu_0/\\mu_1$. Sur la taille : $\\mu_0 = -47{,}7$, $\\mu_1 = 0{,}2865$, frontière à 166,5 cm. Avec $N$ variables, la frontière est un **hyperplan** : modèle linéaire."
+    },
+    {
+      "id": "log-025",
+      "type": "unique",
+      "enonce": "Dans $\\sigma(\\mu_0 + \\mu_1 x)$, que règle $|\\mu_1|$ ?",
+      "choix": [
+        "La position de la frontière, sans changer la forme",
+        "La raideur de la transition de 0 à 1",
+        "La valeur maximale de la probabilité",
+        "Le nombre de classes du problème"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 3, §2.4 : plus $|\\mu_1|$ est grand, plus on passe brusquement de 0 à 1 (modèle plus sûr de lui loin de la frontière). $\\mu_0$ déplace la courbe ; le signe de $\\mu_1$ donne le sens."
+    },
+    {
+      "id": "log-026",
+      "type": "unique",
+      "enonce": "Maximiser la vraisemblance d'une régression logistique revient à :",
+      "choix": [
+        "Maximiser l'AUC sur la base d'apprentissage",
+        "Minimiser l'erreur quadratique moyenne entre $y$ et $\\pi$",
+        "Maximiser l'accuracy sur la base d'apprentissage",
+        "Minimiser l'entropie croisée sur la base d'apprentissage"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §3.1 : $L(\\mu) = \\prod \\pi_i^{y_i}(1-\\pi_i)^{1-y_i}$ ; prendre $-\\frac{1}{P}\\log L$ donne exactement l'**entropie croisée**. Maximum de vraisemblance et minimisation de l'entropie croisée sont une seule et même chose."
+    },
+    {
+      "id": "log-027",
+      "type": "multiple",
+      "enonce": "Quelles affirmations sur l'apprentissage de la régression logistique sont vraies ?",
+      "choix": [
+        "Le gradient vaut $\\frac{1}{P}\\mathbf{X}^T(\\boldsymbol{\\pi} - \\mathbf{y})$",
+        "Il n'existe pas de formule exacte des meilleurs paramètres",
+        "Le critère est convexe : pas de minimum local parasite",
+        "On résout les équations normales $\\mathbf{X}^T\\mathbf{X}\\mu = \\mathbf{X}^T\\mathbf{y}$"
+      ],
+      "reponses": [
+        0,
+        1,
+        2
+      ],
+      "explication": "Notebook 3, §3 : contrairement à la régression linéaire, pas d'équations normales ; on utilise une méthode itérative (descente de gradient du TD 1, ou `lbfgs` dans scikit-learn). Le critère convexe garantit la convergence vers le minimum global."
+    },
+    {
+      "id": "log-028",
+      "type": "unique",
+      "enonce": "Que fait `LogisticRegression()` de scikit-learn **par défaut** ?",
+      "choix": [
+        "Une régularisation L1 qui sélectionne les variables",
+        "Une standardisation automatique des variables d'entrée",
+        "Aucune régularisation : il faut `C=1` pour l'activer",
+        "Une régularisation L2 avec `C=1`"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §3.2 et §6.3 : la régularisation est **active par défaut** (L2, `C=1`). `C` joue le rôle de $1/\\lambda$ : plus `C` est petit, plus la régularisation est forte. `C=np.inf` donne $\\lambda = 0$. La standardisation se fait à part (`StandardScaler`)."
+    },
+    {
+      "id": "log-029",
+      "type": "unique",
+      "enonce": "Que renvoie `decision_function(X)` pour une régression logistique ?",
+      "choix": [
+        "La classe prédite au seuil 1/2 sur la probabilité",
+        "La probabilité de chaque classe, de somme 1",
+        "La distance de chaque exemple à son plus proche voisin",
+        "La log-cote $\\mu_0 + \\mu_1 x$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §4.2 : `predict_proba` donne les probabilités (colonne 1 = $\\pi$), `predict` la classe au seuil 1/2, `decision_function` la **log-cote**. Une log-cote positive correspond à une probabilité supérieure à 1/2."
+    },
+    {
+      "id": "log-030",
+      "type": "unique",
+      "enonce": "Pour la taille, $\\mu_1 = 0{,}2865$ par cm, et $e^{\\mu_1} \\approx 1{,}33$. Comment l'interpréter ?",
+      "choix": [
+        "Chaque cm de plus multiplie la probabilité d'être un homme par environ 1,33",
+        "Chaque cm de plus ajoute 33 % de chances d'être un homme",
+        "Chaque cm de plus ajoute 0,2865 à la probabilité d'être un homme",
+        "Chaque cm de plus multiplie la cote d'être un homme par environ 1,33"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §4.3 : $\\mu_1$ agit sur la **log-cote** ; la **cote** est multipliée par $e^{\\mu_1}$ (rapport des cotes, *odds ratio*). Ce n'est pas la probabilité : son évolution dépend de la position sur la sigmoïde (forte près de la frontière, faible vers 190 cm)."
+    },
+    {
+      "id": "log-031",
+      "type": "unique",
+      "enonce": "Avec une seule variable (la taille), pourquoi l'AUC de la régression logistique est-elle exactement celle de la taille ?",
+      "choix": [
+        "Parce que l'AUC est toujours égale à l'accuracy",
+        "La probabilité classe les personnes dans le même ordre",
+        "Parce que le test et l'apprentissage ont exactement la même taille",
+        "Parce que la régression logistique n'a rien appris"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 3, §4.4 : la courbe ROC ne dépend que de l'**ordre** des scores. Avec une variable, le modèle se contente de **choisir un seuil** sur la taille ; son intérêt apparaît avec plusieurs variables."
+    },
+    {
+      "id": "log-032",
+      "type": "unique",
+      "enonce": "Dans le modèle à 5 mesures, le **poids** a un coefficient négatif alors que les hommes sont en moyenne plus lourds. Pourquoi ?",
+      "choix": [
+        "Le modèle s'est trompé et il faut retirer le poids",
+        "Les femmes de la base sont en moyenne plus lourdes que les hommes",
+        "Le poids n'a pas été standardisé avant l'apprentissage",
+        "À autres mesures fixées, un poids élevé évoque une femme"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §5.3 : un coefficient se lit « **toutes les autres variables fixées** ». Le coefficient d'une variable dépend des autres variables du modèle, et son signe peut différer de sa corrélation simple avec la sortie."
+    },
+    {
+      "id": "log-033",
+      "type": "unique",
+      "enonce": "Avec les 93 mesures, les classes sont **parfaitement séparables**. Quel problème cela pose-t-il ?",
+      "choix": [
+        "Aucun : une séparation parfaite est le meilleur cas possible",
+        "Le critère n'est plus convexe et la descente se bloque dans un minimum local",
+        "Le maximum de vraisemblance n'existe pas : coefficients infinis",
+        "L'accuracy de test devient mauvaise, à cause d'un fort sur-apprentissage"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 3, §6.2 : multiplier tous les $\\mu$ par 10 ne bouge pas la frontière mais raidit la sigmoïde et rapproche la vraisemblance de 1. Les coefficients dépendent du moment où l'algorithme s'arrête. Remède : la **régularisation**."
+    },
+    {
+      "id": "log-034",
+      "type": "unique",
+      "enonce": "Avec `LogisticRegression(l1_ratio=1, solver=\"liblinear\")`, que se passe-t-il quand on **diminue** `C` ?",
+      "choix": [
+        "Les probabilités deviennent plus tranchées (proches de 0 ou 1)",
+        "La pénalité se renforce : moins de variables gardées",
+        "La régularisation s'affaiblit et toutes les variables sont gardées",
+        "L'accuracy de test augmente toujours"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "`C` $= 1/\\lambda$ : plus `C` est petit, plus la pénalité est forte. La pénalité **L1** met des coefficients exactement à zéro : elle sélectionne des variables (9 variables pour `C = 0.01`, accuracy 99,7 %). Trop forte, elle rend les probabilités moins tranchées."
+    },
+    {
+      "id": "log-035",
+      "type": "unique",
+      "enonce": "Que fait la fonction **softmax** du modèle multinomial ?",
+      "choix": [
+        "Elle choisit la classe de plus petit score",
+        "Elle change $K$ scores en $K$ probabilités de somme 1",
+        "Elle normalise les variables explicatives avant l'apprentissage",
+        "Elle entraîne un classifieur binaire par paire de classes"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 3, §7.1 : $\\Pr(Y=k \\mid \\mathbf{x}) = e^{z_k}/\\sum_l e^{z_l}$. Avec $K = 2$, on retrouve $\\sigma(z_1 - z_0)$ : seule la différence des scores compte, c'est la log-cote."
+    },
+    {
+      "id": "log-036",
+      "type": "unique",
+      "enonce": "Avec « note ≥ 8 » (3 % de vins excellents), le modèle a 97 % d'accuracy mais un rappel nul. Pourquoi ?",
+      "choix": [
+        "Aucun vin n'atteint une probabilité de 0,5",
+        "Le modèle n'a rien appris : son AUC vaut exactement 0,5",
+        "Le rappel est mal calculé quand une classe est rare",
+        "Il y a une fuite de données entre apprentissage et test"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 4, §2 : la plus grande probabilité prédite vaut 0,36. Pourtant l'AUC (0,79) montre que le modèle **classe** plutôt bien. **Le modèle contient de l'information ; c'est le seuil de 0,5 qui ne convient pas.**"
+    },
+    {
+      "id": "log-037",
+      "type": "multiple",
+      "enonce": "Quelles métriques **dépendent** des proportions des classes ?",
+      "choix": [
+        "L'accuracy",
+        "Le F1",
+        "L'AUC (aire sous la courbe ROC)",
+        "Le rappel de la classe rare",
+        "La précision"
+      ],
+      "reponses": [
+        0,
+        1,
+        4
+      ],
+      "explication": "Notebook 4, §2.1 : rappel, spécificité, accuracy équilibrée et ROC/AUC sont calculés dans chaque vraie classe et n'en dépendent pas. Accuracy, précision, F1 et courbe précision-rappel en dépendent : quand $q_1$ est petit, même peu de FP en taux font beaucoup de FP en nombre."
+    },
+    {
+      "id": "log-038",
+      "type": "unique",
+      "enonce": "Sur quelles données faut-il choisir le seuil de décision ?",
+      "choix": [
+        "Nulle part : le seuil doit toujours rester à 0,5",
+        "Sur la base de test, pour obtenir le meilleur résultat final",
+        "Sur des prédictions de validation croisée de l'apprentissage",
+        "Sur les prédictions du modèle appris, sur sa propre base d'apprentissage"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 4, §3.2 : le seuil est un **hyperparamètre**. Une base de validation ne contiendrait qu'une trentaine d'excellents vins ; la validation croisée (stratifiée) donne, pour chaque vin d'apprentissage, une probabilité prédite par un modèle qui ne l'a pas vu. Le test ne sert qu'à l'évaluation finale."
+    },
+    {
+      "id": "log-039",
+      "type": "multiple",
+      "enonce": "Que fait `class_weight=\"balanced\"` pour une régression logistique ?",
+      "choix": [
+        "Il fausse les probabilités (trop élevées)",
+        "Il améliore nettement l'AUC et la précision moyenne du modèle",
+        "Il rend le modèle calibré sur le monde réel",
+        "Il revient surtout à décaler $\\mu_0$"
+      ],
+      "reponses": [
+        0,
+        3
+      ],
+      "explication": "Notebook 4, §4 : seule la constante change, $\\tilde\\mu_0 = \\mu_0 + \\log\\frac{\\tilde q_1}{\\tilde q_0} - \\log\\frac{q_1}{q_0}$. Les décisions au seuil 0,5 ressemblent à celles du modèle d'origine au seuil $q_1$. L'AUC ne bouge presque pas, et la probabilité moyenne prédite passe de 0,028 à 0,314 : les probabilités sont **faussées**."
+    },
+    {
+      "id": "log-040",
+      "type": "unique",
+      "enonce": "Un modèle est appris sur ANSUR (67 % d'hommes). Comment l'appliquer à une population à 50 % d'hommes ?",
+      "choix": [
+        "Rien : les probabilités ne dépendent pas des proportions",
+        "Réapprendre tous les coefficients sur une nouvelle base",
+        "Multiplier toutes les probabilités prédites par 0,5 / 0,67",
+        "Corriger seulement la constante $\\mu_0$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 4, §4.4 : la log-cote vaut $\\log\\frac{f_1}{f_0} + \\log\\frac{q_1}{q_0}$ ; seul le second terme change. Correction de $\\mu_0$ : −0,72. Une personne de 1,70 m passe de 73 % à 57 % de chances d'être un homme."
+    }
+  ]
+}

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Traitement de données, Cours 3 : Régression</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Traitement de données · Fiche de révision · Cours 3</p>
+    <h1>Régression</h1>
+  </div>
+  <p class="source">Indicateurs et visualisation, données Ciqual,<br>régression linéaire, Ridge / Lasso, k plus proches voisins</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>Médiane</strong> = quantile à 50 % : <strong>robuste</strong>. La <strong>moyenne</strong> ne l'est pas (une valeur aberrante peut la doubler). Même chose pour écart interquartile (robuste) / écart type (non).</li>
+    <li><strong>Corrélation</strong> ρ = Cov(X,Y) / (σ<sub>X</sub>σ<sub>Y</sub>) : sans unité, entre −1 et 1, ne mesure qu'un lien <strong>linéaire</strong>, n'implique pas de causalité. <strong>Toujours tracer les données</strong> (Anscombe).</li>
+    <li><strong>Évaluer</strong> : MSE (critère minimisé, unité²), RMSE et MAE (unité de y), <strong>R² = 1 − MSE / Var(Y)</strong> (0 = moyenne, &lt; 0 = pire que la moyenne). La SSE ne se compare pas d'une base à l'autre.</li>
+    <li><strong>Moindres carrés</strong> : simple <span class="formule">μ<sub>1</sub> = Cov(X,Y)/Var(X), μ<sub>0</sub> = ȳ − μ<sub>1</sub>x̄</span> ; multiple <span class="formule">μ* = (X<sup>T</sup>X)<sup>−1</sup>X<sup>T</sup>y</span> (équations normales).</li>
+    <li><strong>Colinéarité</strong> : bon R² mais coefficients instables et non interprétables. Elle peut échapper à la matrice de corrélation (multicolinéarité).</li>
+    <li><strong>Ridge</strong> (‖μ‖²) stabilise ; <strong>Lasso</strong> (‖μ‖<sub>1</sub>) met des coefficients <strong>à zéro</strong> (sélection). Standardiser avant.</li>
+    <li><strong>KNN</strong> : non paramétrique, moyenne des K voisins. <strong>Standardiser</strong>, n'extrapole pas, coûteux en mémoire et en prédiction.</li>
+  </ul>
+</div>
+
+<h2>1. Résumer et visualiser (notebook 1)</h2>
+<div class="deux-colonnes">
+  <div>
+    <h3>Position et dispersion</h3>
+    <table>
+      <tr><th>Question</th><th>Non robuste</th><th>Robuste</th></tr>
+      <tr><td>Où ?</td><td>moyenne</td><td>médiane, quantiles</td></tr>
+      <tr><td>Étalement ?</td><td>variance, écart type, étendue</td><td>écart interquartile Q<sub>3</sub> − Q<sub>1</sub></td></tr>
+    </table>
+    <ul>
+      <li>Distribution <strong>asymétrique</strong> (queue à droite) : moyenne &gt; médiane.</li>
+      <li>Distribution <strong>à deux bosses</strong> : aucun indicateur de position ne la résume ; la boîte à moustaches la cache aussi.</li>
+      <li>Variance estimée en divisant par <strong>P − 1</strong> (pandas par défaut) ; <code>np.var</code> divise par P (option <code>ddof=1</code>).</li>
+      <li>Écart type = racine de la variance, <strong>dans l'unité de la variable</strong>.</li>
+    </ul>
+  </div>
+  <div>
+    <h3>Graphiques</h3>
+    <ul>
+      <li><strong>Histogramme</strong> : la forme (choisir le nombre d'intervalles).</li>
+      <li><strong>Boîte à moustaches</strong> : médiane, boîte Q<sub>1</sub>–Q<sub>3</sub>, moustaches jusqu'à 1,5 × (Q<sub>3</sub> − Q<sub>1</sub>), points atypiques au-delà. Idéale pour <strong>comparer des classes</strong>.</li>
+      <li><strong>Nuage de points</strong>, <code>sns.pairplot</code> (toutes les paires), <code>hue</code> pour colorer par classe.</li>
+      <li><strong>t-SNE</strong> : 2 dimensions qui conservent les <strong>voisinages</strong>. Axes, distances entre groupes et tailles <strong>sans sens</strong> ; dépend de la perplexité ; visualisation seulement.</li>
+    </ul>
+  </div>
+</div>
+<div class="boite piege"><span class="boite-titre">Pièges de la corrélation</span>y = x² + bruit (x centré) donne ρ ≈ 0 alors que y dépend fortement de x. La covariance dépend des unités (× 1000 si on passe en mm), pas la corrélation. Le quartet d'Anscombe : 4 jeux de mêmes moyenne, variance, corrélation (0,816) et même droite de régression, mais très différents.</div>
+
+<h2>2. Préparer des données réelles : Ciqual (notebook 2)</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li>Une colonne pandas n'a <strong>qu'un type</strong> : virgules décimales et valeurs <code>-</code>, <code>traces</code>, <code>&lt; 0,5</code> ⇒ tout est lu en texte.</li>
+      <li>Convention : <code>-</code> → manquant, <code>traces</code> → 0, <code>&lt; x</code> → x/2. <strong>Ignorer</strong> les valeurs censurées <strong>surestime</strong> la moyenne (on garde les plus riches).</li>
+      <li>Retirer les « aliments moyens » (calculés à partir d'autres lignes).</li>
+      <li>Colonnes <strong>calculées</strong> (kJ/kcal, sel = 2,5 × sodium) : prédire l'une avec l'autre = <strong>fuite de données</strong>.</li>
+      <li>Contrôle de cohérence : les constituants principaux somment à <strong>100 g</strong> ; d'où eau ≈ 100 − autres (erreur &lt; 1 g).</li>
+      <li>On ne supprime un point extrême que si c'est une <strong>erreur</strong> ou s'il sort du domaine (une huile à 100 g de lipides est vraie).</li>
+    </ul>
+  </div>
+  <div>
+    <h3>Valeurs manquantes</h3>
+    <table>
+      <tr><th>Type</th><th>Le manque dépend…</th></tr>
+      <tr><td>MCAR</td><td>de rien (pur hasard)</td></tr>
+      <tr><td>MAR</td><td>d'autres variables observées (le groupe)</td></tr>
+      <tr><td>MNAR</td><td>de la valeur elle-même</td></tr>
+    </table>
+    <p>Supprimer les lignes incomplètes : <strong>biais de sélection</strong> si pas MCAR. Imputer par la moyenne : <strong>réduit la dispersion</strong> (écart type de l'eau 30,2 → 27,6). Mieux : imputer par une loi connue ou par un modèle.</p>
+    <p><strong>L'eau, facteur de confusion</strong> : un aliment aqueux est pauvre en tout. Sur matière sèche, la corrélation glucides/énergie <strong>change de signe</strong>.</p>
+  </div>
+</div>
+
+<h2>3. Mesurer une prédiction</h2>
+<table>
+  <tr><th>Indicateur</th><th>Formule</th><th>Unité</th><th>Usage</th></tr>
+  <tr><td>SSE</td><td>Σ (y<sub>i</sub> − ŷ<sub>i</sub>)²</td><td>y²</td><td>apprendre ; croît avec P, ne se compare pas entre bases</td></tr>
+  <tr><td>MSE</td><td>SSE / P</td><td>y²</td><td>critère minimisé</td></tr>
+  <tr><td>RMSE</td><td>√MSE</td><td>y</td><td>« on se trompe de tant »</td></tr>
+  <tr><td>MAE</td><td>moyenne des |y<sub>i</sub> − ŷ<sub>i</sub>|</td><td>y</td><td>moins sensible aux grosses erreurs</td></tr>
+  <tr><td>R²</td><td>1 − MSE / Var(Y)</td><td>—</td><td>part de variance expliquée ; &lt; 0 en test = pire que la moyenne</td></tr>
+</table>
+
+<h2>4. Régression linéaire</h2>
+<div class="deux-colonnes">
+  <div>
+    <h3>Simple : y = μ<sub>0</sub> + μ<sub>1</sub>x</h3>
+    <p class="formule">μ<sub>1</sub> = Cov(X,Y) / Var(X) · μ<sub>0</sub> = ȳ − μ<sub>1</sub>x̄</p>
+    <ul>
+      <li>Critère convexe ⇒ minimum global unique.</li>
+      <li>Sur l'apprentissage : <strong>R² = ρ²</strong>.</li>
+      <li>Pente = accroissement moyen de y quand x augmente de 1 (énergie : ≈ <strong>37 kJ par g de lipides</strong>).</li>
+      <li>scikit-learn : <code>LinearRegression().fit(X, y)</code>, X de forme (P, N) ; <code>intercept_</code>, <code>coef_</code>, <code>score</code> = R².</li>
+    </ul>
+    <h3>Multiple</h3>
+    <p class="formule">X<sup>T</sup>X μ = X<sup>T</sup>y ⇒ μ* = (X<sup>T</sup>X)<sup>−1</sup>X<sup>T</sup>y</p>
+    <p>X a une colonne de 1. Inversible si colonnes linéairement indépendantes. En pratique <code>np.linalg.solve</code>.</p>
+  </div>
+  <div class="exemple"><strong>Le fil rouge : retrouver la formule de l'énergie</strong><br>
+    Lipides seuls : R² test 0,73, RMSE ≈ 390 kJ.<br>
+    + glucides + protéines + fibres, alcool, polyols, acides organiques : R² &gt; 0,999, RMSE &lt; 10 kJ.<br>
+    Coefficients ≈ facteurs du règlement UE : <strong>17</strong> (protéines, glucides), <strong>37</strong> (lipides), <strong>8</strong> (fibres), <strong>29</strong> (alcool).<br>
+    Polyols : <strong>−7</strong> = 10 − 17, car les glucides incluent déjà les polyols.<br>
+    Les <strong>résidus</strong> pointent les protéines végétales : avec la colonne <strong>N × 6,25</strong> (celle du règlement), RMSE divisée par plus de 2.</div>
+</div>
+<div class="boite piege"><span class="boite-titre">Colinéarité</span>Ajouter l'eau : R² inchangé, mais coefficients méconnaissables (protéines ≈ 9 au lieu de 17) et instables (écart type ≈ 6 kJ/g d'un échantillon à l'autre), conditionnement de X<sup>T</sup>X × 1000. Car eau ≈ 100 − somme des autres. Aucune corrélation deux à deux n'est proche de ±1 : la redondance porte sur une <strong>somme</strong>. Remède : retirer la variable redondante, ou régulariser.</div>
+<div class="boite astuce"><span class="boite-titre">Corrélation faible ≠ variable inutile</span>Protéines et énergie sont peu corrélées, pourtant les protéines valent 17 kJ/g : la régression multiple isole l'effet « toutes choses égales par ailleurs ».</div>
+
+<h2>5. Au-delà du linéaire</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li>Le modèle doit être <strong>linéaire en μ</strong>, pas en x : on crée des colonnes h<sub>j</sub>(x) (x², produits…).</li>
+      <li><strong>Transformer la sortie</strong> par u inversible : on prédit ẑ = u(y), puis ŷ = u<sup>−1</sup>(ẑ) (√ → carré ; log → exp, TD 3).</li>
+      <li><strong>Variables retardées</strong> (<code>shift</code>) pour une série temporelle ; découpage <strong>chronologique</strong>.</li>
+    </ul>
+  </div>
+  <div>
+    <ul>
+      <li><strong>Régression polynomiale</strong> de degré q (hyperparamètre) : erreur d'apprentissage toujours décroissante, erreur de test en creux. q = 1 : sous-apprentissage ; q = 15 : sur-apprentissage (R² de test très négatif).</li>
+      <li>Pipeline : <code>PolynomialFeatures</code> → <code>StandardScaler</code> → régression (puissances mal conditionnées sinon).</li>
+    </ul>
+  </div>
+</div>
+
+<h2>6. Régularisation</h2>
+<table>
+  <tr><th></th><th>Ridge</th><th>Lasso</th></tr>
+  <tr><td>Pénalité</td><td>α ‖μ‖<sub>2</sub>² = α Σ μ<sub>j</sub>²</td><td>α ‖μ‖<sub>1</sub> = α Σ |μ<sub>j</sub>|</td></tr>
+  <tr><td>Solution</td><td>(X<sup>T</sup>X + αI)μ = X<sup>T</sup>y, toujours inversible</td><td>pas de formule : méthode itérative</td></tr>
+  <tr><td>Effet</td><td>réduit et <strong>stabilise</strong> les coefficients</td><td>met des coefficients <strong>exactement à 0</strong> : sélection</td></tr>
+  <tr><td>α → 0 / α grand</td><td colspan="2">moindres carrés / tous les coefficients écrasés (sous-apprentissage)</td></tr>
+</table>
+<p>Toujours <strong>standardiser</strong> avant (la pénalité dépend des unités). Le Lasso élimine d'abord les constituants rares (acides organiques, polyols). Ridge stabilise un modèle colinéaire mais ne retrouve pas de « vrais » coefficients : il ne remplace pas la réflexion sur les variables.</p>
+
+<h2>7. K plus proches voisins</h2>
+<div class="deux-colonnes">
+  <div>
+    <p class="formule">ŷ(x) = moyenne des y<sub>i</sub> des K exemples les plus proches de x</p>
+    <ul>
+      <li><strong>Non paramétrique</strong> : le modèle <em>est</em> la base. K est un hyperparamètre.</li>
+      <li>K = 1 : R² d'apprentissage = 1 (sur-apprentissage) ; K grand : lisse, aplati aux bords.</li>
+      <li><code>weights="uniform"</code> : escalier ; <code>"distance"</code> (w = 1/d) : passe par chaque point ; <strong>noyau gaussien</strong> w = exp(−d²/2h²) : lisse, réglé par la largeur h.</li>
+      <li><strong>Standardiser</strong> : le sodium en mg domine la distance (R² 0,98 → 0,90 sans standardisation).</li>
+    </ul>
+  </div>
+  <div class="boite piege"><span class="boite-titre">Limites du KNN</span>
+    <ul>
+      <li>Beaucoup d'hyperparamètres (K, pondération, h, distance).</li>
+      <li>Toute la base en mémoire ; prédiction ≈ P × N opérations.</li>
+      <li>Sensible aux unités et aux variables inutiles.</li>
+      <li>Se dégrade en grande dimension (fléau de la dimension).</li>
+      <li>N'extrapole pas, ne s'interprète pas, ne gère pas les manquants.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="boite essentiel">
+  <span class="boite-titre">Méthode générale</span>
+  Comprendre la source → vérifier les types → convertir → étudier les manquants → contrôler la cohérence → <strong>visualiser</strong> → résumer → séparer apprentissage / test (et validation pour les hyperparamètres) → ajuster → <strong>analyser les résidus</strong> → corriger avec la connaissance du domaine.
+</div>
+
+</body>
+</html>

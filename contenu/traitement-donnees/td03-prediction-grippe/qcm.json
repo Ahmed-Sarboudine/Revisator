@@ -1,0 +1,461 @@
+{
+  "matiere": "Traitement de données",
+  "document": "td",
+  "titre": "Prédiction d'épidémies de grippe",
+  "cours": "cours03-regression",
+  "questions": [
+    {
+      "id": "td3-001",
+      "type": "unique",
+      "enonce": "Pourquoi cherche-t-on à prédire l'ILI (consultations pour syndrome grippal) à partir des requêtes internet ?",
+      "choix": [
+        "Les requêtes sont plus fiables que les déclarations des médecins",
+        "Les requêtes ne dérivent jamais d'une saison à l'autre",
+        "L'ILI n'est publié qu'une seule fois par an, en été",
+        "Les requêtes arrivent en temps réel, l'ILI en retard"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Introduction du TD : l'ILI est fiable mais doit être collecté et consolidé (retard). Les requêtes sont immédiates : c'était le principe de **Google Flu Trends**, arrêté en 2015 après avoir largement surestimé l'épidémie 2012-2013."
+    },
+    {
+      "id": "td3-002",
+      "type": "unique",
+      "enonce": "Pourquoi réunir `FluTrain.csv` et `FluTest.csv` en un seul `DataFrame` avant de travailler ?",
+      "choix": [
+        "C'est une seule série : fin 2011 sert à prédire début 2012",
+        "Pour calculer la moyenne de l'ILI sur toute la période étudiée",
+        "Pour mélanger aléatoirement les semaines avant le découpage",
+        "Parce que `LinearRegression` n'accepte qu'un seul tableau"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Question 1 : il s'agit d'une seule série de mesures. On sépare ensuite apprentissage et test **par date** (`grippe.loc[:\"2011\"]`, `grippe.loc[\"2012\"]`), et les décalages (question 6) utilisent la fin de 2011 pour le début de 2012."
+    },
+    {
+      "id": "td3-003",
+      "type": "unique",
+      "enonce": "Quel est le motif principal visible sur les courbes de l'ILI et des requêtes ?",
+      "choix": [
+        "Aucun motif : les valeurs varient au hasard d'une semaine à l'autre",
+        "Un motif annuel : un pic chaque hiver, des valeurs basses l'été",
+        "Un motif hebdomadaire : plus de consultations le lundi",
+        "Une croissance régulière de 2004 à 2011, sans saisonnalité"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Question 1 : la grippe circule en hiver ; les pics n'ont ni la même hauteur ni la même date. La saison 2009-2010 est atypique (pandémie H1N1, pic dès octobre). Les requêtes montent souvent un peu **avant** l'ILI."
+    },
+    {
+      "id": "td3-004",
+      "type": "unique",
+      "enonce": "Pourquoi les requêtes montent-elles souvent un peu **avant** l'ILI ?",
+      "choix": [
+        "L'ILI est mesuré une semaine après la guérison des malades",
+        "Google publie ses données avec une semaine d'avance",
+        "On cherche ses symptômes avant de consulter",
+        "Les médecins déclarent les cas avec deux semaines de retard"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 1 : l'ILI est mesuré au moment de la **consultation**, qui suit souvent la recherche d'informations. C'est pourquoi les requêtes de la semaine précédente, $\\mathrm{Queries}_{t-1}$, sont même un peu meilleures (question 7)."
+    },
+    {
+      "id": "td3-005",
+      "type": "unique",
+      "enonce": "L'ILI a un coefficient d'asymétrie (*skew*) de 2,0 et une moyenne (1,68) supérieure à sa médiane (1,25). Que signifie un coefficient positif ?",
+      "choix": [
+        "Une queue à droite : quelques valeurs très grandes",
+        "Une distribution parfaitement symétrique",
+        "Une distribution à deux bosses, une par saison",
+        "Une longue queue vers la gauche : quelques valeurs très petites"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Question 2 : le skew vaut 0 pour une distribution symétrique, il est positif pour une queue à droite. La plupart des semaines sont calmes (~1 %), quelques semaines épidémiques, rares, montent jusqu'à 7,6 % et tirent la moyenne au-dessus de la médiane."
+    },
+    {
+      "id": "td3-006",
+      "type": "unique",
+      "enonce": "Pourquoi la distribution de l'ILI a-t-elle cette forme très asymétrique ?",
+      "choix": [
+        "La population américaine augmente un peu chaque année",
+        "Les médecins arrondissent leurs déclarations vers le haut",
+        "Il y a des erreurs de saisie dans les semaines épidémiques",
+        "Une épidémie croît de façon multiplicative"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Question 2 : chaque malade en contamine plusieurs, le nombre de cas est **multiplié** chaque semaine par un facteur à peu près constant. Croissance puis décroissance exponentielles : beaucoup de valeurs faibles, quelques très fortes."
+    },
+    {
+      "id": "td3-007",
+      "type": "multiple",
+      "enonce": "Que montre le nuage de points `Queries` / `ILI` sur la base d'apprentissage ?",
+      "choix": [
+        "Il est courbé vers le haut, comme une exponentielle",
+        "La dispersion augmente avec le niveau",
+        "La dispersion reste constante autour de la tendance",
+        "C'est une droite : une régression directe de l'ILI suffit"
+      ],
+      "reponses": [
+        0,
+        1
+      ],
+      "explication": "Question 2 : le nuage n'est pas une droite (convexe) et les écarts sont proportionnels à la valeur. Une droite sous-estimerait les pics et surestimerait les semaines calmes. Après le logarithme, la dispersion devient à peu près constante."
+    },
+    {
+      "id": "td3-008",
+      "type": "unique",
+      "enonce": "Si $\\mathrm{ILI} = a\\,e^{b\\,\\mathrm{Queries}}$, que devient la relation après passage au logarithme ?",
+      "choix": [
+        "$\\log(\\mathrm{ILI}) = a + \\log(b)\\,\\mathrm{Queries}$ : linéaire",
+        "$\\log(\\mathrm{ILI}) = a\\,b\\,\\mathrm{Queries}$ : multiplicative",
+        "$\\log(\\mathrm{ILI}) = \\log(a) + b\\,\\mathrm{Queries}$ : linéaire",
+        "$\\log(\\mathrm{ILI}) = \\log(a)\\,\\log(b)\\,\\mathrm{Queries}$ : produit"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 3 : $\\log(a\\,e^{bq}) = \\log a + bq$. C'est la **transformation inversible de la sortie** du cours (notebook 3, §5.1), avec $u = \\log$ et $u^{-1} = \\exp$."
+    },
+    {
+      "id": "td3-009",
+      "type": "unique",
+      "enonce": "La corrélation avec `Queries` passe de 0,81 (ILI) à 0,84 (log_ILI). Qu'est-ce qui a surtout changé avec le logarithme ?",
+      "choix": [
+        "La force du lien, qui a beaucoup augmenté",
+        "Le signe du lien, qui est devenu positif",
+        "La forme du lien et la régularité de la dispersion",
+        "Rien : le logarithme ne sert qu'à réduire les grandes valeurs"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 3 : la corrélation progresse peu ; le vrai gain est la **forme** (droite au lieu de courbe) et une dispersion constante. La distribution de log_ILI est aussi bien plus symétrique (skew 0,64 au lieu de 2,0)."
+    },
+    {
+      "id": "td3-010",
+      "type": "unique",
+      "enonce": "Pourquoi comparer des **corrélations** plutôt que des covariances entre `Queries` et ILI / log_ILI ?",
+      "choix": [
+        "La covariance dépend de l'unité de la sortie",
+        "La corrélation tient compte de l'ordre des semaines",
+        "La covariance ne se calcule pas avec pandas",
+        "La covariance est toujours négative pour des données temporelles"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Question 3 : la covariance change avec l'unité sans que le lien soit plus ou moins fort. La corrélation est **sans unité** et comparable (cours, notebook 1, §6)."
+    },
+    {
+      "id": "td3-011",
+      "type": "unique",
+      "enonce": "Le modèle $\\log\\mathrm{ILI} = \\mu_0 + \\mu_1\\,\\mathrm{Queries}$ prédit $\\widehat{\\log\\mathrm{ILI}}$. Comment obtient-on l'ILI prédit ?",
+      "choix": [
+        "$\\log(\\widehat{\\log\\mathrm{ILI}})$",
+        "$10^{\\widehat{\\log\\mathrm{ILI}}}$",
+        "$\\widehat{\\log\\mathrm{ILI}}$, sans transformation",
+        "$\\exp(\\widehat{\\log\\mathrm{ILI}})$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Question 4 : on applique la réciproque du logarithme népérien (`np.log`), l'exponentielle. On calcule ensuite deux erreurs : sur log_ILI (celle que la régression minimise) et sur ILI (celle qui intéresse l'utilisateur)."
+    },
+    {
+      "id": "td3-012",
+      "type": "unique",
+      "enonce": "Le modèle `Queries` seul a un R² de 0,71 en apprentissage mais 0,21 en test (sur log_ILI). Que conclure ?",
+      "choix": [
+        "Le test est mal construit, car il contient moins de semaines",
+        "Il faut comparer les SSE, qui sont plus fiables",
+        "Il généralise mal : le R² chute sur les données de 2012",
+        "Il est excellent : 0,71 est un très bon R² d'apprentissage"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 4 : le modèle explique bien les années d'apprentissage, beaucoup moins 2012. La question 5 en donne la cause : la **dérive** d'une saison à l'autre."
+    },
+    {
+      "id": "td3-013",
+      "type": "unique",
+      "enonce": "La SSE de test (6,5) est bien plus petite que la SSE d'apprentissage (37,2). Pourquoi ?",
+      "choix": [
+        "Le modèle prédit mieux 2012 que les années d'apprentissage",
+        "Le logarithme réduit davantage les erreurs sur la base de test",
+        "La SSE de test est calculée sur l'ILI, celle d'apprentissage sur log_ILI",
+        "Le test a 8 fois moins de semaines"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Question 4 : la SSE n'est **pas comparable** d'une base à l'autre ; on compare MSE, RMSE, MAE ou R². C'est le même piège que dans le cours (notebook 3, §2)."
+    },
+    {
+      "id": "td3-014",
+      "type": "unique",
+      "enonce": "Avec $\\mu_1 \\approx 2{,}96$, quand `Queries` augmente de 0,1, l'ILI est :",
+      "choix": [
+        "Augmenté de 0,296 point, quel que soit le niveau de départ",
+        "Augmenté de 34 points de pourcentage",
+        "Multiplié par 2,96, la valeur du coefficient",
+        "Multiplié par $e^{0{,}296} \\approx 1{,}34$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Question 4 : $\\mathrm{ILI} = e^{\\mu_0}e^{\\mu_1 \\mathrm{Queries}}$, l'effet est **multiplicatif** (+34 %). En semaine calme (ILI = 1 %), +0,34 point ; en pleine épidémie (5 %), +1,7 point."
+    },
+    {
+      "id": "td3-015",
+      "type": "unique",
+      "enonce": "Que gagne-t-on à passer par le logarithme plutôt qu'à régresser directement l'ILI sur `Queries` ?",
+      "choix": [
+        "Le modèle direct est meilleur, car il ne déforme pas l'erreur",
+        "Rien : les deux modèles ont exactement le même R² de test",
+        "Le R² de test passe de 0,06 à 0,32",
+        "Le logarithme supprime la dérive d'une saison à l'autre"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 4, « Pour comparer » : la transformation de la sortie améliore nettement la prédiction. Elle ne supprime pas la dérive pour autant (question 5)."
+    },
+    {
+      "id": "td3-016",
+      "type": "unique",
+      "enonce": "Saison par saison, les points sont au-dessus de la droite jusqu'en 2008-2009, puis au-dessous. Quelle en est la cause ?",
+      "choix": [
+        "Le virus de la grippe est devenu moins contagieux après 2009",
+        "Depuis H1N1 (2009), on cherche plus pour autant de malades",
+        "Les médecins ont arrêté de déclarer les cas après 2009",
+        "Google a changé l'échelle de ses données Trends en 2009"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Question 5 : c'est une **dérive** du comportement des internautes, pas de la maladie. Un même niveau de `Queries` correspond à moins de consultations : le modèle surestime l'ILI. C'est ce qui a fait échouer Google Flu Trends en 2012-2013."
+    },
+    {
+      "id": "td3-017",
+      "type": "unique",
+      "enonce": "Le lundi de la semaine $t$, quelles informations sont réellement disponibles ?",
+      "choix": [
+        "Seulement l'ILI jusqu'à la semaine $t-2$",
+        "Les requêtes jusqu'à $t-1$ et l'ILI jusqu'à $t-2$",
+        "Les requêtes de la semaine $t$ et l'ILI de la semaine $t-1$",
+        "Les requêtes et l'ILI jusqu'à la semaine $t-1$"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Partie 2 : les requêtes sont connues en temps réel, mais celles de la semaine qui commence ne le sont pas encore. L'ILI doit être collecté et consolidé : le plus récent connu est $\\mathrm{ILI}_{t-2}$."
+    },
+    {
+      "id": "td3-018",
+      "type": "unique",
+      "enonce": "Les modèles de la partie 1 utilisent $\\mathrm{Queries}_t$ pour prédire $\\mathrm{ILI}_t$ dès le lundi. Quel est le problème ?",
+      "choix": [
+        "Aucun : les requêtes sont disponibles en temps réel",
+        "C'est de la colinéarité entre $\\mathrm{Queries}_t$ et $\\mathrm{Queries}_{t-1}$",
+        "C'est du sur-apprentissage, car $\\mathrm{Queries}_t$ est trop corrélé à l'ILI",
+        "Une fuite : $\\mathrm{Queries}_t$ n'est connu qu'en fin de semaine"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Partie 2 : utiliser une variable qui ne serait pas disponible au moment de la prédiction est une **fuite d'information** : le modèle semble bon sur le test, mais il est inutilisable en pratique."
+    },
+    {
+      "id": "td3-019",
+      "type": "unique",
+      "enonce": "Comment créer la colonne `log_ILI_2` (log_ILI deux semaines plus tôt) ?",
+      "choix": [
+        "`grippe[\"log_ILI\"].shift(2)`, avant le découpage",
+        "`grippe[\"log_ILI\"].rolling(2).mean()`",
+        "`train[\"log_ILI\"].shift(2)` et `test[\"log_ILI\"].shift(2)` séparément",
+        "`grippe[\"log_ILI\"].shift(-2)`, sur la série complète"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Question 6 : `shift(2)` décale vers le bas (la ligne $t$ reçoit la valeur de $t-2$) ; `shift(-2)` irait chercher le futur. On décale la série **complète** puis on fait `dropna` : en décalant `fluTest` séparément, on perdrait les 3 premières semaines de 2012."
+    },
+    {
+      "id": "td3-020",
+      "type": "unique",
+      "enonce": "Quelle est la **référence naïve** du TD, et quel score obtient-elle en test ?",
+      "choix": [
+        "Le modèle `Queries` seul : R² de 0,21",
+        "Le dernier ILI connu, $t-2$ : R² de 0,81",
+        "L'ILI de la semaine précédente, $t-1$ : R² de 0,95",
+        "La moyenne de l'ILI d'apprentissage : R² de 0"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Question 6 : on prédit le dernier ILI connu. Cette référence (R² de 0,81 sur log_ILI, 0,70 sur ILI) est bien meilleure que les requêtes seules. Un modèle qui ne fait pas mieux n'a aucun intérêt."
+    },
+    {
+      "id": "td3-021",
+      "type": "unique",
+      "enonce": "Le modèle $\\log\\mathrm{ILI}_t = -0{,}2 + 1{,}1\\,\\mathrm{Queries}_{t-1} + 0{,}67\\,\\log\\mathrm{ILI}_{t-2}$ s'écrit, à l'échelle de l'ILI :",
+      "choix": [
+        "$0{,}67 \\times \\mathrm{ILI}_{t-2}$ seulement, sans les requêtes",
+        "Une somme : $-0{,}2 + 1{,}1\\,\\mathrm{Q}_{t-1} + 0{,}67\\,\\mathrm{ILI}_{t-2}$",
+        "Une somme : $0{,}82 + e^{1{,}1\\,\\mathrm{Q}_{t-1}} + \\mathrm{ILI}_{t-2}^{\\,0{,}67}$",
+        "Un produit : $0{,}82 \\times e^{1{,}1\\,\\mathrm{Q}_{t-1}} \\times \\mathrm{ILI}_{t-2}^{\\,0{,}67}$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Question 8 : en prenant l'exponentielle, la somme devient un **produit** : le modèle part du dernier ILI connu et le **multiplie** par un facteur qui dépend des requêtes. La régression sur les logarithmes cherche les coefficients d'un produit."
+    },
+    {
+      "id": "td3-022",
+      "type": "unique",
+      "enonce": "Dans ce modèle, que signifie $\\mu_2 = 0{,}67 < 1$ pour $\\log\\mathrm{ILI}_{t-2}$ ?",
+      "choix": [
+        "L'ILI est ramené vers un niveau moyen",
+        "L'épidémie double toutes les deux semaines en moyenne",
+        "Le modèle sur-apprend, il faudrait $\\mu_2 = 1$",
+        "L'ILI d'il y a deux semaines compte pour 67 % de l'ILI actuel"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Question 8 : avec $\\mu_2 < 1$, les valeurs extrêmes sont « tirées » vers la moyenne. Si $\\mu_2 = 1$, les requêtes donneraient directement le **taux d'accroissement** $\\mathrm{ILI}_t / \\mathrm{ILI}_{t-2}$ de l'épidémie sur deux semaines."
+    },
+    {
+      "id": "td3-023",
+      "type": "unique",
+      "enonce": "Pourquoi le modèle « $\\mathrm{Queries}_{t-1}$ + $\\log\\mathrm{ILI}_{t-2}$ » bat-il à la fois la référence et les requêtes seules (R² test 0,85 sur ILI) ?",
+      "choix": [
+        "Les requêtes ne dérivent plus quand on les décale d'une semaine",
+        "Le niveau vient de l'ILI, la dynamique des requêtes",
+        "Il a été choisi directement sur la base de test",
+        "Il utilise plus de variables, donc il est forcément meilleur"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Questions 8 et 11 : l'ILI passé corrige la dérive (il fixe le **niveau** de la saison en cours), les requêtes récentes apportent la **dynamique**. La référence naïve, elle, suit la courbe avec deux semaines de retard."
+    },
+    {
+      "id": "td3-024",
+      "type": "unique",
+      "enonce": "Les coefficients de $\\log\\mathrm{ILI}_{t-2}$ (+0,94) et $\\log\\mathrm{ILI}_{t-3}$ (−0,24) sont de signes opposés. Comment les lire ?",
+      "choix": [
+        "Elles sont corrélées : le modèle lit niveau et tendance",
+        "Le coefficient négatif est une erreur, il faut retirer $\\log\\mathrm{ILI}_{t-3}$",
+        "Le modèle sur-apprend, puisqu'il a des coefficients négatifs",
+        "L'ILI de trois semaines plus tôt fait baisser l'ILI actuel"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Question 9 : colinéarité. On peut réécrire $\\mu_3 a + \\mu_4 b = (\\mu_3 + \\mu_4)a - \\mu_4(a - b)$ : le **niveau** et la **tendance** d'une semaine à l'autre, qui dit si l'épidémie monte ou descend."
+    },
+    {
+      "id": "td3-025",
+      "type": "unique",
+      "enonce": "Pourquoi ne pas utiliser directement le numéro de semaine (1 à 52) comme variable d'une régression linéaire ?",
+      "choix": [
+        "Il est cyclique : la semaine 52 touche la semaine 1",
+        "Il est trop corrélé avec $\\log\\mathrm{ILI}_{t-2}$",
+        "Il n'est pas disponible le lundi de la semaine $t$",
+        "Il ne prend que des valeurs entières, de 1 à 52"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Question 10 : une régression linéaire sur le numéro imposerait un effet qui croît toute l'année puis saute au 1er janvier. Le numéro de semaine, lui, est connu d'avance : pas de fuite."
+    },
+    {
+      "id": "td3-026",
+      "type": "unique",
+      "enonce": "Pourquoi coder la semaine $s$ par **deux** variables, $\\sin(2\\pi s/52{,}18)$ et $\\cos(2\\pi s/52{,}18)$ ?",
+      "choix": [
+        "Pour doubler le nombre de variables et réduire l'erreur d'apprentissage",
+        "Parce que la grippe a deux pics par an",
+        "Le sinus seul prend deux fois chaque valeur dans l'année",
+        "Pour que la régression puisse prédire des valeurs négatives"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 10 : ensemble, sinus et cosinus placent la semaine sur un cercle où 52 est voisine de 1. Une combinaison $\\mu_a \\sin + \\mu_b \\cos$ est une sinusoïde de période un an, dont la régression choisit l'amplitude et la date du maximum."
+    },
+    {
+      "id": "td3-027",
+      "type": "unique",
+      "enonce": "La saisonnalité fait passer le R² de test de 0,87 à 0,89 sur log_ILI, mais de 0,87 à 0,85 sur ILI. Pourquoi ?",
+      "choix": [
+        "Elle dégrade le modèle : il ne faut pas l'utiliser",
+        "Le R² sur ILI est mal calculé quand on ajoute des sinus",
+        "Elle améliore surtout les semaines calmes",
+        "L'exponentielle annule complètement l'effet des variables saisonnières"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 10 : sur l'échelle de l'ILI, les semaines épidémiques dominent les erreurs. Le choix de la mesure dépend de l'usage : pour détecter le **début** d'une épidémie, les petites valeurs comptent ; pour dimensionner les soins au **pic**, les grandes."
+    },
+    {
+      "id": "td3-028",
+      "type": "unique",
+      "enonce": "Bonus France : avec la régression de $\\log(\\mathrm{incidence})$ sur $\\log(x)$, quel modèle de l'incidence obtient-on ?",
+      "choix": [
+        "Une loi puissance, $e^{\\mu_0}\\,x^{\\mu_1}$",
+        "Une droite, $\\mu_0 + \\mu_1 x$",
+        "Un logarithme, $\\mu_0 + \\mu_1 \\log x$",
+        "Une exponentielle, $e^{\\mu_0 + \\mu_1 x}$"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Bonus : $\\log y = \\mu_0 + \\mu_1 \\log x \\iff y = e^{\\mu_0}x^{\\mu_1}$. Multiplier $x$ par une constante (échelle arbitraire de Google Trends, dérive des vues) ne change que $\\mu_0$. **Le choix d'une transformation se fait en regardant les données d'apprentissage.**"
+    },
+    {
+      "id": "td3-029",
+      "type": "multiple",
+      "enonce": "Bonus France : quelles affirmations sur les variables internet sont vraies ?",
+      "choix": [
+        "Elles mesurent l'intérêt pour la grippe",
+        "« fatigue » n'est pas du tout corrélée à l'incidence",
+        "Les vues de Wikipédia seules donnent le meilleur modèle en test",
+        "Au printemps 2020, « grippe » est au plus haut sans grippe"
+      ],
+      "reponses": [
+        0,
+        1,
+        3
+      ],
+      "explication": "Bonus : le Covid-19 a fait chercher « grippe » sans grippe ; « fatigue » est recherché toute l'année (corrélation −0,01). Les vues seules ont un R² **négatif** : leur niveau baisse depuis 2020 (réponses affichées directement par les moteurs et les assistants)."
+    },
+    {
+      "id": "td3-030",
+      "type": "unique",
+      "enonce": "Bonus France : la validation désigne « incidence passée + saison + vues » (R² test 0,86), mais « … + fièvre » a le meilleur R² de test (0,90). Quel modèle retenir, et quel score annoncer ?",
+      "choix": [
+        "Le modèle « fièvre », en annonçant 0,90, le meilleur score de test",
+        "Le modèle « fièvre », en annonçant son score de validation",
+        "Le modèle choisi en validation, avec son score de test, 0,86",
+        "Le Lasso dont $\\alpha$ est réglé sur le test, qui atteint 0,88"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Bonus : les choix (variables, $\\alpha$ du Lasso) se font sur la **validation** ; le test ne sert qu'une fois, à la fin. Choisir le meilleur score de test le rend **optimiste** : on retient le modèle qui a eu le plus de chance sur ces deux saisons."
+    }
+  ]
+}

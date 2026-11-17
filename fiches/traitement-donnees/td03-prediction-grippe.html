@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Traitement de données, TD 3 : Prédiction d'épidémies de grippe</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Traitement de données · Fiche de révision · TD 3</p>
+    <h1>Prédiction d'épidémies de grippe</h1>
+  </div>
+  <p class="source">Google Flu Trends, passage au logarithme, dérive,<br>variables décalées, saisonnalité, validation</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li>Objectif : estimer l'<strong>ILI</strong> (% de consultations pour syndrome grippal, publié avec retard) à partir des <strong>requêtes</strong> (temps réel).</li>
+    <li>ILI à croissance <strong>multiplicative</strong> ⇒ régresser <strong>log(ILI)</strong>, puis revenir par <strong>exp</strong>. Les coefficients deviennent des <strong>facteurs multiplicatifs</strong>.</li>
+    <li>Requêtes seules : R² test 0,21 (apprentissage 0,71) à cause de la <strong>dérive</strong> (après H1N1 2009, on cherche plus pour autant de malades).</li>
+    <li>Le lundi : requêtes connues jusqu'à <strong>t−1</strong>, ILI jusqu'à <strong>t−2</strong>. Utiliser Queries<sub>t</sub> = <strong>fuite d'information</strong>.</li>
+    <li>Toujours battre une <strong>référence naïve</strong> : log ILI<sub>t</sub> ≈ log ILI<sub>t−2</sub> (R² test 0,81).</li>
+    <li>Meilleur modèle : niveau de l'ILI passé + dynamique des requêtes (+ saisonnalité sin/cos). Choix sur la <strong>validation</strong>, score annoncé sur le <strong>test</strong>.</li>
+  </ul>
+</div>
+
+<h2>1. Les données et leur forme</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li>FluTrain (2004–2011) + FluTest (2012) <strong>réunis</strong> : une seule série. Index = date (<code>pd.to_datetime(grippe["Week"].str[:10])</code>), vérifier qu'aucune semaine ne manque.</li>
+      <li>Découpage <strong>par date</strong> : <code>grippe.loc[:"2011"]</code> / <code>grippe.loc["2012"]</code>.</li>
+      <li>Motif <strong>annuel</strong> (pic en hiver), saison 2009-2010 atypique (H1N1). Les requêtes montent un peu <strong>avant</strong> l'ILI.</li>
+      <li>ILI très <strong>asymétrique</strong> : skew 2,0, moyenne 1,68 &gt; médiane 1,25 (skew &gt; 0 = queue à droite).</li>
+    </ul>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Pourquoi le logarithme ?</span>
+    <p>Une épidémie croît de façon <strong>exponentielle</strong> ; le nuage Queries/ILI est courbé et sa dispersion croît avec le niveau.</p>
+    <p class="formule">ILI = a·e<sup>b·Queries</sup> ⇔ log ILI = log a + b·Queries</p>
+    <p>Après log : skew 0,64, lien linéaire, dispersion constante. Corrélation 0,81 → 0,84 seulement : le gain est dans la <strong>forme</strong>. On compare des corrélations (sans unité), pas des covariances.</p>
+  </div>
+</div>
+
+<h2>2. Partie 1 : régresser log(ILI) sur Queries</h2>
+<div class="deux-colonnes">
+  <div>
+    <p class="formule">log ILI = −0,499 + 2,961 × Queries</p>
+    <ul>
+      <li>Prédiction de l'ILI : <strong>exp(log ILI prédit)</strong>.</li>
+      <li>Deux erreurs : sur log ILI (celle que la régression minimise) et sur ILI (celle de l'utilisateur).</li>
+      <li>R² : 0,71 en apprentissage, <strong>0,21 en test</strong> (0,32 sur ILI). Régression directe de l'ILI : 0,06 en test.</li>
+      <li>SSE de test 8 fois plus petite : la base est 8 fois plus petite. On compare MSE, RMSE, MAE, R².</li>
+      <li>+0,1 de Queries ⇒ ILI × e<sup>0,296</sup> ≈ <strong>1,34</strong>, quel que soit le niveau (+0,34 point si ILI = 1 %, +1,7 point si 5 %).</li>
+    </ul>
+  </div>
+  <div class="boite piege"><span class="boite-titre">La dérive (question 5)</span>Une même droite pour toutes les saisons : points au-dessus jusqu'en 2008-2009, au-dessous ensuite. Après la pandémie H1N1, très médiatisée, on cherche davantage pour un même nombre de malades ⇒ le modèle <strong>surestime</strong> l'ILI. C'est l'échec de Google Flu Trends en 2012-2013 : le comportement des internautes change, pas la maladie.</div>
+</div>
+
+<h2>3. Partie 2 : exploiter la temporalité</h2>
+<table>
+  <tr><th></th><th>t−3</th><th>t−2</th><th>t−1</th><th>t (lundi, à prédire)</th></tr>
+  <tr><td>Queries</td><td>connu</td><td>connu</td><td>connu</td><td>inconnu</td></tr>
+  <tr><td>ILI</td><td>connu</td><td>connu</td><td>inconnu</td><td>inconnu</td></tr>
+</table>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li><code>grippe["log_ILI"].shift(2)</code> sur la série <strong>complète</strong>, puis <code>dropna</code> : on ne perd que 3 semaines de 2004 (pas celles de 2012).</li>
+      <li><code>shift(k)</code> = valeur k semaines plus tôt ; <code>shift(−k)</code> irait chercher le futur.</li>
+      <li><strong>Référence</strong> log ILI<sub>t−2</sub> : R² test 0,81 (log), 0,70 (ILI) ; elle suit la courbe avec <strong>2 semaines de retard</strong>.</li>
+      <li>Queries<sub>t−1</sub> seul : un peu mieux que Queries<sub>t</sub> (0,25) mais loin de la référence.</li>
+    </ul>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Le modèle combiné (question 8)</span>
+    <p class="formule">log ILI<sub>t</sub> = −0,2 + 1,1·Q<sub>t−1</sub> + 0,67·log ILI<sub>t−2</sub></p>
+    <p class="formule">ILI<sub>t</sub> ≈ 0,82 × e<sup>1,1·Q<sub>t−1</sub></sup> × ILI<sub>t−2</sub><sup>0,67</sup></p>
+    <p>Un <strong>produit</strong> : on part du dernier ILI connu et on le multiplie par un facteur lié aux requêtes. μ<sub>2</sub> &lt; 1 : retour vers un niveau moyen. Si μ<sub>2</sub> = 1, les requêtes donneraient le taux d'accroissement. R² test 0,85 (log et ILI).</p>
+  </div>
+</div>
+<ul>
+  <li><strong>Plus de retards</strong> (Q<sub>t−1</sub>, Q<sub>t−2</sub>, ILI<sub>t−2</sub>, ILI<sub>t−3</sub>) : 0,85 → 0,87. Coefficients de signes opposés car variables très corrélées (0,95 et 0,97) : le modèle lit <strong>niveau + tendance</strong> (μ<sub>3</sub>a + μ<sub>4</sub>b = (μ<sub>3</sub> + μ<sub>4</sub>)a − μ<sub>4</sub>(a − b)).</li>
+  <li><strong>Saisonnalité</strong> : le numéro de semaine est cyclique (52 voisine de 1) ⇒ <strong>sin(2πs/52,18) et cos(2πs/52,18)</strong>. Les deux sont nécessaires (le sinus seul prend deux fois chaque valeur). Combinaison = sinusoïde annuelle. Gain sur log ILI (0,87 → 0,89), léger recul sur ILI (0,85) : elle aide les semaines calmes, pas les pics.</li>
+</ul>
+
+<h2>4. Bonus France : Sentinelles, Wikipédia, Google Trends</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li>log de l'incidence (0 remplacé par 1) <strong>et</strong> log des variables internet : log y = μ<sub>0</sub> + μ<sub>1</sub> log x ⇔ <strong>loi puissance</strong> y = e<sup>μ<sub>0</sub></sup>x<sup>μ<sub>1</sub></sup>. Un changement d'échelle de x ne modifie que μ<sub>0</sub>.</li>
+      <li>Trois bases <strong>par saisons</strong> : apprentissage 2015–2022, validation 2022–2024, test 2024–2026. Explorer uniquement l'apprentissage.</li>
+      <li>Variable la plus corrélée : incidence t−2 (0,91). « grippe » (0,82) et « toux » (0,77) utiles ; « fatigue » (−0,01) inutile.</li>
+      <li>Printemps 2020 : recherches « grippe » au maximum, grippe absente (Covid) ⇒ on mesure l'<strong>intérêt</strong>, pas la maladie.</li>
+      <li>Vues Wikipédia en baisse depuis 2020 (réponses directes des moteurs) : seules, R² <strong>négatif</strong>.</li>
+    </ul>
+  </div>
+  <div class="boite piege"><span class="boite-titre">Choisir sur la validation</span>
+    <ul>
+      <li>Toutes les variables (20) : effondrement en validation (0,11), pics aberrants amplifiés par l'exponentielle.</li>
+      <li><strong>Lasso</strong> (standardiser, α choisi en validation ≈ 0,07) : 5 variables gardées, mais pas meilleur que les modèles simples.</li>
+      <li>Validation ⇒ « incidence passée + saison + vues » ; on annonce <strong>son score de test (0,86)</strong>, pas le meilleur de la colonne test (0,90 avec « fièvre ») : ce serait optimiste.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="boite essentiel">
+  <span class="boite-titre">Leçons du TD</span>
+  Évaluer sur des données non vues et comparer à une référence naïve · sortie multiplicative ⇒ logarithme · séries temporelles : découper par date, décaler avant de découper, n'utiliser que ce qui est disponible au moment de prédire · les données « big data » dérivent seules, mais combinées à la surveillance classique elles deviennent utiles.
+</div>
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Traitement de données, Cours 4 : Régression logistique</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Traitement de données · Fiche de révision · Cours 4</p>
+    <h1>Régression logistique</h1>
+  </div>
+  <p class="source">Métriques de classification, modèle logistique,<br>régularisation, multi-classes, déséquilibre et seuil</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li>Un classifieur calcule un <strong>score</strong> (idéalement une probabilité π(x) = P(Y = 1 | x)), puis une <strong>règle de décision</strong> : ŷ = 1 si π &gt; seuil.</li>
+    <li><strong>Seuil 0,5</strong> = minimum d'erreurs <strong>si</strong> la probabilité est juste (calibrée) <strong>et</strong> si les deux erreurs ont le même coût.</li>
+    <li>Toujours comparer l'accuracy au <strong>classifieur naïf</strong> (classe majoritaire) et regarder <strong>au moins deux indicateurs</strong>.</li>
+    <li>Modèle : <span class="formule">log(π / (1 − π)) = μ<sub>0</sub> + μ<sub>1</sub>x<sub>1</sub> + … ⇔ π = σ(z) = 1 / (1 + e<sup>−z</sup>)</span>. Frontière = hyperplan : modèle <strong>linéaire</strong>.</li>
+    <li>Apprentissage = <strong>maximum de vraisemblance</strong> = minimiser l'<strong>entropie croisée</strong>. Convexe, sans formule : descente de gradient ∇g = X<sup>T</sup>(π − y)/P.</li>
+    <li>e<sup>μ<sub>j</sub></sup> multiplie la <strong>cote</strong> (pas la probabilité) quand x<sub>j</sub> augmente de 1, les autres fixées.</li>
+    <li>Classe rare : l'AUC peut être bonne et aucune probabilité &gt; 0,5 ⇒ <strong>déplacer le seuil</strong> (choisi par validation croisée). <code>class_weight="balanced"</code> ≈ décaler μ<sub>0</sub> et fausse les probabilités.</li>
+  </ul>
+</div>
+
+<h2>1. Classification : le cadre</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li><strong>Binaire</strong> (2 classes), <strong>multi-classes</strong> (K &gt; 2, classes disjointes), <strong>multi-label</strong> (plusieurs étiquettes à la fois, non traité).</li>
+      <li>Classe <strong>positive</strong> (1) = celle qu'on veut détecter, souvent la plus rare.</li>
+      <li>Probabilités : P(Y = k | x) ≥ 0 et Σ<sub>k</sub> = 1.</li>
+      <li><strong>Calibrée</strong> : parmi les exemples notés ≈ 0,8, environ 80 % de positifs (diagramme de calibration sur la diagonale).</li>
+    </ul>
+  </div>
+  <div>
+    <h3>Multi-classes avec des classifieurs binaires</h3>
+    <table>
+      <tr><th>Stratégie</th><th>Nb de modèles</th><th>Décision</th></tr>
+      <tr><td>direct (softmax)</td><td>1</td><td>plus grand score</td></tr>
+      <tr><td>un contre tous (OvR)</td><td>K</td><td>plus grand score</td></tr>
+      <tr><td>un contre un (OvO)</td><td>K(K−1)/2 (45 pour K = 10)</td><td>vote</td></tr>
+    </table>
+  </div>
+</div>
+
+<h2>2. Les métriques</h2>
+<div class="deux-colonnes">
+  <div>
+    <table>
+      <tr><th></th><th>prédit 0</th><th>prédit 1</th></tr>
+      <tr><th>vrai 0</th><td>VN</td><td>FP (1<sup>re</sup> espèce)</td></tr>
+      <tr><th>vrai 1</th><td>FN (2<sup>e</sup> espèce)</td><td>VP</td></tr>
+    </table>
+    <p><code>confusion_matrix(y_vrai, y_predit)</code> : vraie classe <strong>d'abord</strong> (sinon FP et FN échangés).</p>
+    <table>
+      <tr><th>Indicateur</th><th>Formule</th><th>Dépend du déséquilibre</th></tr>
+      <tr><td>accuracy</td><td>(VP + VN) / P</td><td>oui</td></tr>
+      <tr><td>rappel (sensibilité)</td><td>VP / (VP + FN)</td><td>non</td></tr>
+      <tr><td>spécificité</td><td>VN / (VN + FP)</td><td>non</td></tr>
+      <tr><td>précision</td><td>VP / (VP + FP)</td><td>oui</td></tr>
+      <tr><td>F1</td><td>2·préc·rapp / (préc + rapp)</td><td>oui</td></tr>
+      <tr><td>accuracy équilibrée</td><td>(rappel + spécificité) / 2</td><td>non (naïf = 0,5)</td></tr>
+    </table>
+  </div>
+  <div>
+    <ul>
+      <li>accuracy = q<sub>1</sub>·rappel + q<sub>0</sub>·spécificité : pondérée par la taille des classes.</li>
+      <li><strong>F1</strong> : moyenne harmonique, tirée vers la plus petite (préc. 1, rappel 0,1 ⇒ F1 ≈ 0,18).</li>
+      <li><code>classification_report</code> : une ligne par classe ; dans la ligne négative, le rappel = spécificité ; <strong>macro</strong> (rappel macro = accuracy équilibrée) / <strong>weighted</strong> (rappel weighted = accuracy) ; <strong>support</strong> = effectif de la vraie classe.</li>
+      <li><strong>Courbe ROC</strong> : rappel en fonction du taux de FP, pour tous les seuils. <strong>AUC</strong> = P(score d'un positif &gt; score d'un négatif) ; 0,5 = hasard. Ne dépend que de l'<strong>ordre</strong> des scores et pas des proportions.</li>
+      <li><strong>Courbe précision-rappel</strong>, résumée par la précision moyenne (AP) ; hasard = <strong>q<sub>1</sub></strong>. Plus parlante quand la classe positive est rare.</li>
+      <li><strong>Entropie croisée</strong> (log loss) : moyenne de −log(proba de la vraie classe). 0,99 → 0,01 ; 0,5 → 0,69 ; 0,01 → 4,6. Seule métrique qui juge la justesse des probabilités.</li>
+    </ul>
+  </div>
+</div>
+<div class="boite piege"><span class="boite-titre">Un indicateur seul se triche</span>« Toujours positif » : rappel 1, spécificité 0. « Positif seulement au-delà de 1,90 m » : précision 1, rappel 0,02. Quand le seuil monte, le rappel baisse et la spécificité monte. Choisir un seuil, c'est apprendre : on évalue sur d'autres données.</div>
+
+<h2>3. Le modèle logistique</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li>La régression linéaire sur y ∈ {0, 1} sort de [0, 1] et ne suit pas la <strong>forme en S</strong>.</li>
+      <li><strong>Cote</strong> = π / (1 − π) (3 = « 3 contre 1 », π = 0,75) ; <strong>log-cote</strong> (logit) de −∞ à +∞, 0 pour π = 0,5.</li>
+      <li><strong>Hypothèses</strong> : Y | x suit une Bernoulli(π(x)), exemples indépendants ; la <strong>log-cote est affine</strong> en x.</li>
+      <li>Frontière (π = 1/2) : μ<sub>0</sub> + μ<sub>1</sub>x = 0 ⇔ <strong>x = −μ<sub>0</sub>/μ<sub>1</sub></strong> (taille : 166,5 cm).</li>
+      <li>μ<sub>0</sub> déplace la sigmoïde ; |μ<sub>1</sub>| règle sa <strong>raideur</strong> ; signe de μ<sub>1</sub> = sens.</li>
+      <li>Deux classes gaussiennes de même écart-type ⇒ log-cote exactement affine.</li>
+    </ul>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Apprendre et prédire</span>
+    <p class="formule">g(μ) = −(1/P) Σ [ y<sub>i</sub> log π<sub>i</sub> + (1 − y<sub>i</sub>) log(1 − π<sub>i</sub>) ]</p>
+    <ul>
+      <li>Convexe, pas d'équations normales : itératif (gradient du TD 1, <code>lbfgs</code>).</li>
+      <li><code>predict_proba</code> (colonne 1 = π), <code>predict</code> (seuil 1/2), <code>decision_function</code> (log-cote).</li>
+      <li><code>LogisticRegression()</code> est <strong>régularisée par défaut</strong> (L2, <code>C=1</code>) ; <code>C=np.inf</code> pour l'enlever.</li>
+      <li>Avec une seule variable, l'AUC = celle de la variable (même ordre) : le modèle ne fait que choisir un seuil.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>4. Interpréter les coefficients</h2>
+<ul>
+  <li>Taille : μ<sub>1</sub> = 0,2865/cm ⇒ e<sup>μ<sub>1</sub></sup> ≈ <strong>1,33</strong> : chaque cm multiplie la cote par 1,33 (10 cm : × 17,5). L'effet sur la <strong>probabilité</strong> dépend de la position sur la sigmoïde.</li>
+  <li>Sur variables <strong>standardisées</strong>, e<sup>μ<sub>j</sub></sup> = effet d'un écart-type : coefficients comparables.</li>
+  <li><strong>Colinéarité</strong> : à autres mesures fixées, un poids élevé évoque une femme (coefficient négatif alors que les hommes sont plus lourds). Le sucre résiduel des vins dépend de la présence de la densité dans le modèle.</li>
+  <li>Corrélation n'est pas causalité (alcool et qualité du vin).</li>
+</ul>
+
+<h2>5. Séparation parfaite et régularisation</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Avec les 93 mesures d'ANSUR, les classes sont <strong>parfaitement séparables</strong> : multiplier μ par 10 ne bouge pas la frontière mais rapproche la vraisemblance de 1. <strong>Pas de maximum de vraisemblance</strong> : coefficients arbitraires (selon l'arrêt de l'algorithme), probabilités trop confiantes.</p>
+  </div>
+  <div>
+    <p><strong>Remède</strong> : pénaliser (L2 comme Ridge, L1 comme Lasso). <code>C = 1/λ</code> : <strong>C petit = régularisation forte</strong>. <code>l1_ratio=1</code> + <code>solver="liblinear"</code> pour L1, qui garde peu de variables (9 variables, 99,7 % pour C = 0,01). Standardiser avant.</p>
+  </div>
+</div>
+
+<h2>6. Plus de deux classes : softmax</h2>
+<p class="formule">P(Y = k | x) = e<sup>z<sub>k</sub></sup> / Σ<sub>l</sub> e<sup>z<sub>l</sub></sup>, z<sub>k</sub> = μ<sub>k,0</sub> + μ<sub>k,1</sub>x<sub>1</sub> + …</p>
+<p>Un score affine par classe ; probabilités positives de somme 1. Pour K = 2, on retrouve σ(z<sub>1</sub> − z<sub>0</sub>). Vins en 3 classes : accuracy ≈ 0,57 (naïf ≈ 0,45), erreurs surtout entre classes voisines, classe rare « excellent » mal reconnue.</p>
+
+<h2>7. Déséquilibre et seuil</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li>Vins « note ≥ 8 » (3 %) : accuracy 97 % = naïf, <strong>rappel 0</strong>. Probabilité max 0,36 : rien ne dépasse 0,5. Pourtant AUC ≈ 0,79 : <strong>le modèle classe bien, le seuil ne convient pas</strong>.</li>
+      <li>ROC trop optimiste quand la classe est rare ; préférer précision-rappel.</li>
+      <li>Le seuil est un <strong>hyperparamètre</strong> : le choisir sur des prédictions de <strong>validation croisée</strong> (<code>cross_val_predict</code>, <code>StratifiedKFold</code>), jamais sur le test.</li>
+      <li>Seuil maximisant l'accuracy équilibrée ≈ <strong>q<sub>1</sub></strong> (0,03) : présélection (rappel 0,63, précision 0,07). Seuil du F1 (0,095) : compromis.</li>
+    </ul>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Rééquilibrer = déplacer μ<sub>0</sub></span>
+    <p class="formule">log-cote = log(f<sub>1</sub>/f<sub>0</sub>) + log(q<sub>1</sub>/q<sub>0</sub>)</p>
+    <p>Changer les proportions ne change que le 2<sup>e</sup> terme : μ̃<sub>0</sub> = μ<sub>0</sub> + log(q̃<sub>1</sub>/q̃<sub>0</sub>) − log(q<sub>1</sub>/q<sub>0</sub>).</p>
+    <ul>
+      <li>Rééquilibré au seuil 1/2 ≈ original au seuil q<sub>1</sub>.</li>
+      <li>AUC inchangée, probabilités <strong>faussées</strong> (moyenne 0,31 au lieu de 0,03).</li>
+      <li>Utile si les proportions d'apprentissage ≠ réalité (cas-témoins : corriger μ<sub>0</sub>), données trop nombreuses, outil imposant 0,5.</li>
+      <li>ANSUR (67 % d'hommes) → population à 50 % : μ<sub>0</sub> − 0,72 ; 1,70 m : 73 % → 57 %.</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,434 @@
+{
+  "matiere": "Traitement de données",
+  "document": "td",
+  "titre": "Détection de spam SMS",
+  "cours": "cours04-regression-logistique",
+  "questions": [
+    {
+      "id": "td4-001",
+      "type": "unique",
+      "enonce": "Quel est le « fil rouge » qui guide tous les choix du TD ?",
+      "choix": [
+        "Les deux erreurs ont exactement la même gravité pour l'opérateur",
+        "Bloquer un SMS légitime est pire que laisser passer un spam",
+        "Laisser passer un spam est pire que bloquer un SMS légitime",
+        "Il faut maximiser l'accuracy du filtre sur la base de test"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Introduction : un spam qui passe est agaçant ; un SMS légitime (message d'un proche, code de confirmation) mis en indésirables peut ne jamais être lu. D'où la priorité donnée à la **précision** des spams et à la **spécificité**."
+    },
+    {
+      "id": "td4-002",
+      "type": "unique",
+      "enonce": "La base contient 13,4 % de spams. Quelle est l'accuracy du classifieur naïf « tout légitime » ?",
+      "choix": [
+        "86,6 %",
+        "13,4 % (la part des spams)",
+        "50 %, comme le hasard",
+        "100 %"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Question 1.1 : il a raison sur tous les SMS légitimes, soit $1 - 0{,}134 = 86{,}6$ %. C'est la référence à battre, et la raison pour laquelle l'accuracy seule ne suffit pas."
+    },
+    {
+      "id": "td4-003",
+      "type": "unique",
+      "enonce": "Que remarque-t-on sur la longueur des spams ?",
+      "choix": [
+        "Ils dépassent presque tous 300 caractères",
+        "Ils sont beaucoup plus courts que les SMS légitimes",
+        "Ils sont presque tous juste sous 160 caractères",
+        "Ils ont la même distribution de longueur que les SMS légitimes"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 1.2 : l'expéditeur remplit le SMS au maximum. Les SMS légitimes sont plus courts (médiane 52 caractères), écrits en « langage SMS ». La longueur est un indice que le sac de mots ne voit qu'indirectement (piste de la section 8)."
+    },
+    {
+      "id": "td4-004",
+      "type": "multiple",
+      "enonce": "La base contient 403 lignes en double (même texte). Quelles affirmations sont vraies ?",
+      "choix": [
+        "Il faut supprimer tous les doublons de la base avant de travailler",
+        "Le plus répété est une réponse automatique, « Sorry, I'll call later »",
+        "Aucun texte n'a deux étiquettes différentes",
+        "Les doublons sont tous des spams d'une même campagne"
+      ],
+      "reponses": [
+        1,
+        2
+      ],
+      "explication": "Question 1.3 : 309 doublons légitimes et 94 spams. Ils reflètent la réalité (réponses automatiques, campagnes de spam reçues par plusieurs personnes) : on ne les supprime pas, on choisit où les mettre."
+    },
+    {
+      "id": "td4-005",
+      "type": "unique",
+      "enonce": "Que se passe-t-il si deux copies d'un même SMS tombent l'une en apprentissage, l'autre en test ?",
+      "choix": [
+        "Le score de test devient trop optimiste",
+        "Le dictionnaire contient alors deux fois les mêmes mots",
+        "Le modèle est pénalisé, car il a vu deux fois le même SMS",
+        "Rien : le test mesure toujours la capacité à généraliser"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Question 1.3 : le score de test mélange **généraliser** à des SMS nouveaux (ce qu'on veut mesurer) et **reconnaître** des SMS appris. Mesuré en 4.3 : accuracy de 1 sur les SMS déjà vus, 0,98 sur les nouveaux."
+    },
+    {
+      "id": "td4-006",
+      "type": "unique",
+      "enonce": "Où le TD place-t-il les SMS répétés lors du découpage ?",
+      "choix": [
+        "Une copie dans chaque base, tirée au hasard",
+        "Nulle part : ils sont supprimés avant le découpage",
+        "Tous dans le test, pour vérifier que le modèle les reconnaît",
+        "Tous dans l'apprentissage, avec leurs copies"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Question 1.4 : le test ne contient que des SMS jamais vus. Les SMS répétés sont des messages fréquents que le filtre recevra encore : les avoir appris est un avantage. Règle générale : **ce qui est lié (même texte, même personne, même source) reste du même côté du découpage**."
+    },
+    {
+      "id": "td4-007",
+      "type": "unique",
+      "enonce": "Après ce découpage, l'apprentissage a 14,0 % de spams et le test 11,6 %. Pourquoi cette différence ?",
+      "choix": [
+        "Le test a été tiré dans une autre base de données",
+        "Les SMS répétés contiennent plus de spams",
+        "Le découpage n'a pas été stratifié",
+        "C'est une erreur : les deux proportions devraient être identiques"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Question 1.4 : une même campagne de spam est envoyée à beaucoup de monde, d'où plus de spams parmi les doublons. Le test reste stratifié au sein des SMS uniques ; ses 11,6 % sont la proportion de référence pour ses métriques."
+    },
+    {
+      "id": "td4-008",
+      "type": "unique",
+      "enonce": "35 % des mots du test sont absents du dictionnaire appris sur l'apprentissage. Que deviennent-ils lors de `transform(test)` ?",
+      "choix": [
+        "Ils provoquent une erreur de `CountVectorizer` au `transform`",
+        "Ils sont remplacés par le mot le plus proche du dictionnaire",
+        "Ils sont ignorés : le vecteur n'a pas de composante pour eux",
+        "Ils sont ajoutés au dictionnaire dans de nouvelles colonnes"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 2.2 : le dictionnaire est **figé** après `fit` sur l'apprentissage. Beaucoup de ces mots sont des numéros de téléphone propres à chaque campagne : gênant, car « contenir un numéro surtaxé » est un bon indice de spam (section 7)."
+    },
+    {
+      "id": "td4-009",
+      "type": "unique",
+      "enonce": "Que fait la fonction `tokeniser` du TD sur « URGENT! You have WON a guaranteed £1000 cash prize. Call 09061701461 now, claims are closing » ?",
+      "choix": [
+        "Elle garde tous les mots tels quels, majuscules et ponctuation comprises : `URGENT!, You, have, WON…`",
+        "Elle retire les nombres et garde les mots entiers : `urgent, won, guaranteed, cash, prize, call, claims, closing`",
+        "Minuscules, sans mots vides, racines : `urgent, won, guarante, 1000, cash, prize, 09061701461, claim, close`",
+        "Elle ne garde que les mots de plus de 5 lettres : `urgent, guaranteed, claims, closing`"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 2.3 : mots d'au moins 2 caractères en minuscules, suppression des **mots vides** (`ENGLISH_STOP_WORDS` : you, have, a, now, are…) et **racinisation** (`SnowballStemmer`). Le dictionnaire passe de 7 298 à 6 021 mots."
+    },
+    {
+      "id": "td4-010",
+      "type": "unique",
+      "enonce": "Que fait l'argument `min_df=2` de `CountVectorizer` ?",
+      "choix": [
+        "Il garde les mots présents dans au moins 2 SMS",
+        "Il compte chaque mot au plus 2 fois par SMS",
+        "Il ne garde que les mots d'au moins 2 caractères",
+        "Il retire les mots présents dans plus de 2 % des SMS"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Question 2.4 : plus de la moitié du dictionnaire (3 092 mots sur 6 021) n'apparaît que dans un seul SMS ; on ne peut rien apprendre de fiable d'un mot vu une fois. Avec `min_df=2`, le dictionnaire tombe à 2 929 mots."
+    },
+    {
+      "id": "td4-011",
+      "type": "unique",
+      "enonce": "Pourquoi réunir le vectorizer et le classifieur dans un **pipeline** (`make_pipeline`) ?",
+      "choix": [
+        "Le dictionnaire n'est appris que sur l'apprentissage",
+        "Pour que le dictionnaire soit appris sur l'apprentissage et le test réunis",
+        "Parce que `LogisticRegression` ne peut pas lire une matrice creuse directement",
+        "Pour accélérer l'apprentissage en parallélisant les deux étapes"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Question 4.1 : un seul objet apprend le dictionnaire puis le modèle avec `fit`, et vectorise puis prédit avec `predict`. Dans une validation croisée, le dictionnaire est réappris à chaque pli sans voir la part mise de côté."
+    },
+    {
+      "id": "td4-012",
+      "type": "unique",
+      "enonce": "Au seuil 0,5, le modèle n'a aucun faux positif mais laisse passer 24 spams sur 170. Quelles sont la précision et le rappel des spams ?",
+      "choix": [
+        "Précision 1, rappel 0,86",
+        "Précision 0,86, rappel 1",
+        "Précision 0,88, rappel 0,86",
+        "Précision 0,98, rappel 0,98"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Question 4.2 : aucun FP → précision $= VP/(VP+FP) = 1$ ; rappel $= 146/170 \\approx 0{,}86$. Le modèle est **prudent**, peut-être trop : la section 6 cherche à détecter plus de spams en restant acceptable."
+    },
+    {
+      "id": "td4-013",
+      "type": "multiple",
+      "enonce": "Au vu du fil rouge, quelles métriques regarde-t-on **en priorité** ?",
+      "choix": [
+        "Le rappel de la classe spam (spams détectés)",
+        "L'accuracy globale",
+        "La précision de la classe spam",
+        "La spécificité"
+      ],
+      "reponses": [
+        2,
+        3
+      ],
+      "explication": "Question 4.2 : on veut savoir, parmi les SMS mis en indésirables, combien sont vraiment du spam (précision), ou de façon équivalente combien de légitimes sont bloqués (spécificité, nombre de FP). Le rappel des spams vient en second ; l'accuracy cache le déséquilibre."
+    },
+    {
+      "id": "td4-014",
+      "type": "unique",
+      "enonce": "Le mot *uk* a un coefficient tel que $e^{\\mu} \\approx 11$. Comment l'interpréter ?",
+      "choix": [
+        "Un SMS qui contient *uk* a 11 % de chances d'être un spam",
+        "Chaque occurrence de *uk* ajoute 11 % à la probabilité d'être un spam",
+        "Le mot *uk* apparaît dans 11 spams de la base d'apprentissage",
+        "Chaque *uk* multiplie la cote de spam par ≈ 11"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Question 4.4 : $e^{\\mu_j}$ multiplie la **cote** $\\pi/(1-\\pi)$, pas la probabilité. Attention : les mots sont corrélés (ils reviennent ensemble dans les mêmes spams) et le modèle est régularisé (`C=1`) : les coefficients se partagent l'information."
+    },
+    {
+      "id": "td4-015",
+      "type": "unique",
+      "enonce": "La constante vaut $\\mu_0 \\approx -4$. Que signifie-t-elle ?",
+      "choix": [
+        "Le modèle se trompe sur 4 % des SMS",
+        "Il faut au moins 4 mots « spam » pour qu'un SMS soit bloqué",
+        "Un SMS sans aucun mot du dictionnaire est forcément un spam",
+        "Sans mot connu, $\\pi = \\sigma(-4) \\approx 0{,}02$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Question 4.4 : sans indice, le modèle penche fortement vers « légitime ». C'est cohérent avec la rareté des spams et avec les spams très courts non détectés (« ringtoneking 84484 »)."
+    },
+    {
+      "id": "td4-016",
+      "type": "multiple",
+      "enonce": "Qu'ont en commun les spams **non détectés** au seuil 0,5 ?",
+      "choix": [
+        "Des spams rédigés comme des messages personnels",
+        "Des spams très courts (un numéro inconnu)",
+        "Des spams écrits en français, absents de la base d'apprentissage",
+        "Des notifications de facturation"
+      ],
+      "reponses": [
+        0,
+        1,
+        3
+      ],
+      "explication": "Question 4.5 : ces erreurs se comprennent avec le sac de mots : un spam qui n'emploie aucun des mots typiques (*free*, *prize*, *claim*…) n'a aucune raison d'être repéré. La base est entièrement en anglais."
+    },
+    {
+      "id": "td4-017",
+      "type": "unique",
+      "enonce": "Le faux avis de colis récent obtient une probabilité de spam d'environ 0,06. Que retenir ?",
+      "choix": [
+        "Le modèle sur-apprend : il faut augmenter la régularisation",
+        "Le seuil 0,5 est trop bas pour ce type de message",
+        "Le filtre de 2011 a vieilli : il faut le réentraîner",
+        "Ce message est vraiment légitime, le modèle a raison"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 4.6 : le spam « classique » est repéré (0,99), mais les arnaques récentes (colis, « Hi mum… ») ne ressemblent pas aux spams de 2011. Les spammeurs changent de stratégie : c'est une **dérive**, comme pour Google Flu Trends au TD 3."
+    },
+    {
+      "id": "td4-018",
+      "type": "unique",
+      "enonce": "Pourquoi tracer les probabilités prédites sur une échelle **logit** (`ax.set_xscale(\"logit\")`) ?",
+      "choix": [
+        "Pour que les probabilités deviennent des classes",
+        "Parce que matplotlib ne sait pas afficher des nombres entre 0 et 1",
+        "Elle écarte les probabilités proches de 0 ou de 1",
+        "Pour faire apparaître la courbe ROC sur le même graphique"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 5.1 : graduer l'axe selon $\\log\\frac{\\pi}{1-\\pi}$ sépare $10^{-3}$, $10^{-2}$, 0,99, 0,999… On voit alors les légitimes entre $10^{-3}$ et $10^{-1}$, la plupart des spams au-dessus de 0,9."
+    },
+    {
+      "id": "td4-019",
+      "type": "unique",
+      "enonce": "L'AUC vaut 0,995 et la précision moyenne 0,978. Pourquoi la courbe précision-rappel est-elle plus utile ici que la courbe ROC ?",
+      "choix": [
+        "La courbe précision-rappel ne dépend pas du seuil, contrairement à la ROC",
+        "La courbe ROC est fausse quand les classes sont déséquilibrées",
+        "L'AUC ne peut pas dépasser 0,99",
+        "Sur la ROC, la zone de très peu de FP est illisible"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Question 5.2 : la précision-rappel montre directement que la précision reste à 1 jusqu'à un rappel d'environ 0,86 (le point du seuil 0,5), puis baisse. Le seuil 0,5 est au bout du palier : on peut sans doute le baisser un peu."
+    },
+    {
+      "id": "td4-020",
+      "type": "unique",
+      "enonce": "L'opérateur exige « au plus 1 SMS légitime sur 1 000 dans les indésirables ». À quelle contrainte cela correspond-il ?",
+      "choix": [
+        "Rappel des spams ≥ 0,999",
+        "Accuracy globale ≥ 0,999",
+        "Spécificité ≥ 0,999",
+        "Précision ≥ 0,999"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 6.1 : la spécificité est la part des légitimes reconnus comme légitimes ; au plus 1 sur 1 000 bloqué ⇔ spécificité ≥ 0,999. Parmi les seuils qui la respectent, on prend le **plus petit**, celui qui détecte le plus de spams."
+    },
+    {
+      "id": "td4-021",
+      "type": "unique",
+      "enonce": "Comment le TD choisit-il le seuil sans toucher au test ?",
+      "choix": [
+        "En gardant toujours le seuil 0,5, sans rien choisir",
+        "Sur les prédictions du modèle sur sa propre base d'apprentissage",
+        "Par validation croisée sur les SMS uniques d'apprentissage",
+        "Sur la base de test, puisque c'est elle qui représente le service"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 6.1 : le seuil est un **hyperparamètre**. Chaque SMS unique reçoit une probabilité prédite par un modèle qui ne l'a pas vu (5 parts stratifiées, `clone` du pipeline). Même règle des doublons qu'au découpage."
+    },
+    {
+      "id": "td4-022",
+      "type": "unique",
+      "enonce": "Quand l'exigence passe de « 1 sur 1 000 » à « 1 sur 100 », que se passe-t-il ?",
+      "choix": [
+        "L'AUC du modèle augmente nettement",
+        "Le seuil monte : moins de spams détectés, mais aucun faux positif",
+        "Le seuil baisse : plus de spams détectés, plus de FP",
+        "Le seuil ne change pas, seul le modèle est réappris"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 6.1 : chaque spam supplémentaire se paie en SMS légitimes perdus ; c'est à l'opérateur de fixer le compromis. **On fixe l'exigence selon l'usage, on choisit le seuil sans toucher au test, puis on évalue une seule fois sur le test.**"
+    },
+    {
+      "id": "td4-023",
+      "type": "multiple",
+      "enonce": "Avec `class_weight=\"balanced\"`, que constate-t-on par rapport au modèle d'origine ?",
+      "choix": [
+        "Au seuil 0,5, il détecte plus de spams mais fait des faux positifs",
+        "L'AUC et la précision moyenne sont quasiment inchangées",
+        "Il classe nettement mieux les SMS, il faut donc toujours l'utiliser",
+        "Ses probabilités moyennes dépassent la vraie proportion"
+      ],
+      "reponses": [
+        0,
+        1,
+        3
+      ],
+      "explication": "Question 6.2 : le rééquilibrage revient à **baisser le seuil** d'une façon qu'on ne contrôle pas. Mieux vaut garder le modèle d'origine (probabilités fiables : moyenne 0,112) et choisir le seuil selon l'exigence de l'opérateur."
+    },
+    {
+      "id": "td4-024",
+      "type": "unique",
+      "enonce": "Pourquoi l'effet de `class_weight=\"balanced\"` est-il moins spectaculaire ici que pour les vins du cours 4 ?",
+      "choix": [
+        "Les SMS n'ont pas de variables numériques",
+        "Les spams sont moins rares et bien séparés",
+        "Le TD n'utilise aucune régularisation dans le modèle",
+        "Le TD utilise une régression linéaire et non logistique"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Question 6.2 : avec une classe moins rare et un score qui sépare très bien les classes, la plupart des probabilités restent proches de 0 ou de 1, et le décalage de $\\mu_0$ change moins de décisions."
+    },
+    {
+      "id": "td4-025",
+      "type": "unique",
+      "enonce": "Quelle représentation des nombres obtient la meilleure précision moyenne (0,964) ?",
+      "choix": [
+        "Garder chaque numéro tel quel dans le dictionnaire",
+        "Garder seulement les numéros présents dans au moins 5 SMS",
+        "Remplacer tous les nombres par un même jeton `<nombre>`",
+        "Supprimer tous les mots qui contiennent un chiffre, comme au cours 2"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Section 7 : un numéro surtaxé est un indice de spam, mais chaque campagne a le sien (hors vocabulaire au test). Le jeton garde l'information « ce SMS contient un nombre » en oubliant le numéro exact. **Un prétraitement n'est jamais bon dans l'absolu : il se mesure.**"
+    },
+    {
+      "id": "td4-026",
+      "type": "unique",
+      "enonce": "Les précisions moyennes des représentations vont de 0,950 à 0,964. Quelle conclusion le TD en tire-t-il ?",
+      "choix": [
+        "Il faut toujours utiliser TF-IDF pour des textes courts",
+        "Le choix du seuil compte bien plus",
+        "`min_df=5` est toujours meilleur que `min_df=2`",
+        "Le sac de mots brut est inutilisable pour ce problème"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Section 7 : les écarts sont du même ordre que l'incertitude due aux données (~600 spams en validation). TF-IDF n'améliore pas non plus la précision moyenne sur ces textes courts, et `min_df=5` ne gagne plus rien."
+    },
+    {
+      "id": "td4-027",
+      "type": "unique",
+      "enonce": "Sur la projection t-SNE des SMS, que peut-on interpréter ?",
+      "choix": [
+        "Le sens des deux axes",
+        "La distance entre les groupes de SMS",
+        "Les voisinages entre SMS",
+        "La taille des groupes"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Question 3.2 : t-SNE conserve les voisinages, pas les distances entre groupes éloignés ni leur taille. C'est un outil de **visualisation** : seule l'évaluation d'un classifieur mesure la séparabilité. On réduit d'abord à 50 dimensions avec `TruncatedSVD`."
+    },
+    {
+      "id": "td4-028",
+      "type": "unique",
+      "enonce": "Les mots *just* et *ur* sont fréquents dans les deux classes. Quel coefficient s'attend-on à leur voir ?",
+      "choix": [
+        "Un coefficient exactement nul, imposé par `min_df`",
+        "Un coefficient faible : ils ne distinguent rien",
+        "Un fort coefficient positif, car ils sont fréquents dans les spams",
+        "Un fort coefficient négatif, car ils sont fréquents dans les SMS légitimes"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Question 3.1 : des mots présents autant dans les deux classes n'apportent pas d'information. Les forts coefficients positifs vont aux mots de spam (*claim*, *prize*, *txt*), les négatifs aux mots de conversation et à *gt*, *lt* (restes de l'encodage HTML)."
+    }
+  ]
+}
