@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Correction du sujet de révision</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+  // les scripts « defer » sont exécutés juste avant DOMContentLoaded : KaTeX est alors chargé
+  document.addEventListener("DOMContentLoaded", () =>
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+      ],
+      throwOnError: false,
+    })
+  );
+</script>
+<style>
+  @page {
+    size: A4;
+    margin: 13mm 13mm 15mm;
+    @bottom-center {
+      content: counter(page) " / " counter(pages);
+      font: 8pt "Segoe UI", system-ui, sans-serif;
+      color: #8a877e;
+    }
+  }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; color: #1b1a17; font: 10pt/1.5 "Segoe UI", system-ui, -apple-system, sans-serif; }
+  .katex { font-size: 1.08em; }
+
+  .entete { padding-bottom: 8px; margin-bottom: 14px; border-bottom: 3px solid #9b2c2c; }
+  .surtitre { margin: 0; color: #9b2c2c; font-size: 8.5pt; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .entete h1 { margin: 2px 0 4px; font-size: 20pt; line-height: 1.2; }
+  .entete p.source { margin: 0; color: #6b6860; font-size: 9pt; }
+
+  .exercice { border: 1px solid #e4e0d7; border-radius: 8px; padding: 10px 14px 12px; margin: 0 0 14px; }
+  .exercice > h2 {
+    margin: 0 0 8px; padding-bottom: 4px; border-bottom: 1px solid #e8c9c9;
+    color: #9b2c2c; font-size: 13.5pt; line-height: 1.3;
+  }
+  h2, h3, h4, .pastilles { break-after: avoid; }
+  h3 { margin: 12px 0 4px; font-size: 11pt; }
+  h4 { margin: 10px 0 3px; font-size: 10pt; }
+  p { margin: 4px 0; }
+  ul { margin: 4px 0; padding-left: 20px; }
+  li { margin: 2px 0; }
+  .citation { margin: 4px 0 6px; padding-left: 10px; border-left: 3px solid #d6d2c8; color: #6b6860; font-style: italic; }
+  .pastilles { margin: 2px 0 6px; }
+  .pastille {
+    display: inline-block; margin: 0 3px 3px 0; padding: 1px 9px;
+    border: 1px solid #c9d2f6; border-radius: 999px; background: #eef1fd;
+    color: #2a4bd7; font-size: 8.5pt; font-weight: 600; text-decoration: none;
+  }
+  table { border-collapse: collapse; margin: 6px 0; font-size: 9.5pt; }
+  th, td { border: 1px solid #d6d2c8; padding: 3px 9px; text-align: center; }
+  th { background: #f3f1ec; }
+  table.large { width: 100%; }
+  table.large td:first-child, table.large th:first-child { text-align: left; }
+  .remarque { break-inside: avoid; margin: 8px 0 2px; padding: 6px 10px; border-left: 4px solid #2a4bd7; border-radius: 4px; background: #eef1fd; }
+  .remarque b:first-child { display: block; color: #2a4bd7; font-size: 8.5pt; letter-spacing: .05em; text-transform: uppercase; }
+
+  /* explications des exercices de dénombrement */
+  .donnees { margin: 6px 0; padding: 6px 10px; border-radius: 6px; background: #f6f4ef; }
+  .question { margin: 8px 0; break-inside: avoid; }
+  .question > p:first-child { margin-bottom: 2px; }
+  .pourquoi { margin: 3px 0 0 2px; padding: 2px 0 2px 10px; border-left: 3px solid #f0c27a; color: #3d3b36; font-size: 9.5pt; }
+  .pourquoi ul { margin: 2px 0; }
+  .piege { margin: 8px 0; padding: 6px 10px; border-left: 4px solid #b45309; border-radius: 4px; background: #fdf3e4; break-inside: avoid; }
+  .piege b:first-child { display: block; color: #b45309; font-size: 8.5pt; letter-spacing: .05em; text-transform: uppercase; }
+  .modele { margin: 4px 0; padding: 5px 10px; border-radius: 6px; background: #f0f7f2; border-left: 4px solid #18763f; break-inside: avoid; }
+  .modele b:first-child { color: #18763f; }
+
+  .pied { margin-top: 10px; padding-top: 6px; border-top: 1px solid #d6d2c8; color: #6b6860; font-size: 8.5pt; }
+</style>
+</head>
+<body>
+
+<header class="entete">
+  <p class="surtitre">Probabilités E5 · Correction détaillée · Révision examen</p>
+  <h1>Correction du sujet de révision</h1>
+  <p class="source">Sujet « REVISION PROBABILITE E5 ». Les pastilles bleues sont cliquables : elles ouvrent la fiche de cours concernée ou la fiche de révision ultime.</p>
+</header>
+
+<!-- ============================ Exercice 1 ============================ -->
+<section class="exercice">
+<h2>Exercice 1 : Probabilités conditionnelles (enfants et télévision)</h2>
+<div class="pastilles">
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours02-probabilites-conditionnelles/fiche.pdf#page=2">→ Fiche Ch.2 §3 Probas totales (p.2)</a>
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours02-probabilites-conditionnelles/fiche.pdf#page=2">→ Fiche Ch.2 §4 Bayes (p.2)</a>
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/td05-revision-examen/fiche.pdf#page=1">→ Révision §2 (p.1)</a>
+</div>
+<p>Événements : $G$ « garçon », $F$ « fille », $E$ « a été effrayé ». Autant de garçons que de filles : $P(G) = P(F) = 0{,}5$.<br>
+« 20 % des garçons » ⇒ $P_G(E) = 0{,}2$, $P_G(\bar E) = 0{,}8$ ; « 40 % des filles » ⇒ $P_F(E) = 0{,}4$, $P_F(\bar E) = 0{,}6$.</p>
+<table>
+  <tr><th>Chemin</th><th>Probabilité</th></tr>
+  <tr><td>$G \to E$</td><td>$0{,}5 \times 0{,}2 = 0{,}10$</td></tr>
+  <tr><td>$G \to \bar E$</td><td>$0{,}5 \times 0{,}8 = 0{,}40$</td></tr>
+  <tr><td>$F \to E$</td><td>$0{,}5 \times 0{,}4 = 0{,}20$</td></tr>
+  <tr><td>$F \to \bar E$</td><td>$0{,}5 \times 0{,}6 = 0{,}30$</td></tr>
+</table>
+<h3>1. L'enfant a été effrayé</h3>
+<p>Probas totales : $P(E) = P_G(E)P(G) + P_F(E)P(F) = 0{,}10 + 0{,}20 = \boxed{0{,}3}$</p>
+<h3>2. Fille sachant effrayé</h3>
+<p>$P_E(F) = \dfrac{P(F \cap E)}{P(E)} = \dfrac{0{,}2}{0{,}3} = \boxed{\dfrac{2}{3}} \approx 0{,}667$</p>
+<h3>3. Fille sachant non effrayé</h3>
+<p>$P(\bar E) = 1 - 0{,}3 = 0{,}7$ ; $P_{\bar E}(F) = \dfrac{P(F \cap \bar E)}{P(\bar E)} = \dfrac{0{,}3}{0{,}7} = \boxed{\dfrac{3}{7}} \approx 0{,}429$</p>
+<h3>4. Garçon sachant non effrayé</h3>
+<p>$P_{\bar E}(G) = \dfrac{0{,}4}{0{,}7} = \boxed{\dfrac{4}{7}} \approx 0{,}571$ <span style="color:#6b6860;font-size:9pt">(vérification : $\frac{3}{7} + \frac{4}{7} = 1$ ✓)</span></p>
+</section>
+
+<!-- ============================ Exercice 2 ============================ -->
+<section class="exercice">
+<h2>Exercice 2 : Quelle loi ? 3 ampoules sans remise parmi 15 (5 défectueuses)</h2>
+<div class="pastilles">
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours03-variables-aleatoires/fiche.pdf#page=3">→ Fiche Ch.3 §7 Hypergéométrique (p.3)</a>
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/td05-revision-examen/fiche.pdf#page=3">→ Révision §4 (p.3)</a>
+</div>
+<h3>1. Loi utilisée</h3>
+<p>Tirage <strong>sans remise</strong> de $n = 3$ ampoules dans une population de $N = 15$ ayant 2 catégories ($K = 5$ défectueuses, 10 bonnes) : les tirages ne sont pas indépendants, ce n'est pas une binomiale. $X$ = nombre d'ampoules défectueuses suit la <strong>loi hypergéométrique</strong> $\mathcal{H}(3, \frac{5}{15}, 15)$ :</p>
+$$P(X = k) = \frac{\binom{5}{k}\binom{10}{3-k}}{\binom{15}{3}}, \qquad \binom{15}{3} = 455$$
+<h3>2. a) Aucune défectueuse</h3>
+<p>$P(X = 0) = \dfrac{\binom{5}{0}\binom{10}{3}}{455} = \dfrac{120}{455} = \boxed{\dfrac{24}{91}} \approx 0{,}264$</p>
+<h3>b) Exactement une défectueuse</h3>
+<p>$P(X = 1) = \dfrac{\binom{5}{1}\binom{10}{2}}{455} = \dfrac{5 \times 45}{455} = \boxed{\dfrac{45}{91}} \approx 0{,}495$</p>
+<h3>c) Au moins une défectueuse</h3>
+<p>$P(X \geq 1) = 1 - P(X = 0) = 1 - \dfrac{24}{91} = \boxed{\dfrac{67}{91}} \approx 0{,}736$</p>
+</section>
+
+<!-- ============================ Exercice 3 ============================ -->
+<section class="exercice">
+<h2>Exercice 3 : V.a. discrète, gain selon la couleur</h2>
+<p class="citation">Urne : 3 jaunes, 2 bleues, 1 rouge, 4 vertes (10 boules). Rouge : 10 € ; verte : 2 € ; jaune ou bleue : 3 €.</p>
+<div class="pastilles">
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours03-variables-aleatoires/fiche.pdf#page=1">→ Fiche Ch.3 §2 Tableau de loi (p.1)</a>
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours03-variables-aleatoires/fiche.pdf#page=1">→ Fiche Ch.3 §3 Espérance, variance (p.1)</a>
+</div>
+<h3>i) Loi de X</h3>
+<p>$P(X = 2) = P(\text{verte}) = \frac{4}{10} = 0{,}4$ ; $P(X = 3) = P(\text{jaune ou bleue}) = \frac{3+2}{10} = 0{,}5$ ; $P(X = 10) = \frac{1}{10} = 0{,}1$.</p>
+<table>
+  <tr><td>$x_i$</td><td>2</td><td>3</td><td>10</td><td>Total</td></tr>
+  <tr><td>$P(X = x_i)$</td><td>0,4</td><td>0,5</td><td>0,1</td><td>1 ✓</td></tr>
+</table>
+<h3>ii) Espérance, variance, écart-type</h3>
+<p>$E(X) = 2 \times 0{,}4 + 3 \times 0{,}5 + 10 \times 0{,}1 = 0{,}8 + 1{,}5 + 1 = \boxed{3{,}3\text{ €}}$</p>
+<p>$E(X^2) = 4 \times 0{,}4 + 9 \times 0{,}5 + 100 \times 0{,}1 = 1{,}6 + 4{,}5 + 10 = 16{,}1$</p>
+<p>$V(X) = 16{,}1 - 3{,}3^2 = 16{,}1 - 10{,}89 = \boxed{5{,}21}$ ; $\sigma(X) = \sqrt{5{,}21} \approx \boxed{2{,}28\text{ €}}$</p>
+<h3>iii) Gain m pour une bleue, gain moyen de 4,5 €</h3>
+<p>Nouvelle loi : 10 € (0,1), 2 € (0,4), 3 € (jaune, 0,3), $m$ € (bleue, 0,2).</p>
+$$E(X) = 10 \times 0{,}1 + 2 \times 0{,}4 + 3 \times 0{,}3 + m \times 0{,}2 = 2{,}7 + 0{,}2m = 4{,}5 \iff m = \frac{1{,}8}{0{,}2} = \boxed{9\text{ €}}$$
+</section>
+
+<!-- ============================ Exercice 4 ============================ -->
+<section class="exercice">
+<h2>Exercice 4 : Dénombrement, urne de 5 B, 3 N, 6 R (14 boules), tirage de 3 boules</h2>
+<div class="pastilles">
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours01-denombrement/fiche.pdf#page=2">→ Fiche Ch.1 §6 Les 3 tirages (p.2)</a>
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/td05-revision-examen/fiche.pdf#page=1">→ Révision §1 (p.1)</a>
+</div>
+
+<div class="donnees">
+  <p><strong>Avant de calculer, on repère les chiffres de l'énoncé :</strong></p>
+  <ul>
+    <li><strong>14</strong> = 5 + 3 + 6 : le nombre total de boules dans l'urne ($n$).</li>
+    <li><strong>3</strong> : le nombre de boules tirées ($p$).</li>
+    <li><strong>5, 3, 6</strong> : l'effectif de chaque couleur (blanches, noires, rouges).</li>
+    <li><strong>11</strong> = 14 − 3 : les boules <em>non noires</em> ; <strong>9</strong> = 14 − 5 : les boules <em>non blanches</em>. Ces nombres servent quand on veut « tout sauf une couleur ».</li>
+  </ul>
+</div>
+<div class="piege">
+  <b>Piège : les deux « 3 »</b>
+  Il y a <strong>3 boules noires</strong> et on tire <strong>3 boules</strong>. Ce sont deux nombres différents qui ont la même valeur : dans chaque formule ci-dessous, on précise lequel des deux on utilise.
+</div>
+<p>Pour toutes les questions : $P = \dfrac{\text{nombre de cas favorables}}{\text{nombre de cas possibles}}$. Le nombre de cas possibles (question a) est le <strong>dénominateur</strong> de toutes les autres réponses. Le numérateur doit se compter <strong>avec le même modèle</strong> (si l'un tient compte de l'ordre, l'autre aussi).</p>
+
+<h3>1. Tirage simultané</h3>
+<div class="pastilles">
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours01-denombrement/fiche.pdf#page=1">→ Fiche Ch.1 §3 Combinaisons (p.1)</a>
+</div>
+<div class="modele"><b>Pourquoi des combinaisons ?</b> On prend les 3 boules d'un coup : il n'y a <strong>pas d'ordre</strong> (pas de « 1ʳᵉ boule ») et une boule ne peut pas sortir deux fois. On compte donc des <strong>groupes</strong> : $\binom{n}{p}$ = nombre de façons de choisir $p$ éléments parmi $n$.</div>
+
+<div class="question">
+  <p><strong>a) Cas possibles</strong> : $\binom{14}{3} = \dfrac{14 \times 13 \times 12}{3 \times 2 \times 1} = \boxed{364}$</p>
+  <div class="pourquoi">On choisit un groupe de <strong>3</strong> boules (le nombre tiré) parmi les <strong>14</strong> de l'urne. On divise par $3! = 6$ car les 6 ordres d'un même groupe ne comptent que pour un tirage.</div>
+</div>
+<div class="question">
+  <p><strong>b) Exactement 2 noires</strong> : $\binom{3}{2}\binom{11}{1} = 3 \times 11 = 33$, donc $P = \dfrac{33}{364} \approx \boxed{0{,}091}$</p>
+  <div class="pourquoi">On découpe le tirage en deux groupes et on <strong>multiplie</strong> (on fait un choix <em>et</em> l'autre) :
+    <ul>
+      <li>$\binom{3}{2}$ : on choisit les <strong>2</strong> noires voulues parmi les <strong>3 noires</strong> de l'urne (ici, 3 = effectif des noires).</li>
+      <li>$\binom{11}{1}$ : la 3ᵉ boule ne doit <strong>pas</strong> être noire (sinon on en aurait 3), on la choisit parmi les <strong>11 non noires</strong>. Le 1 vient de 3 tirées − 2 noires.</li>
+    </ul>
+  </div>
+</div>
+<div class="question">
+  <p><strong>c) 3 de même couleur</strong> : $\binom{5}{3} + \binom{3}{3} + \binom{6}{3} = 10 + 1 + 20 = 31$, donc $P = \dfrac{31}{364} \approx \boxed{0{,}085}$</p>
+  <div class="pourquoi">« Même couleur » = 3 blanches <strong>ou</strong> 3 noires <strong>ou</strong> 3 rouges. Ces cas ne peuvent pas arriver ensemble, donc on les <strong>additionne</strong>. Dans chaque terme, on tire les 3 boules dans l'effectif de la couleur : $\binom{5}{3}$ parmi les 5 blanches, $\binom{3}{3} = 1$ (on prend les 3 noires), $\binom{6}{3}$ parmi les 6 rouges.</div>
+</div>
+<div class="question">
+  <p><strong>d) Au moins une blanche</strong> : $1 - \dfrac{\binom{9}{3}}{364} = 1 - \dfrac{84}{364} = \dfrac{280}{364} = \dfrac{10}{13} \approx \boxed{0{,}769}$</p>
+  <div class="pourquoi">« Au moins une » = 1, 2 ou 3 blanches : trois cas à calculer. Son <strong>contraire</strong>, « aucune blanche », n'en a qu'un, donc on utilise $P(A) = 1 - P(\bar A)$. « Aucune blanche » = les 3 boules sont prises parmi les <strong>9 non blanches</strong> (14 − 5), d'où $\binom{9}{3} = 84$.</div>
+</div>
+<div class="question">
+  <p><strong>e) 3 couleurs différentes</strong> : $5 \times 3 \times 6 = 90$, donc $P = \dfrac{90}{364} = \dfrac{45}{182} \approx \boxed{0{,}247}$</p>
+  <div class="pourquoi">3 boules de 3 couleurs différentes = forcément <strong>une blanche, une noire et une rouge</strong>. On choisit la blanche parmi 5, la noire parmi 3, la rouge parmi 6, et on multiplie (principe multiplicatif). C'est $\binom{5}{1}\binom{3}{1}\binom{6}{1}$.</div>
+</div>
+
+<h3>2. Tirage successif avec remise</h3>
+<div class="pastilles">
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours01-denombrement/fiche.pdf#page=2">→ Fiche Ch.1 §4 p-listes (p.2)</a>
+</div>
+<div class="modele"><b>Pourquoi des p-listes ?</b> On tire une boule, on la <strong>remet</strong>, on recommence : l'<strong>ordre compte</strong> (1ᵉʳ, 2ᵉ, 3ᵉ tirage) et la même boule peut ressortir. À chaque tirage, les 14 boules sont toujours là : on multiplie le nombre de choix à chaque tirage, d'où $n^p$.</div>
+
+<div class="question">
+  <p><strong>a) Cas possibles</strong> : $14^3 = 14 \times 14 \times 14 = \boxed{2\,744}$</p>
+  <div class="pourquoi"><strong>14</strong> choix au 1ᵉʳ tirage, encore 14 au 2ᵉ (on a remis la boule), encore 14 au 3ᵉ. L'exposant <strong>3</strong> est le nombre de tirages.</div>
+</div>
+<div class="question">
+  <p><strong>b) Exactement 2 noires</strong> : $\binom{3}{2} \times 3^2 \times 11 = 3 \times 9 \times 11 = 297$, donc $P = \dfrac{297}{2\,744} \approx \boxed{0{,}108}$</p>
+  <div class="pourquoi">
+    <ul>
+      <li>$\binom{3}{2} = 3$ : on choisit <strong>à quels tirages</strong> sortent les 2 noires : (1ᵉʳ, 2ᵉ), (1ᵉʳ, 3ᵉ) ou (2ᵉ, 3ᵉ). Attention, ici le 3 du haut est le <strong>nombre de tirages</strong>, pas le nombre de noires. Ce facteur existe parce que l'ordre compte : N-N-R et R-N-N sont deux tirages différents.</li>
+      <li>$3^2$ : à chacun de ces <strong>2</strong> tirages, la noire est l'une des <strong>3 noires</strong> (on remet, donc toujours 3 choix).</li>
+      <li>$11$ : au tirage restant, une boule non noire parmi les <strong>11</strong>.</li>
+    </ul>
+  </div>
+</div>
+<div class="question">
+  <p><strong>c) 3 de même couleur</strong> : $5^3 + 3^3 + 6^3 = 125 + 27 + 216 = 368$, donc $P = \dfrac{368}{2\,744} = \dfrac{46}{343} \approx \boxed{0{,}134}$</p>
+  <div class="pourquoi">Comme en simultané, on additionne les 3 couleurs. Pour « 3 blanches » : 5 choix à chacun des 3 tirages, soit $5^3$ (même raisonnement pour $3^3$ et $6^3$). Pas de facteur de placement : les 3 boules sont de la même couleur, il n'y a qu'une façon de les ranger.</div>
+</div>
+<div class="question">
+  <p><strong>d) Au moins une blanche</strong> : $1 - \dfrac{9^3}{2\,744} = 1 - \dfrac{729}{2\,744} = \dfrac{2\,015}{2\,744} \approx \boxed{0{,}734}$</p>
+  <div class="pourquoi">Contraire : « aucune blanche ». À chacun des 3 tirages, on prend une boule parmi les <strong>9 non blanches</strong> : $9 \times 9 \times 9 = 9^3$.</div>
+</div>
+<div class="question">
+  <p><strong>e) 3 couleurs différentes</strong> : $3! \times 5 \times 3 \times 6 = 540$, donc $P = \dfrac{540}{2\,744} = \dfrac{135}{686} \approx \boxed{0{,}197}$</p>
+  <div class="pourquoi">
+    <ul>
+      <li>$5 \times 3 \times 6$ : une blanche (5 choix), une noire (3), une rouge (6), comme en simultané.</li>
+      <li>$3! = 6$ : l'ordre compte, donc il faut aussi choisir <strong>dans quel ordre</strong> sortent les 3 couleurs : B-N-R, B-R-N, N-B-R, N-R-B, R-B-N, R-N-B. Il y a $3! = 3 \times 2 \times 1 = 6$ façons de ranger 3 couleurs.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>3. Tirage successif sans remise</h3>
+<div class="pastilles">
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours01-denombrement/fiche.pdf#page=2">→ Fiche Ch.1 §5 Arrangements (p.2)</a>
+</div>
+<div class="modele"><b>Pourquoi des arrangements ?</b> On tire les boules une par une <strong>sans les remettre</strong> : l'<strong>ordre compte</strong>, mais une boule ne peut pas ressortir. À chaque tirage, il y a une boule de moins : $A_n^p = n \times (n-1) \times \dots$ ($p$ facteurs).</div>
+
+<div class="question">
+  <p><strong>a) Cas possibles</strong> : $A_{14}^3 = 14 \times 13 \times 12 = \boxed{2\,184}$</p>
+  <div class="pourquoi">14 choix pour la 1ʳᵉ boule, puis <strong>13</strong> pour la 2ᵉ (la 1ʳᵉ n'est plus dans l'urne), puis <strong>12</strong> pour la 3ᵉ. On s'arrête après <strong>3</strong> facteurs (3 tirages).</div>
+</div>
+<div class="question">
+  <p><strong>b) Exactement 2 noires</strong> : $\binom{3}{2} \times 3 \times 2 \times 11 = 198$, donc $P = \dfrac{198}{2\,184} = \dfrac{33}{364} \approx \boxed{0{,}091}$</p>
+  <div class="pourquoi">
+    <ul>
+      <li>$\binom{3}{2}$ : comme avec remise, on choisit les 2 tirages (parmi les <strong>3 tirages</strong>) où sortent les noires.</li>
+      <li>$3 \times 2$ : la 1ʳᵉ noire parmi les <strong>3</strong> noires, la 2ᵉ parmi les <strong>2</strong> qui restent (on ne remet pas). C'est $A_3^2$.</li>
+      <li>$11$ : la boule non noire parmi les <strong>11</strong>. Aucune non noire n'a encore été tirée, il en reste bien 11.</li>
+    </ul>
+  </div>
+</div>
+<div class="question">
+  <p><strong>c) 3 de même couleur</strong> : $5 \cdot 4 \cdot 3 + 3 \cdot 2 \cdot 1 + 6 \cdot 5 \cdot 4 = 60 + 6 + 120 = 186$, donc $P = \dfrac{186}{2\,184} = \dfrac{31}{364} \approx \boxed{0{,}085}$</p>
+  <div class="pourquoi">Un terme par couleur, additionnés. Pour « 3 blanches » : 5 choix, puis 4 (une blanche en moins), puis 3, soit $A_5^3 = 5 \cdot 4 \cdot 3$. Pour les noires : $3 \cdot 2 \cdot 1$ (on prend les 3). Pour les rouges : $6 \cdot 5 \cdot 4$.</div>
+</div>
+<div class="question">
+  <p><strong>d) Au moins une blanche</strong> : $1 - \dfrac{9 \cdot 8 \cdot 7}{2\,184} = 1 - \dfrac{504}{2\,184} = \dfrac{10}{13} \approx \boxed{0{,}769}$</p>
+  <div class="pourquoi">Contraire : « aucune blanche ». On tire 3 fois parmi les <strong>9 non blanches</strong>, sans remise : 9, puis 8, puis 7 choix ($A_9^3$).</div>
+</div>
+<div class="question">
+  <p><strong>e) 3 couleurs différentes</strong> : $3! \times 5 \times 3 \times 6 = 540$, donc $P = \dfrac{540}{2\,184} = \dfrac{45}{182} \approx \boxed{0{,}247}$</p>
+  <div class="pourquoi">Même raisonnement qu'avec remise : 5 × 3 × 6 pour choisir une boule de chaque couleur, × $3!$ pour l'ordre des couleurs. Les effectifs ne diminuent pas ici, car on ne tire qu'<strong>une</strong> boule de chaque couleur.</div>
+</div>
+
+<div class="remarque">
+  <b>À remarquer</b>
+  Sans remise et simultané donnent exactement les mêmes probabilités : sans remise, chaque groupe de 3 boules est compté $3! = 6$ fois (une fois par ordre), au numérateur comme au dénominateur, et ça se simplifie ($2\,184 = 6 \times 364$, $198 = 6 \times 33$). Seul le tirage avec remise change les résultats. C'est un bon moyen de vérifier ses calculs.
+</div>
+</section>
+
+<!-- ============================ Exercice 5 ============================ -->
+<section class="exercice">
+<h2>Exercice 5 : Dénombrement, numéros de téléphone</h2>
+<div class="pastilles">
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours01-denombrement/fiche.pdf#page=2">→ Fiche Ch.1 §4 p-listes (p.2)</a>
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours01-denombrement/fiche.pdf#page=1">→ Fiche Ch.1 §3 Combinaisons (p.1)</a>
+</div>
+
+<div class="donnees">
+  <p><strong>Les chiffres de l'énoncé :</strong></p>
+  <ul>
+    <li><strong>10</strong> chiffres dans un numéro, dont le premier est imposé (0) : il reste <strong>9 positions libres</strong>. C'est le nombre de tirages ($p = 9$).</li>
+    <li>Chaque position peut recevoir l'un des <strong>10 chiffres</strong> de 0 à 9 : c'est le nombre de choix par tirage ($n = 10$).</li>
+  </ul>
+</div>
+
+<h3>1. a) Modèle de tirage</h3>
+<p>Ex. : 0 6 1 2 7 7 4 0 9 3. Les chiffres sont <strong>ordonnés</strong> (0612… ≠ 0621… : ce ne sont pas les mêmes numéros) et <strong>peuvent se répéter</strong> (deux 7 à la suite, c'est permis) : tirage <strong>successif avec remise</strong> (p-liste) des 9 derniers chiffres, le premier étant fixé à 0.</p>
+
+<h3>b) Nombre de numéros possibles</h3>
+<div class="question">
+  <p>$1 \times 10^9 = \boxed{1\,000\,000\,000}$</p>
+  <div class="pourquoi">Le <strong>1</strong> : une seule possibilité pour le premier chiffre (le 0). Puis <strong>10</strong> choix pour chacune des <strong>9</strong> positions libres : $10 \times 10 \times \dots \times 10 = 10^9$ (on multiplie car on choisit le 2ᵉ chiffre <em>et</em> le 3ᵉ <em>et</em>…).</div>
+</div>
+
+<h3>2. a) Exactement deux fois le chiffre 7</h3>
+<div class="question">
+  <p>On choisit les 2 places du 7 parmi les 9 ($\binom{9}{2} = 36$), puis les 7 autres places reçoivent un chiffre ≠ 7 ($9^7$) :</p>
+  $$P = \frac{\binom{9}{2} \times 9^7}{10^9} = \frac{36 \times 4\,782\,969}{10^9} \approx \boxed{0{,}172}$$
+  <div class="pourquoi">
+    <ul>
+      <li>$\binom{9}{2} = 36$ : on choisit <strong>où</strong> mettre les deux 7, c'est-à-dire 2 positions parmi les <strong>9 positions libres</strong>. On utilise une combinaison car les deux 7 sont identiques : les mettre en 3ᵉ et 5ᵉ position, ou en 5ᵉ et 3ᵉ, donne le même numéro.</li>
+      <li>$9^7$ : il reste $9 - 2 = $ <strong>7 positions</strong> (c'est l'exposant). Chacune doit recevoir un chiffre <strong>différent de 7</strong>, sinon on aurait plus de deux 7 : 10 − 1 = <strong>9 choix</strong> (c'est la base).</li>
+      <li>Attention : le 9 de $\binom{9}{2}$ (les positions) et le 9 de $9^7$ (les chiffres autorisés) n'ont rien à voir. Même chose pour l'exposant 7, qui n'est pas le chiffre 7.</li>
+      <li>On divise par $10^9$, le nombre de numéros possibles (question 1.b).</li>
+    </ul>
+  </div>
+</div>
+
+<h3>b) Que des 7 (après le 0 initial)</h3>
+<div class="question">
+  <p>Un seul numéro : 0777777777. $P = \dfrac{1}{10^9} = \boxed{10^{-9}}$</p>
+  <div class="pourquoi">Chaque position libre n'a qu'<strong>un</strong> choix (le 7) : $1^9 = 1$ cas favorable sur $10^9$.</div>
+</div>
+
+<h3>c) Ni 6 ni 9</h3>
+<div class="question">
+  <p>Chacun des 9 chiffres est pris parmi 8 valeurs (le 0 initial n'est ni 6 ni 9) :</p>
+  $$P = \frac{8^9}{10^9} = 0{,}8^9 \approx \boxed{0{,}134}$$
+  <div class="pourquoi">On interdit 2 chiffres (6 et 9) : il reste 10 − 2 = <strong>8 chiffres autorisés</strong> (0, 1, 2, 3, 4, 5, 7, 8) pour chacune des <strong>9 positions</strong>, d'où $8^9$. Le 0 imposé au début n'est ni 6 ni 9, il ne pose donc aucun problème. Comme $\frac{8^9}{10^9} = \left(\frac{8}{10}\right)^9$, on peut aussi voir chaque position comme « 8 chances sur 10 d'être autorisée », 9 fois de suite.</div>
+</div>
+</section>
+
+<!-- ============================ Exercice 6 ============================ -->
+<section class="exercice">
+<h2>Exercice 6 : Variable continue, calcul intégral</h2>
+<div class="pastilles">
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours03-variables-aleatoires/fiche.pdf#page=4">→ Fiche Ch.3 §10 Densité (p.4)</a>
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours03-variables-aleatoires/fiche.pdf#page=5">→ Fiche Ch.3 §14 Exponentielle (p.5)</a>
+</div>
+<p>C'est l'exercice 3 du TD Lois continues (questions 1 et 2), corrigé en détail dans « Correction - TD Lois continues ». Résumé :</p>
+<ul>
+  <li>$f(t) = \lambda e^{-\lambda t} > 0$ car $\lambda > 0$ ; $\int_0^{+\infty} \lambda e^{-\lambda t}\,dt = \left[-e^{-\lambda t}\right]_0^{+\infty} = 0 - (-1) = 1$ ⇒ densité.</li>
+  <li>$\lambda = 0{,}1$ : $P(t \geq 10) = \left[-e^{-0{,}1t}\right]_{10}^{+\infty} = e^{-1} \approx \boxed{0{,}368}$.</li>
+</ul>
+</section>
+
+<!-- ============================ Exercice 7 ============================ -->
+<section class="exercice">
+<h2>Exercice 7 : Quelle loi ? Les 12 figures</h2>
+<p class="citation">4 rois, 4 dames, 4 valets. On tire 5 cartes.</p>
+<div class="pastilles">
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours03-variables-aleatoires/fiche.pdf#page=3">→ Fiche Ch.3 §7 Hypergéométrique (p.3)</a>
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours03-variables-aleatoires/fiche.pdf#page=2">→ Fiche Ch.3 §6 Binomiale (p.2)</a>
+</div>
+<h3>i) Loi de X (tirage simultané)</h3>
+<p>Tirage simultané (sans remise) de $n = 5$ cartes parmi $N = 12$ dont $K = 4$ rois : $X \sim \mathcal{H}(5, \frac{4}{12}, 12)$, $X(\Omega) = \{0, 1, 2, 3, 4\}$ :</p>
+$$P(X = k) = \frac{\binom{4}{k}\binom{8}{5-k}}{\binom{12}{5}}, \qquad \binom{12}{5} = 792$$
+<table>
+  <tr><td>$k$</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+  <tr><td>$P(X = k)$</td><td>$\frac{56}{792}$</td><td>$\frac{280}{792}$</td><td>$\frac{336}{792}$</td><td>$\frac{112}{792}$</td><td>$\frac{8}{792}$</td></tr>
+</table>
+<p style="color:#6b6860;font-size:9pt">Vérification : $56 + 280 + 336 + 112 + 8 = 792$ ✓</p>
+<h3>ii) Exactement 4 rois</h3>
+<p>$P(X = 4) = \dfrac{\binom{4}{4}\binom{8}{1}}{792} = \dfrac{8}{792} = \boxed{\dfrac{1}{99}} \approx 0{,}0101$</p>
+<h3>iii) Loi de Y (5 tirages avec remise)</h3>
+<p>5 tirages <strong>indépendants</strong> (avec remise) ; succès = tirer un roi, $p = \frac{4}{12} = \frac{1}{3}$ ; $Y$ = <strong>nombre</strong> de rois ⇒ $Y \sim \mathcal{B}(5, \frac{1}{3})$ : $P(Y = k) = \binom{5}{k}\left(\frac{1}{3}\right)^k\left(\frac{2}{3}\right)^{5-k}$.</p>
+<h3>iv) Au moins un roi</h3>
+<p>$P(Y \geq 1) = 1 - P(Y = 0) = 1 - \left(\frac{2}{3}\right)^5 = 1 - \frac{32}{243} = \boxed{\dfrac{211}{243}} \approx 0{,}868$</p>
+</section>
+
+<!-- ============================ Exercice 8 ============================ -->
+<section class="exercice">
+<h2>Exercice 8 : Loi normale</h2>
+<div class="pastilles">
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/cours03-variables-aleatoires/fiche.pdf#page=5">→ Fiche Ch.3 §15 Loi normale (p.5)</a>
+  <a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/probabilites/td05-revision-examen/fiche.pdf#page=3">→ Révision §5 (p.3)</a>
+</div>
+<p>Le sujet renvoie au TD : voir « Correction - TD Lois continues », exercices 4, 5 et 6 (température, poids des étudiants, sacs de ciment). La méthode : centrer-réduire, lire $\Phi$, symétrie $\Phi(-z) = 1 - \Phi(z)$, et pour une somme de $n$ v.a., écart-type $\sigma\sqrt{n}$.</p>
+</section>
+
+<p class="pied">Correction du sujet de révision · Probabilités E5</p>
+
+</body>
+</html>

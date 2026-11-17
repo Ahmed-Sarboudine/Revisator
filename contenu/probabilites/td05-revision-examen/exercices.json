@@ -13,28 +13,28 @@
       "correction": [
         {
           "image": "ex01-correction-1.png",
-          "largeur": 1319,
-          "hauteur": 1082,
+          "largeur": 1333,
+          "hauteur": 1093,
           "liens": [
             {
-              "x": 2.94,
-              "y": 9.02,
-              "l": 31.27,
-              "h": 3.29,
+              "x": 3.15,
+              "y": 9.28,
+              "l": 28.41,
+              "h": 3.6,
               "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/2"
             },
             {
-              "x": 34.78,
-              "y": 9.02,
-              "l": 24.31,
-              "h": 3.29,
+              "x": 32.55,
+              "y": 9.28,
+              "l": 22.36,
+              "h": 3.6,
               "href": "#/lire/probabilites/cours02-probabilites-conditionnelles/fiche.pdf/2"
             },
             {
-              "x": 59.66,
-              "y": 9.02,
-              "l": 17.34,
-              "h": 3.29,
+              "x": 55.9,
+              "y": 9.28,
+              "l": 16.18,
+              "h": 3.6,
               "href": "#/lire/probabilites/td05-revision-examen/fiche.pdf/1"
             }
           ]
@@ -54,29 +54,29 @@
       "correction": [
         {
           "image": "ex02-correction-1.png",
-          "largeur": 1318,
-          "hauteur": 617,
+          "largeur": 1332,
+          "hauteur": 621,
           "liens": [
             {
-              "x": 2.86,
-              "y": 16.13,
-              "l": 35.14,
-              "h": 5.77,
+              "x": 3.15,
+              "y": 16.63,
+              "l": 31.95,
+              "h": 6.34,
               "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/3"
             },
             {
-              "x": 38.57,
-              "y": 16.13,
-              "l": 17.64,
-              "h": 5.77,
+              "x": 35.95,
+              "y": 16.63,
+              "l": 16.47,
+              "h": 6.34,
               "href": "#/lire/probabilites/td05-revision-examen/fiche.pdf/3"
             }
           ]
         },
         {
           "image": "ex02-correction-2.png",
-          "largeur": 1318,
-          "hauteur": 264
+          "largeur": 1332,
+          "hauteur": 324
         }
       ]
     },
@@ -93,21 +93,21 @@
       "correction": [
         {
           "image": "ex03-correction-1.png",
-          "largeur": 1319,
-          "hauteur": 823,
+          "largeur": 1333,
+          "hauteur": 888,
           "liens": [
             {
-              "x": 2.94,
-              "y": 17.96,
-              "l": 30.71,
-              "h": 4.33,
+              "x": 3.15,
+              "y": 17.07,
+              "l": 27.99,
+              "h": 4.43,
               "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/1"
             },
             {
-              "x": 34.21,
-              "y": 17.96,
-              "l": 35.25,
-              "h": 4.33,
+              "x": 32.13,
+              "y": 17.07,
+              "l": 31.93,
+              "h": 4.43,
               "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/1"
             }
           ]
@@ -127,52 +127,64 @@
       "correction": [
         {
           "image": "ex04-correction-1.png",
-          "largeur": 1318,
-          "hauteur": 834,
+          "largeur": 1332,
+          "hauteur": 720,
           "liens": [
             {
-              "x": 2.86,
-              "y": 17.5,
-              "l": 29.59,
-              "h": 4.27,
+              "x": 3.15,
+              "y": 20.27,
+              "l": 27.03,
+              "h": 5.47,
               "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
             },
             {
-              "x": 33.02,
-              "y": 17.5,
-              "l": 17.07,
-              "h": 4.27,
+              "x": 31.02,
+              "y": 20.27,
+              "l": 16.05,
+              "h": 5.47,
               "href": "#/lire/probabilites/td05-revision-examen/fiche.pdf/1"
-            },
-            {
-              "x": 2.86,
-              "y": 30.77,
-              "l": 30.59,
-              "h": 4.27,
-              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/1"
-            },
-            {
-              "x": 2.86,
-              "y": 82.7,
-              "l": 25.32,
-              "h": 4.27,
-              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
             }
           ]
         },
         {
           "image": "ex04-correction-2.png",
-          "largeur": 1318,
-          "hauteur": 914,
+          "largeur": 1333,
+          "hauteur": 1936,
           "liens": [
             {
-              "x": 2.86,
-              "y": 41.78,
-              "l": 31.01,
-              "h": 3.9,
+              "x": 3.15,
+              "y": 11.52,
+              "l": 27.85,
+              "h": 2.03,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/1"
+            },
+            {
+              "x": 3.15,
+              "y": 74.37,
+              "l": 23.21,
+              "h": 2.03,
               "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
             }
           ]
+        },
+        {
+          "image": "ex04-correction-3.png",
+          "largeur": 1333,
+          "hauteur": 1936,
+          "liens": [
+            {
+              "x": 3.15,
+              "y": 46.77,
+              "l": 28.27,
+              "h": 2.03,
+              "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
+            }
+          ]
+        },
+        {
+          "image": "ex04-correction-4.png",
+          "largeur": 1332,
+          "hauteur": 260
         }
       ]
     },
@@ -189,24 +201,29 @@
       "correction": [
         {
           "image": "ex05-correction-1.png",
-          "largeur": 1319,
-          "hauteur": 883,
+          "largeur": 1332,
+          "hauteur": 1673,
           "liens": [
             {
-              "x": 2.94,
-              "y": 11.22,
-              "l": 25.3,
-              "h": 4.03,
+              "x": 3.15,
+              "y": 6.04,
+              "l": 23.23,
+              "h": 2.35,
               "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/2"
             },
             {
-              "x": 28.81,
-              "y": 11.22,
-              "l": 30.56,
-              "h": 4.03,
+              "x": 27.36,
+              "y": 6.04,
+              "l": 27.87,
+              "h": 2.35,
               "href": "#/lire/probabilites/cours01-denombrement/fiche.pdf/1"
             }
           ]
+        },
+        {
+          "image": "ex05-correction-2.png",
+          "largeur": 1332,
+          "hauteur": 386
         }
       ]
     },
@@ -223,21 +240,21 @@
       "correction": [
         {
           "image": "ex06-correction-1.png",
-          "largeur": 1319,
-          "hauteur": 356,
+          "largeur": 1333,
+          "hauteur": 372,
           "liens": [
             {
-              "x": 2.94,
-              "y": 27.84,
-              "l": 26.58,
-              "h": 10.01,
+              "x": 3.15,
+              "y": 27.65,
+              "l": 24.33,
+              "h": 10.58,
               "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/4"
             },
             {
-              "x": 30.09,
-              "y": 27.84,
-              "l": 31.42,
-              "h": 10.01,
+              "x": 28.47,
+              "y": 27.65,
+              "l": 28.55,
+              "h": 10.58,
               "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/5"
             }
           ]
@@ -257,21 +274,21 @@
       "correction": [
         {
           "image": "ex07-correction-1.png",
-          "largeur": 1319,
-          "hauteur": 1026,
+          "largeur": 1333,
+          "hauteur": 1103,
           "liens": [
             {
-              "x": 2.94,
-              "y": 14.45,
-              "l": 35.11,
-              "h": 3.47,
+              "x": 3.15,
+              "y": 13.78,
+              "l": 31.93,
+              "h": 3.57,
               "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/3"
             },
             {
-              "x": 38.62,
-              "y": 14.45,
-              "l": 27.72,
-              "h": 3.47,
+              "x": 35.92,
+              "y": 13.78,
+              "l": 25.46,
+              "h": 3.57,
               "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/2"
             }
           ]
@@ -291,21 +308,21 @@
       "correction": [
         {
           "image": "ex08-correction-1.png",
-          "largeur": 1319,
-          "hauteur": 365,
+          "largeur": 1333,
+          "hauteur": 386,
           "liens": [
             {
-              "x": 2.94,
-              "y": 27.15,
-              "l": 30.14,
-              "h": 9.76,
+              "x": 3.15,
+              "y": 26.16,
+              "l": 27.43,
+              "h": 10.2,
               "href": "#/lire/probabilites/cours03-variables-aleatoires/fiche.pdf/5"
             },
             {
-              "x": 33.5,
-              "y": 27.15,
-              "l": 17.63,
-              "h": 9.76,
+              "x": 31.56,
+              "y": 26.16,
+              "l": 16.32,
+              "h": 10.2,
               "href": "#/lire/probabilites/td05-revision-examen/fiche.pdf/3"
             }
           ]
