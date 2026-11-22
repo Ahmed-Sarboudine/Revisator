@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Traitement de données : Contrôle final</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Traitement de données · Fiche de révision · Contrôle final</p>
+    <h1>Contrôle final : ce qu'il faut savoir</h1>
+  </div>
+  <p class="source">D'après la page « Contrôle final » du cours<br>(les annonces faites en séance prévalent)</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">L'épreuve</span>
+  <ul>
+    <li><strong>Écrit de 1 h 30</strong>, sur papier. Aucune calculatrice, aucun document, aucun appareil : les calculs se font de tête, sur des nombres simples.</li>
+    <li>Surtout un <strong>QCM corrigé par machine</strong>, plus <strong>deux courtes questions ouvertes</strong>.</li>
+    <li>Une <strong>page de ressources</strong> au début du sujet : figures et tableaux, et un <strong>formulaire</strong> (matrice de confusion, accuracy, précision, rappel, spécificité). Inutile de les apprendre par cœur : il faut savoir les <strong>lire</strong>.</li>
+    <li>Pas besoin de tout traiter pour avoir 20/20 : le seuil est fixé après la correction.</li>
+    <li>Ni démonstration, ni formule d'algorithme, ni syntaxe Python : le code n'apparaît qu'en courts extraits à lire.</li>
+  </ul>
+</div>
+
+<div class="deux-colonnes">
+  <div class="boite piege">
+    <span class="boite-titre">Consignes du jour (copie lue par machine)</span>
+    <ul>
+      <li>Stylo <strong>bleu ou noir</strong> et <strong>blanco</strong>. Pas de crayon à papier.</li>
+      <li>Tout se reporte sur la <strong>feuille de réponses</strong> à la fin du sujet ; le reste n'est pas corrigé.</li>
+      <li><strong>Colorier entièrement</strong> chaque case (pas de croix, de coche ni de rond). Erreur : blanco sur la case, sans redessiner le contour.</li>
+      <li>Questions <strong>♣</strong> : plusieurs bonnes réponses possibles ; <strong>chaque mauvaise case retire des points</strong> (jamais moins de 0 par question). Les autres : une seule bonne réponse.</li>
+      <li>Rendre le sujet complet et la feuille. Une consigne non respectée qui oblige à corriger à la main peut coûter des points.</li>
+    </ul>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Ce qui est évalué</span>
+    <p>Cours 1 à 5 et TD 1 à 4, en privilégiant ce qui a été vu <strong>à la fois en cours et en TD</strong>. Le contrôle vérifie que vous comprenez les fondamentaux :</p>
+    <ul>
+      <li>à quoi sert chaque méthode, et sur quelles <strong>hypothèses</strong> elle repose ;</li>
+      <li>quelle méthode <strong>choisir</strong> dans une situation donnée ;</li>
+      <li>comment <strong>lire</strong> une métrique ou une figure, et quels <strong>pièges</strong> éviter.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>1. Programme, par ordre d'importance</h2>
+<table>
+  <tr><th>#</th><th>Thème</th><th>Supports</th><th>Points à maîtriser</th></tr>
+  <tr><td>1</td><td><strong>Évaluer un modèle</strong></td><td>cours 1 ; cours 4, notebooks « Classification et métriques » et « Déséquilibre et seuil »</td><td>matrice de confusion, précision, rappel, spécificité ; classes déséquilibrées et classifieur naïf ; rôle du seuil ; lire une courbe ROC ; apprentissage / validation / test ; sous- et sur-apprentissage</td></tr>
+  <tr><td>2</td><td><strong>TD 3 et TD 4</strong></td><td>grippe, spam SMS</td><td>les <strong>choix</strong> faits et les <strong>erreurs à éviter</strong> (plus que le code) : doublons, fuite d'information, découpage par date, logarithme, référence naïve, choix du seuil</td></tr>
+  <tr><td>3</td><td><strong>Régression</strong></td><td>cours 3, notebook « Modèles »</td><td>mesures d'erreur et leur lecture, analyse des résidus, régularisation (Ridge, Lasso), K plus proches voisins et leurs limites en grande dimension</td></tr>
+  <tr><td>4</td><td><strong>Classification bayésienne</strong></td><td>cours 5, les trois notebooks</td><td>hypothèses de chaque méthode (génératif, LDA, QDA, Bayes naïf) ; pourquoi le choix de la loi compte autant</td></tr>
+  <tr><td>5</td><td><strong>Données et représentation</strong></td><td>cours 3 « Indicateurs et visualisation » ; cours 2 ; TD 1</td><td>indicateurs (médiane/moyenne, corrélation), graphiques ; sac de mots, TF-IDF, K-Means ; rôle du pas dans la descente de gradient</td></tr>
+</table>
+
+<div class="boite astuce"><span class="boite-titre">Hors programme du contrôle</span>L'aire sous la courbe ROC (<strong>AUC</strong>) et la <strong>courbe précision-rappel</strong> · <strong>BM25</strong>, le score de <strong>silhouette</strong> et l'<strong>ARI</strong> · l'<strong>estimation par noyaux</strong> et la <strong>méthode du nombre d'or</strong> · les ouvertures (SVM, DBSCAN, clustering spectral, mélanges de gaussiennes) · les <strong>valeurs chiffrées exactes</strong> des notebooks. Les QCM du site peuvent encore contenir des questions sur ces notions : passez-les.</div>
+
+<h2>2. Le formulaire (donné) et comment le lire</h2>
+<div class="deux-colonnes">
+  <div>
+    <table>
+      <tr><th></th><th>prédit négatif</th><th>prédit positif</th></tr>
+      <tr><th>vrai négatif</th><td>VN</td><td>FP</td></tr>
+      <tr><th>vrai positif</th><td>FN</td><td>VP</td></tr>
+    </table>
+    <ul>
+      <li><strong>accuracy</strong> = (VP + VN) / total : à comparer au <strong>classifieur naïf</strong> (proportion de la classe majoritaire).</li>
+      <li><strong>précision</strong> = VP / (VP + FP) : parmi les déclarés positifs, la part vraiment positive (colonne).</li>
+      <li><strong>rappel</strong> = VP / (VP + FN) : parmi les vrais positifs, la part détectée (ligne).</li>
+      <li><strong>spécificité</strong> = VN / (VN + FP) : parmi les vrais négatifs, la part reconnue (ligne).</li>
+    </ul>
+  </div>
+  <div class="exemple"><strong>Calcul type (de tête)</strong><br>
+    1 000 SMS : 120 spams, 880 légitimes ; VP = 90, FN = 30, FP = 10, VN = 870.<br>
+    précision = 90/100 = <strong>0,90</strong> · rappel = 90/120 = <strong>0,75</strong><br>
+    accuracy = 960/1 000 = <strong>0,96</strong> · naïf « tout légitime » = <strong>0,88</strong><br>
+    spécificité = 870/880 ≈ <strong>0,99</strong><br><br>
+    <strong>Réflexes</strong> : FN = « positif raté » ; le dénominateur du rappel est le nombre de vrais positifs (une ligne), celui de la précision le nombre de déclarés positifs (une colonne).</div>
+</div>
+
+<h2>3. Les pièges qui reviennent</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li><strong>Accuracy et classe rare</strong> : 97 % peut être le score du classifieur naïf (rappel nul). Regarder le rappel de la classe rare.</li>
+      <li><strong>Seuil</strong> : 0,5 n'est optimal que si les probabilités sont justes et les erreurs de même coût. Baisser le seuil : rappel ↑, faux positifs ↑, spécificité ↓.</li>
+      <li><strong>Courbe ROC</strong> : un point = un seuil ; (0, 1) = parfait ; diagonale = hasard ; ne dépend que de l'ordre des scores.</li>
+      <li><strong>Validation vs test</strong> : choisir (hyperparamètres, seuil, modèle) sur la validation ou par validation croisée ; le test une seule fois à la fin.</li>
+      <li><strong>Sur-apprentissage</strong> : très bon en apprentissage, mauvais en validation (R² peut être négatif). <strong>Sous-apprentissage</strong> : mauvais partout.</li>
+      <li><strong>Rééquilibrer</strong> (<code>class_weight</code>) ≈ déplacer le seuil, fausse les probabilités.</li>
+    </ul>
+  </div>
+  <div>
+    <ul>
+      <li><strong>Fuite d'information</strong> : variable indisponible au moment de prédire (Queries<sub>t</sub> le lundi), colonne calculée à partir de la cible (sel/sodium), dictionnaire appris avec le test.</li>
+      <li><strong>Doublons</strong> : tout ce qui est lié reste du même côté du découpage (en apprentissage).</li>
+      <li><strong>Séries temporelles</strong> : découper par date, décaler avant de découper, battre une référence naïve.</li>
+      <li><strong>Résidus structurés</strong> ⇒ variable oubliée ou mauvaise forme ; on ne supprime pas les points qui gênent.</li>
+      <li><strong>Colinéarité</strong> : bon R², coefficients instables. <strong>Corrélation nulle</strong> ≠ absence de lien (seulement pas de lien linéaire).</li>
+      <li><strong>KNN</strong> : standardiser ; se dégrade en grande dimension ; n'extrapole pas.</li>
+      <li><strong>Génératif</strong> : vaut ce que vaut la loi choisie ; Bayes naïf trop sûr de lui si variables corrélées ; QDA gourmande en exemples.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="boite methode">
+  <span class="boite-titre">Questions ouvertes : la démarche à rédiger</span>
+  Situer le problème (régression ou classification, classes déséquilibrées ?) → dire ce qui ne va pas dans le résultat proposé, avec la <strong>métrique adaptée</strong> et la <strong>référence naïve</strong> → proposer la correction (seuil, variables disponibles, logarithme, régularisation, loi mieux choisie…) → préciser <strong>sur quelles données</strong> on fait les choix (validation, validation croisée) et comment on évalue (test, une fois). Phrases courtes, un argument par phrase.
+</div>
+
+<p style="color:#6b6860;font-size:8.5pt">Sur le site : le <strong>sujet d'entraînement</strong> (40 questions + 2 questions ouvertes, avec feuille de réponses) est le document de cette section, son <strong>corrigé</strong> détaille chaque réponse, et le QCM interactif reprend les 40 questions.</p>
+
+</body>
+</html>

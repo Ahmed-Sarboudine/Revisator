@@ -1,6 +1,15 @@
 {
   "versions": [
     {
+      "date": "2026-11-22",
+      "titre": "Cours 5 et préparation du contrôle final",
+      "ajouts": [
+        { "texte": "Traitement de données : cours 5 (discrimination bayésienne), avec ses notebooks en PDF, une fiche et un QCM de 40 questions", "lien": "#/m/traitement-donnees" },
+        { "texte": "Traitement de données : sujet d'entraînement au contrôle final (40 questions dont des ♣, 2 questions ouvertes), avec corrigé et QCM interactif", "lien": "#/m/traitement-donnees" },
+        { "texte": "Traitement de données : fiche « Contrôle final » avec les consignes, le programme par priorité, le formulaire et les pièges", "lien": "#/m/traitement-donnees" }
+      ]
+    },
+    {
       "date": "2026-11-17",
       "titre": "Traitement de données au complet",
       "ajouts": [

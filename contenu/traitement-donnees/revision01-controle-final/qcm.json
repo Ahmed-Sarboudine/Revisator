@@ -1,0 +1,626 @@
+{
+  "matiere": "Traitement de données",
+  "document": "revision",
+  "titre": "Contrôle final : sujet de révision",
+  "questions": [
+    {
+      "id": "cf-001",
+      "type": "unique",
+      "exercice": "**Ressource A — filtre anti-spam.** Sur 1 000 SMS de test (120 spams, 880 légitimes), le filtre donne : VP = 90 (spams bloqués), FN = 30 (spams passés), FP = 10 (légitimes bloqués), VN = 870. Classe positive : spam.\n\nFormulaire : précision = VP / (VP + FP) · rappel = VP / (VP + FN) · spécificité = VN / (VN + FP) · accuracy = (VP + VN) / total.",
+      "enonce": "Quelle est la **précision** du filtre ?",
+      "choix": [
+        "0,75",
+        "0,90",
+        "0,99",
+        "0,96"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Précision = 90 / (90 + 10) = **0,90** : parmi les SMS bloqués, 9 sur 10 sont vraiment des spams. 0,75 est le rappel (90/120), 0,96 l'accuracy (960/1000), 0,99 la spécificité (870/880)."
+    },
+    {
+      "id": "cf-002",
+      "type": "unique",
+      "exercice": "**Ressource A — filtre anti-spam.** Sur 1 000 SMS de test (120 spams, 880 légitimes) : VP = 90, FN = 30, FP = 10, VN = 870. Classe positive : spam.",
+      "enonce": "Quel est le **rappel** du filtre ?",
+      "choix": [
+        "0,12",
+        "0,90",
+        "0,25",
+        "0,75"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Rappel = 90 / (90 + 30) = 90/120 = **0,75** : le filtre détecte 3 spams sur 4. On le calcule **dans la vraie classe positive** (les 120 spams)."
+    },
+    {
+      "id": "cf-003",
+      "type": "unique",
+      "exercice": "**Ressource A — filtre anti-spam.** Sur 1 000 SMS de test (120 spams, 880 légitimes) : VP = 90, FN = 30, FP = 10, VN = 870.",
+      "enonce": "Le filtre a 96 % d'accuracy. Quelle est l'accuracy du classifieur naïf qui laisse **tout** passer ?",
+      "choix": [
+        "88 %",
+        "12 %",
+        "50 %, comme le hasard",
+        "96 %"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Le naïf prédit toujours la classe majoritaire (légitime) : il a raison sur les 880 légitimes, soit **88 %**. Le gain réel du filtre se mesure par rapport à 88 %, pas à 0 % ni à 50 %."
+    },
+    {
+      "id": "cf-004",
+      "type": "multiple",
+      "exercice": "**Ressource A — filtre anti-spam.** VP = 90, FN = 30, FP = 10, VN = 870. Pour l'opérateur, bloquer un SMS légitime est bien plus grave que laisser passer un spam.",
+      "enonce": "♣ On **baisse** le seuil de décision du filtre. Quels effets attendre ?",
+      "choix": [
+        "La spécificité augmente forcément",
+        "Le nombre de faux positifs augmente ou reste égal",
+        "La précision augmente forcément",
+        "Le rappel augmente ou reste égal"
+      ],
+      "reponses": [
+        1,
+        3
+      ],
+      "explication": "Baisser le seuil, c'est déclarer plus de SMS « spam » : on attrape plus de spams (rappel ↑) mais on bloque aussi plus de légitimes (FP ↑, spécificité ↓). La précision baisse en général. Vu le fil rouge, il faut fixer le seuil selon une exigence sur les faux positifs."
+    },
+    {
+      "id": "cf-005",
+      "type": "unique",
+      "enonce": "Un modèle de détection d'une maladie rare (1 % des patients) annonce **99 % d'accuracy**. Que peut-on en conclure ?",
+      "choix": [
+        "Le modèle est excellent : il ne se trompe qu'une fois sur cent",
+        "Le modèle détecte 99 % des malades",
+        "Rien : « tout sain » ferait aussi 99 %",
+        "Le modèle sur-apprend, car 99 % est un score trop élevé pour être vrai"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Avec 1 % de malades, le classifieur naïf « tout sain » a 99 % d'accuracy et un rappel nul. Quand une classe est rare, l'accuracy est trompeuse : il faut regarder le rappel de la classe rare, et comparer au naïf."
+    },
+    {
+      "id": "cf-006",
+      "type": "unique",
+      "enonce": "Dans une matrice de confusion binaire, un **faux négatif** est :",
+      "choix": [
+        "Un exemple que le modèle n'a pas pu classer, faute de score",
+        "Un positif que le modèle a déclaré négatif",
+        "Un négatif correctement reconnu",
+        "Un négatif que le modèle a déclaré positif"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "« Faux » = le modèle s'est trompé ; « négatif » = ce qu'il a prédit. Un FN est donc un vrai positif prédit négatif (un malade non détecté, un spam qui passe)."
+    },
+    {
+      "id": "cf-007",
+      "type": "unique",
+      "enonce": "Pour un modèle qui donne une probabilité $\\pi(\\mathbf{x})$, la règle « prédire 1 si $\\pi > 0{,}5$ » minimise le nombre d'erreurs. À quelle condition faut-il **changer** ce seuil ?",
+      "choix": [
+        "Quand la base d'apprentissage est grande",
+        "Quand les deux erreurs n'ont pas le même coût",
+        "Quand le modèle a plus de 10 variables explicatives",
+        "Jamais : 0,5 est toujours le meilleur seuil"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Le seuil 0,5 suppose des probabilités justes et des erreurs de même coût. Si rater un malade (ou bloquer un SMS légitime) est plus grave, on déplace le seuil. C'est un choix de l'utilisateur, qui dépend de l'usage."
+    },
+    {
+      "id": "cf-008",
+      "type": "unique",
+      "enonce": "Sur une **courbe ROC**, à quoi correspond le coin en haut à gauche, de coordonnées (0, 1) ?",
+      "choix": [
+        "Au classifieur qui répond au hasard, sans regarder les données",
+        "Au classifieur qui déclare tout positif",
+        "Au classifieur parfait, sans aucune erreur",
+        "Au classifieur qui déclare tout négatif"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Abscisse : taux de faux positifs (1 − spécificité) ; ordonnée : rappel. (0, 1) = 0 % de FP et 100 % de rappel. La diagonale correspond au hasard ; « tout positif » est le point (1, 1), « tout négatif » le point (0, 0)."
+    },
+    {
+      "id": "cf-009",
+      "type": "multiple",
+      "enonce": "♣ Quelles affirmations sur la **courbe ROC** sont vraies ?",
+      "choix": [
+        "Plus elle est proche de la diagonale, meilleur est le modèle",
+        "Chaque point correspond à un seuil de décision",
+        "Elle se trace à partir du score, pas des classes prédites",
+        "Elle change si l'on multiplie tous les scores par 2"
+      ],
+      "reponses": [
+        1,
+        2
+      ],
+      "explication": "La courbe ROC essaie tous les seuils sur le score. Elle ne dépend que de l'**ordre** des scores : multiplier par 2 ne change rien. La diagonale, c'est le hasard : plus la courbe s'en écarte vers le haut à gauche, mieux c'est."
+    },
+    {
+      "id": "cf-010",
+      "type": "unique",
+      "exercice": "**Ressource D — régression polynomiale.** R² selon le degré $q$ :\n\n| degré $q$ | 1 | 3 | 9 | 15 |\n|---|---|---|---|---|\n| R² apprentissage | 0,62 | 0,91 | 0,97 | 0,99 |\n| R² validation | 0,60 | 0,89 | 0,71 | −0,40 |",
+      "enonce": "Quel degré faut-il retenir ?",
+      "choix": [
+        "$q = 15$",
+        "$q = 3$",
+        "$q = 9$",
+        "$q = 1$"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "On choisit l'hyperparamètre sur la **validation** : le meilleur R² de validation est 0,89 pour $q = 3$. Le R² d'apprentissage augmente toujours avec le degré : il ne sert pas à choisir."
+    },
+    {
+      "id": "cf-011",
+      "type": "multiple",
+      "exercice": "**Ressource D — régression polynomiale.** R² selon le degré $q$ :\n\n| degré $q$ | 1 | 3 | 9 | 15 |\n|---|---|---|---|---|\n| R² apprentissage | 0,62 | 0,91 | 0,97 | 0,99 |\n| R² validation | 0,60 | 0,89 | 0,71 | −0,40 |",
+      "enonce": "♣ Quelles lectures sont correctes ?",
+      "choix": [
+        "$q = 1$ sous-apprend : erreurs fortes en apprentissage comme en validation",
+        "$q = 15$ est le meilleur modèle, car son R² d'apprentissage est le plus haut",
+        "$q = 15$ sur-apprend : il fait pire que la moyenne en validation",
+        "Un R² négatif est impossible, il y a une erreur dans le tableau"
+      ],
+      "reponses": [
+        0,
+        2
+      ],
+      "explication": "R² < 0 : le modèle prédit moins bien que la moyenne constante, typique du sur-apprentissage sur des données non vues. $q = 1$ est trop simple partout (sous-apprentissage). Un R² négatif est possible en validation ou en test."
+    },
+    {
+      "id": "cf-012",
+      "type": "unique",
+      "enonce": "Pourquoi ne faut-il **pas** choisir un hyperparamètre (degré, $\\alpha$, K, seuil) en regardant la base de **test** ?",
+      "choix": [
+        "Parce que la base de test est toujours trop petite",
+        "Parce que cela provoque du sous-apprentissage",
+        "Le score de test annoncé devient trop optimiste",
+        "Parce que le test contient forcément des exemples déjà vus en apprentissage"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Apprentissage : apprendre les paramètres ; **validation** (ou validation croisée) : choisir les hyperparamètres et le modèle ; **test** : estimer une seule fois, à la fin, la performance sur des données jamais utilisées."
+    },
+    {
+      "id": "cf-013",
+      "type": "unique",
+      "enonce": "Avec peu d'exemples par classe, à quoi sert la **validation croisée** pour choisir un seuil ?",
+      "choix": [
+        "À apprendre le modèle sur l'apprentissage et le test réunis, pour avoir plus d'exemples",
+        "Prédire chaque exemple par un modèle qui ne l'a pas vu",
+        "À augmenter le nombre d'exemples de la base de test",
+        "À rééquilibrer les classes avant l'apprentissage"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Cours 4 et TD 4 : on découpe l'apprentissage en $k$ parts ; chaque part est prédite par un modèle appris sur les autres. On choisit le seuil sur ces prédictions, puis on évalue une seule fois sur le test."
+    },
+    {
+      "id": "cf-014",
+      "type": "unique",
+      "enonce": "Pour des données **temporelles** (une mesure par semaine), comment séparer apprentissage et test ?",
+      "choix": [
+        "En mettant toutes les semaines épidémiques dans le test",
+        "Par date : le passé en apprentissage, la suite en test",
+        "Au hasard, comme pour des exemples indépendants",
+        "Une semaine sur deux dans chaque base"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "TD 3 : deux semaines successives se ressemblent ; un découpage aléatoire laisse le modèle « voir » l'avenir. On sépare par date, et on décale la série (variables retardées) **avant** de la découper."
+    },
+    {
+      "id": "cf-015",
+      "type": "unique",
+      "enonce": "TD 3 : le lundi de la semaine $t$, l'ILI n'est connu que jusqu'à $t-2$ et les requêtes jusqu'à $t-1$. Un modèle utilise $\\mathrm{Queries}_t$ et obtient un excellent score de test. Quel est le problème ?",
+      "choix": [
+        "Une colinéarité entre les requêtes de deux semaines",
+        "Aucun problème, puisque le score de test est très bon",
+        "Une fuite : cette variable est inconnue le lundi",
+        "Du sous-apprentissage : il manque des variables"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "On ne doit utiliser que des variables **réellement disponibles** au moment de la prédiction. Sinon le modèle a l'air bon sur le test mais est inutilisable en pratique."
+    },
+    {
+      "id": "cf-016",
+      "type": "unique",
+      "enonce": "TD 3 : pourquoi régresser $\\log(\\mathrm{ILI})$ plutôt que l'ILI ?",
+      "choix": [
+        "Pour que toutes les prédictions soient négatives",
+        "Parce que la régression linéaire n'accepte que des valeurs entre 0 et 1",
+        "Une épidémie croît de façon multiplicative",
+        "Pour supprimer la dérive des requêtes Google d'une saison à l'autre"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Le nuage Queries/ILI est courbé (exponentiel) et sa dispersion croît avec le niveau. Après le logarithme, il est à peu près linéaire, à dispersion constante. On revient à l'ILI par l'exponentielle. Le logarithme ne corrige pas la dérive."
+    },
+    {
+      "id": "cf-017",
+      "type": "unique",
+      "enonce": "TD 3 : le modèle « requêtes seules » a un R² de 0,71 en apprentissage mais 0,21 en test. La cause identifiée dans le TD est :",
+      "choix": [
+        "La base de test contient trop de semaines",
+        "Une dérive du comportement des internautes",
+        "Un sur-apprentissage dû à un polynôme de degré beaucoup trop élevé",
+        "Une erreur dans le calcul du R² de test"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Après la pandémie H1N1 de 2009, très médiatisée, le lien entre requêtes et consultations change : le modèle surestime l'ILI. C'est l'échec de Google Flu Trends. Combiner les requêtes avec l'ILI passé corrige le niveau."
+    },
+    {
+      "id": "cf-018",
+      "type": "multiple",
+      "enonce": "♣ TD 3 : quelles pratiques sont recommandées ?",
+      "choix": [
+        "Comparer chaque modèle à une référence naïve (le dernier ILI connu)",
+        "Coder la semaine de l'année par un sinus et un cosinus",
+        "Choisir le modèle final d'après le meilleur score de test",
+        "Utiliser le numéro de semaine (1 à 52) tel quel comme variable"
+      ],
+      "reponses": [
+        0,
+        1
+      ],
+      "explication": "Un modèle qui ne bat pas la référence naïve n'a aucun intérêt. Le numéro de semaine est cyclique (52 est voisine de 1) : on le code par sin et cos. Le choix se fait sur la validation, le test sert une fois à la fin."
+    },
+    {
+      "id": "cf-019",
+      "type": "unique",
+      "enonce": "TD 4 : la base de SMS contient de nombreux doublons. Où le TD place-t-il les SMS répétés ?",
+      "choix": [
+        "Nulle part : ils sont supprimés",
+        "Une copie dans chaque base, tirée au hasard",
+        "Tous dans le test, pour vérifier qu'ils sont reconnus",
+        "Tous en apprentissage, avec leurs copies"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Un SMS du test déjà vu à l'apprentissage est reconnu, pas généralisé : le score serait optimiste. Règle : ce qui est lié (même texte, même personne) reste du même côté du découpage ; ici, en apprentissage, où ces messages fréquents restent utiles."
+    },
+    {
+      "id": "cf-020",
+      "type": "unique",
+      "enonce": "TD 4 : sur quelle base le **dictionnaire** du sac de mots doit-il être appris ?",
+      "choix": [
+        "Sur la base de test uniquement",
+        "Sur la seule base d'apprentissage",
+        "Sur l'apprentissage et le test réunis",
+        "Sur un dictionnaire anglais complet, téléchargé à part"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Le dictionnaire fait partie du modèle : l'apprendre avec le test serait une fuite. Les mots du test absents du dictionnaire sont simplement ignorés par `transform`."
+    },
+    {
+      "id": "cf-021",
+      "type": "unique",
+      "enonce": "TD 4 : l'opérateur exige « au plus 1 SMS légitime sur 1 000 bloqué ». Quel critère contraint-on, et quel seuil prend-on ?",
+      "choix": [
+        "Spécificité ≥ 0,999 ; le plus petit seuil",
+        "Rappel ≥ 0,999, et le plus grand seuil possible",
+        "Précision ≥ 0,999, et toujours le seuil 0,5",
+        "Accuracy ≥ 0,999 ; le seuil qui la maximise sur la base de test"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "La spécificité est la part des légitimes reconnus. Parmi les seuils qui la respectent (en validation croisée), le plus petit est celui qui détecte le plus de spams."
+    },
+    {
+      "id": "cf-022",
+      "type": "unique",
+      "enonce": "Avec `class_weight=\"balanced\"`, une régression logistique sur une classe rare :",
+      "choix": [
+        "Revient surtout à déplacer le seuil de décision",
+        "Supprime le besoin de choisir un seuil",
+        "Classe nettement mieux les exemples qu'avant",
+        "Rend les probabilités mieux calibrées pour la classe rare"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Cours 4 et TD 4 : le rééquilibrage décale essentiellement la constante $\\mu_0$. Il ne rend pas le modèle meilleur pour classer, et ses probabilités deviennent trop élevées. Mieux vaut garder le modèle et choisir le seuil selon l'usage."
+    },
+    {
+      "id": "cf-023",
+      "type": "unique",
+      "enonce": "Une régression logistique a un coefficient $\\mu_j$ tel que $e^{\\mu_j} = 3$ pour la variable $x_j$. Comment l'interpréter ?",
+      "choix": [
+        "Quand $x_j$ augmente de 1, la probabilité est multipliée par 3",
+        "Quand $x_j$ augmente de 1, la probabilité augmente de 3 points de pourcentage",
+        "Si $x_j$ augmente de 1, la cote est × 3",
+        "La variable $x_j$ explique 3 % de la classe"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Le coefficient agit sur la log-cote : la **cote** $\\pi/(1-\\pi)$ est multipliée par $e^{\\mu_j}$. L'effet sur la probabilité dépend de l'endroit où l'on est sur la sigmoïde."
+    },
+    {
+      "id": "cf-024",
+      "type": "unique",
+      "enonce": "Qu'est-ce qu'un **résidu** en régression ?",
+      "choix": [
+        "La part de la variance de $y$ expliquée par le modèle",
+        "Le coefficient d'une variable du modèle",
+        "La variance de la variable à prédire",
+        "L'écart $y_i - \\hat{y}_i$ entre vérité et prédiction"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Cours 3 : on trace les résidus en fonction des prédictions. Un bon modèle donne un nuage sans structure, centré sur 0, d'épaisseur constante. Une structure révèle une variable oubliée ou un mauvais choix de forme."
+    },
+    {
+      "id": "cf-025",
+      "type": "unique",
+      "enonce": "Les résidus d'une régression forment des **bandes obliques** et une colonne de points à prédiction constante. Qu'en conclure ?",
+      "choix": [
+        "Il faut retirer de la base les exemples dont le résidu est grand",
+        "Il manque des variables au modèle",
+        "Il faut calculer la SSE au lieu du R²",
+        "Le modèle est parfait, les résidus sont aléatoires"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Cours 3 : avec les lipides seuls, tous les aliments sans lipides reçoivent la même énergie prédite, alors que leurs résidus vont de −450 à +1 200 kJ. Des résidus structurés indiquent un modèle incomplet. On ne supprime pas des points parce qu'ils gênent."
+    },
+    {
+      "id": "cf-026",
+      "type": "multiple",
+      "enonce": "♣ Quelles mesures d'erreur s'expriment dans l'**unité de la variable prédite** ?",
+      "choix": [
+        "La RMSE",
+        "Le MSE",
+        "Le R²",
+        "La MAE"
+      ],
+      "reponses": [
+        0,
+        3
+      ],
+      "explication": "RMSE = racine du MSE et MAE = moyenne des erreurs absolues : on lit « on se trompe de tant ». Le MSE est dans l'unité au carré, le R² est sans unité (1 = parfait, 0 = moyenne, < 0 = pire que la moyenne)."
+    },
+    {
+      "id": "cf-027",
+      "type": "unique",
+      "enonce": "Quel est l'effet du **Lasso** par rapport à Ridge ?",
+      "choix": [
+        "Il supprime le besoin de standardiser les variables avant l'apprentissage",
+        "Il met des coefficients exactement à zéro",
+        "Il rend tous les coefficients égaux entre eux",
+        "Il augmente l'amplitude des coefficients"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Ridge pénalise la somme des carrés des coefficients et les réduit ; le Lasso pénalise leurs valeurs absolues et en annule certains. Dans les deux cas, on standardise, et la force de la pénalité se choisit sur la validation."
+    },
+    {
+      "id": "cf-028",
+      "type": "multiple",
+      "enonce": "♣ Quelles sont des **limites** de la méthode des K plus proches voisins ?",
+      "choix": [
+        "Elle se dégrade quand le nombre de variables augmente",
+        "Elle est sensible aux unités : il faut standardiser",
+        "Elle suppose une relation linéaire entre les variables",
+        "Elle n'extrapole pas en dehors des données"
+      ],
+      "reponses": [
+        0,
+        1,
+        3
+      ],
+      "explication": "En grande dimension, les « voisins » sont tous lointains (fléau de la dimension). La distance est dominée par la variable de plus grande échelle si l'on ne standardise pas. Hors des données, elle recopie des voisins lointains. Elle ne suppose **aucune** forme : c'est une méthode non paramétrique."
+    },
+    {
+      "id": "cf-029",
+      "type": "unique",
+      "enonce": "Deux variables explicatives sont presque des combinaisons linéaires l'une de l'autre (colinéarité). Que se passe-t-il pour une régression linéaire ?",
+      "choix": [
+        "Le modèle ne peut plus faire la moindre prédiction sur de nouvelles données",
+        "Le R² reste bon, les coefficients deviennent instables",
+        "Les coefficients deviennent tous nuls",
+        "Le R² devient négatif"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Cours 3 (l'eau dans Ciqual) : une infinité de jeux de coefficients prédisent presque aussi bien. Un bon R² ne garantit pas des coefficients interprétables. Remèdes : retirer la variable redondante, ou régulariser (Ridge)."
+    },
+    {
+      "id": "cf-030",
+      "type": "unique",
+      "enonce": "Quel est le **seul** choix de modélisation d'un classifieur bayésien génératif ?",
+      "choix": [
+        "Le nombre de voisins K",
+        "La loi de probabilité de chaque classe",
+        "Le nombre de couches du réseau de neurones utilisé",
+        "Le pas de la descente de gradient"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Cours 5 : les proportions se comptent, la probabilité a posteriori se déduit par la formule de Bayes. Il faut seulement choisir la loi $f_k$ de chaque classe : un modèle génératif n'est bon que si cette loi est la bonne."
+    },
+    {
+      "id": "cf-031",
+      "type": "multiple",
+      "enonce": "♣ Quelles affirmations sur la **LDA** et la **QDA** sont vraies ?",
+      "choix": [
+        "La QDA donne des frontières de décision courbes",
+        "La LDA suppose une matrice de covariance commune à toutes les classes",
+        "La QDA demande plus d'exemples que la LDA",
+        "La LDA suppose que les variables sont indépendantes"
+      ],
+      "reponses": [
+        0,
+        1,
+        2
+      ],
+      "explication": "LDA : covariance commune, frontières linéaires. QDA : une covariance par classe, frontières quadratiques, beaucoup plus de paramètres (impossible avec trop peu d'exemples). C'est le **Bayes naïf** qui suppose l'indépendance."
+    },
+    {
+      "id": "cf-032",
+      "type": "unique",
+      "enonce": "Le Bayes naïf gaussien ne fait que 57 % sur des images de chiffres, contre 84 % pour le Bayes naïf de Bernoulli. Quelle leçon en tirer ?",
+      "choix": [
+        "Il faut toujours plus de paramètres pour mieux classer",
+        "Le choix de la loi de chaque pixel est décisif",
+        "La loi de Bernoulli a été choisie sur la base de test",
+        "L'hypothèse d'indépendance entre pixels est la seule cause de l'échec"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Même hypothèse d'indépendance, même nombre de paramètres : seule la loi change. **Un modèle génératif vaut ce que vaut la loi choisie.** Il faut regarder les histogrammes avant de choisir."
+    },
+    {
+      "id": "cf-033",
+      "type": "unique",
+      "enonce": "Le Bayes naïf utilise 9 mesures corporelles fortement corrélées entre elles. Que risque-t-on ?",
+      "choix": [
+        "Un modèle impossible à apprendre",
+        "Une accuracy nulle",
+        "Des probabilités beaucoup trop sûres d'elles",
+        "Des frontières de décision circulaires autour des moyennes"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Cours 5 : il compte plusieurs fois la même information (une femme grande a aussi un grand pied et une grande main). Les décisions restent raisonnables, mais les probabilités sont mal calibrées."
+    },
+    {
+      "id": "cf-034",
+      "type": "unique",
+      "enonce": "Un modèle génératif appris sur une base à 67 % d'hommes doit servir dans une population à parité. Que faire ?",
+      "choix": [
+        "Retirer la taille des variables utilisées",
+        "Réapprendre tout le modèle sur une base où l'on a dupliqué des femmes",
+        "Rien : la probabilité a posteriori ne dépend pas des proportions",
+        "Mettre $q_1 = 0{,}5$ sans réapprendre les lois"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Les lois $f_k$ de chaque classe ne changent pas : seules les proportions $q_k$ changent. On les adapte à la population visée (`priors`), ce qui décale le seuil de décision."
+    },
+    {
+      "id": "cf-035",
+      "type": "multiple",
+      "enonce": "♣ Quelles affirmations sur l'**ACP** sont vraies ?",
+      "choix": [
+        "Elle n'utilise pas les classes",
+        "Elle peut transformer de nouveaux exemples",
+        "Elle garde les directions de plus grande variance",
+        "Elle conserve les voisinages, comme le t-SNE"
+      ],
+      "reponses": [
+        0,
+        1,
+        2
+      ],
+      "explication": "L'ACP est non supervisée, linéaire, et a une méthode `transform` : on peut l'utiliser avant un modèle. Le t-SNE, lui, conserve les voisinages mais ne sert qu'à visualiser."
+    },
+    {
+      "id": "cf-036",
+      "type": "unique",
+      "enonce": "Une variable suit une distribution très asymétrique (quelques valeurs très grandes). Quel indicateur décrit le mieux une valeur « typique » ?",
+      "choix": [
+        "Le maximum",
+        "L'écart type",
+        "La moyenne",
+        "La médiane"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Cours 3 : la médiane est robuste, la moyenne est tirée vers le haut par les grandes valeurs. Pour les lipides de Ciqual : moyenne > 10 g, mais la moitié des aliments en ont moins de 5 g."
+    },
+    {
+      "id": "cf-037",
+      "type": "unique",
+      "enonce": "La corrélation entre $x$ et $y$ vaut presque 0. Que peut-on en conclure ?",
+      "choix": [
+        "Que $x$ est la cause de $y$",
+        "Que $y$ ne dépend pas de $x$",
+        "Que les deux variables ont la même moyenne et la même variance",
+        "Seulement qu'il n'y a pas de lien linéaire"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Cours 3 : $y = x^2$ avec $x$ centré donne une corrélation nulle. La corrélation ne mesure que le lien **linéaire** et n'implique pas de causalité. Toujours tracer les données."
+    },
+    {
+      "id": "cf-038",
+      "type": "unique",
+      "enonce": "Cours 2 : pourquoi pondérer un sac de mots par **TF-IDF** ?",
+      "choix": [
+        "Pour classer les documents sans étiquette",
+        "Pour traduire les documents dans une même langue",
+        "Pour supprimer tous les mots qui n'apparaissent qu'une seule fois dans le corpus",
+        "Pour réduire le poids des mots très répandus"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "L'IDF (fréquence documentaire inverse) réduit le poids des mots très répandus, qui ne distinguent rien, et met en avant les mots rares et spécifiques d'un document."
+    },
+    {
+      "id": "cf-039",
+      "type": "multiple",
+      "enonce": "♣ Quelles affirmations sur l'algorithme des **K-moyennes** sont vraies ?",
+      "choix": [
+        "Il est sensible à l'échelle des variables",
+        "Il trouve toujours des groupes de forme quelconque",
+        "Le nombre de groupes K est choisi à l'avance",
+        "C'est une méthode non supervisée"
+      ],
+      "reponses": [
+        0,
+        2,
+        3
+      ],
+      "explication": "Cours 2 : les K-moyennes regroupent sans étiquette autour de K centres (choisis par exemple avec la méthode du coude). Elles reposent sur une distance (standardiser) et peinent avec des groupes non convexes."
+    },
+    {
+      "id": "cf-040",
+      "type": "unique",
+      "enonce": "TD 1 : la descente de gradient à pas fixe **diverge** (les valeurs explosent). Quelle est la cause la plus probable ?",
+      "choix": [
+        "Le pas est trop grand",
+        "Le point de départ est trop proche du minimum",
+        "Le pas est trop petit",
+        "La fonction est convexe"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Pas trop petit : convergence très lente. Pas trop grand : oscillations de plus en plus fortes, puis divergence. Le pas est un hyperparamètre ; sur une fonction convexe, le point de départ ne change que le nombre d'itérations."
+    }
+  ]
+}
