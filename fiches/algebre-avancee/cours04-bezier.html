@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Algèbre avancée, Cours 4 : courbes de Bézier</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () =>
+    renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false }));
+</script>
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Algèbre avancée · Fiche de révision · Cours 4</p>
+    <h1>Courbes de Bézier</h1>
+  </div>
+  <p class="source">TP 4 : consignes et squelette tkinter<br>(polynômes de Bernstein)</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li>Une courbe de Bézier est définie par des <strong>points de contrôle</strong> $P_0, \dots, P_n$. Elle <strong>part de $P_0$</strong> et <strong>arrive en $P_n$</strong>, mais <strong>ne passe pas</strong> en général par les points intermédiaires : elle en est seulement attirée. Ce n'est <strong>pas</strong> une interpolation.</li>
+    <li><strong>Polynôme de Bernstein</strong> : <span class="formule">$B_{n,i}(t) = \binom{n}{i}\, t^i (1-t)^{n-i}$</span>, pour $t \in [0, 1]$.</li>
+    <li><strong>Courbe</strong> : <span class="formule">$\displaystyle P(t) = \sum_{i=0}^{n} B_{n,i}(t)\, P_i$</span>, à appliquer séparément aux $x$ et aux $y$.</li>
+    <li>$n + 1$ points de contrôle ⇒ courbe de <strong>degré $n$</strong>.</li>
+  </ul>
+</div>
+
+<h2>1. Propriétés utiles</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li>$\sum_i B_{n,i}(t) = (t + (1-t))^n = 1$ : $P(t)$ est une <strong>moyenne pondérée</strong> des points de contrôle, donc la courbe reste dans leur <strong>enveloppe convexe</strong>.</li>
+      <li>$t = 0$ : seul $B_{n,0}(0) = 1$, donc $P(0) = P_0$. $t = 1$ : $P(1) = P_n$.</li>
+      <li>La courbe est <strong>tangente</strong> au segment $[P_0P_1]$ au départ et à $[P_{n-1}P_n]$ à l'arrivée.</li>
+      <li>Déplacer un point de contrôle modifie <strong>toute</strong> la courbe (contrôle global).</li>
+    </ul>
+  </div>
+  <div class="exemple"><strong>Cas $n = 2$ (3 points)</strong>
+    $$P(t) = (1-t)^2P_0 + 2t(1-t)P_1 + t^2P_2$$
+    <strong>Cas $n = 3$ (4 points)</strong>
+    $$P(t) = (1-t)^3P_0 + 3t(1-t)^2P_1 + 3t^2(1-t)P_2 + t^3P_3$$
+    Exemple : $P_0 = (0, 0)$, $P_1 = (1, 2)$, $P_2 = (2, 0)$ ; en $t = \frac12$ :
+    $P = \frac14(0,0) + \frac12(1,2) + \frac14(2,0) = (1, 1)$ : la courbe ne monte qu'à mi-hauteur de $P_1$.</div>
+</div>
+
+<h2>2. Le TP 4 (tkinter)</h2>
+<div class="deux-colonnes">
+  <div>
+<pre>def bernstein(n, i, t):
+    return math.comb(n, i) * t**i * (1 - t)**(n - i)
+
+def calculer_courbe_bezier(points, resolution=150):
+    n = len(points) - 1
+    if n &lt; 1:
+        return []
+    coords = []
+    for j in range(resolution + 1):   # t de 0 à 1 inclus
+        t = j / resolution
+        x = sum(bernstein(n, i, t) * points[i][0] for i in range(n + 1))
+        y = sum(bernstein(n, i, t) * points[i][1] for i in range(n + 1))
+        coords.extend([x, y])
+    return coords</pre>
+  </div>
+  <div>
+    <ul>
+      <li><code>resolution = 150</code> est le nombre de <strong>segments</strong> : il faut donc <strong>151 valeurs</strong> de $t$ (d'où <code>resolution + 1</code>), sinon la courbe n'atteint pas $P_n$.</li>
+      <li><strong>Clic gauche</strong> : ajouter <code>(event.x, event.y)</code> à <code>POINTS_CONTROLE</code>, puis rafraîchir.</li>
+      <li><strong>Clic droit</strong> : vider la liste (<code>POINTS_CONTROLE.clear()</code>), puis rafraîchir.</li>
+      <li><strong>Rafraîchir</strong> : <code>canvas.delete("all")</code>, polygone de contrôle en gris pointillé (<code>fill="#B0B0B0", dash=(4, 4)</code>), courbe en bleu (<code>fill="#0055FF", width=2.5</code>), points en rouge par-dessus avec leur étiquette $P_i$.</li>
+      <li><code>create_line</code> attend une liste <strong>aplatie</strong> $[x_0, y_0, x_1, y_1, \dots]$.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="boite piege">
+  <span class="boite-titre">Ne pas confondre</span>
+  <table>
+    <tr><th></th><th>Interpolation (Vandermonde, Lagrange, Newton, Hermite, splines)</th><th>Bézier</th></tr>
+    <tr><td>Passe par les points ?</td><td>Oui, par <strong>tous</strong></td><td>Seulement par le <strong>premier</strong> et le <strong>dernier</strong></td></tr>
+    <tr><td>Paramètre</td><td>$x$ (ou $t$ pour les courbes paramétrées)</td><td>$t \in [0, 1]$</td></tr>
+    <tr><td>Base</td><td>canonique, $L_i$, $N_k$, $\varphi_1, \dots, \varphi_4$</td><td>Bernstein $B_{n,i}$</td></tr>
+  </table>
+</div>
+
+</body>
+</html>

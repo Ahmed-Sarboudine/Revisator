@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Énoncé — Algèbre avancée : sujet de révision (partiel 2025)</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () =>
+    renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false }));
+</script>
+<style>
+  body { font-size: 10pt; }
+  .exercice { border: 1px solid #e4e0d7; border-radius: 8px; padding: 8px 14px 10px; margin: 0 0 12px; break-inside: avoid; }
+  .exercice > h2 { margin: 0 0 6px; border: 0; }
+  table.grille { width: auto; margin: 4px 0 8px; }
+  table.grille td, table.grille th { border: 1px solid #d6d2c8; padding: 3px 12px; text-align: center; }
+  ol.q > li { margin: 4px 0; }
+</style>
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Algèbre avancée · TD de révision · Partiel</p>
+    <h1>Sujet de révision : partiel de novembre 2025</h1>
+  </div>
+  <p class="source">Reprise du partiel final du 25/11/2025<br>Calculatrice ESIEE autorisée · tout document interdit</p>
+</header>
+
+<p style="color:#6b6860">Cinq exercices notés chacun sur 10 points, un par méthode d'interpolation vue en cours. Au partiel, on répond directement sur le sujet : soignez la présentation et vérifiez vos polynômes en remplaçant $x$ par les abscisses de la grille.</p>
+
+<section class="exercice">
+<h2>1. Exercice : Interpolation avec système linéaire</h2>
+<p>Soit la grille suivante. On cherche un polynôme $P$ tel que $P(x_i) = y_i$.</p>
+<table class="grille">
+  <tr><th>$x_i$</th><td>−1</td><td>0</td><td>1</td><td>2</td></tr>
+  <tr><th>$y_i = f(x_i)$</th><td>−3</td><td>1</td><td>3</td><td>4</td></tr>
+</table>
+<ol class="q">
+  <li>Citer la base canonique adaptée. <em>(1 pt)</em></li>
+  <li>Quel est le degré de $P$ ? <em>(« On dispose de … points, donc $P$ est de degré … ».)</em> <em>(1 pt)</em></li>
+  <li>Écrire la matrice de Vandermonde $V$ traduisant les contraintes sur les coefficients de $P$. <em>(2 pts)</em></li>
+  <li>Écrire le système sous forme matricielle. On notera $A$ la matrice colonne des coefficients de $P(x) = a + bx + cx^2 + dx^3$ et $Y$ le vecteur colonne des ordonnées de la grille. <em>(1 pt)</em></li>
+  <li>On admet que $V$ est inversible et que
+    $$V^{-1} = \begin{pmatrix} 0 & 1 & 0 & 0 \\ -\frac13 & -\frac12 & 1 & -\frac16 \\ \frac12 & -1 & \frac12 & 0 \\ -\frac16 & \frac12 & -\frac12 & \frac16 \end{pmatrix}.$$
+    Résoudre le système et écrire le polynôme recherché. <em>(5 pts)</em></li>
+</ol>
+</section>
+
+<section class="exercice">
+<h2>2. Exercice : Base de Lagrange</h2>
+<table class="grille">
+  <tr><th>$x_i$</th><td>−1</td><td>1</td><td>2</td><td>3</td></tr>
+  <tr><th>$y_i = f(x_i)$</th><td>−3</td><td>1</td><td>3</td><td>4</td></tr>
+</table>
+<p>On travaille dans la base de Lagrange $(L_1, L_2, L_3, L_4)$, où $L_k$ est associé au $k$-ième point de la grille.</p>
+<ol class="q">
+  <li>Donner les expressions de $L_1(x)$, $L_2(x)$, $L_3(x)$ et $L_4(x)$. <em>(4 × 2 pts)</em></li>
+  <li>Donner l'expression de $P$ dans la base de Lagrange. <em>(2 pts)</em></li>
+</ol>
+</section>
+
+<section class="exercice">
+<h2>3. Exercice : Différences divisées et base de Newton</h2>
+<p>On reprend la grille de l'exercice 1 :</p>
+<table class="grille">
+  <tr><th>$x_i$</th><td>−1</td><td>0</td><td>1</td><td>2</td></tr>
+  <tr><th>$y_i = f(x_i)$</th><td>−3</td><td>1</td><td>3</td><td>4</td></tr>
+</table>
+<p>On travaille dans la base de Newton $(N_1, N_2, N_3, N_4)$, numérotée à partir de 1.</p>
+<ol class="q">
+  <li>Donner $N_1(x)$, $N_2(x)$, $N_3(x)$ et $N_4(x)$. <em>(4 × 1 pt)</em></li>
+  <li>Compléter le tableau des différences divisées pour calculer les coefficients de $P$. <em>(4 pts)</em></li>
+  <li>Donner l'expression de $P$ dans la base de Newton : $P(x) = \dots N_1(x) + \dots N_2(x) + \dots N_3(x) + \dots N_4(x)$. <em>(2 pts)</em></li>
+</ol>
+</section>
+
+<section class="exercice">
+<h2>4. Exercice : Interpolation dans la base d'Hermite</h2>
+<table class="grille">
+  <tr><th>Point</th><td>A</td><td>B</td><td>C</td><td>D</td></tr>
+  <tr><th>Abscisse $X$</th><td>−4</td><td>−1</td><td>3</td><td>6</td></tr>
+  <tr><th>Ordonnée $Y$</th><td>−3</td><td>4</td><td>5</td><td>2</td></tr>
+  <tr><th>Dérivée $V$</th><td>−9</td><td>7</td><td>−4</td><td>3</td></tr>
+</table>
+<p>On travaille dans la base d'Hermite $(\varphi_1, \varphi_2, \varphi_3, \varphi_4)$.</p>
+<ol class="q">
+  <li>Compléter le tableau des valeurs $\varphi(0)$, $\varphi(1)$, $\varphi'(0)$ et $\varphi'(1)$ pour chacune des quatre fonctions. <em>(4 pts)</em></li>
+  <li>On travaille sur $[AB]$. Donner $d$, $t$, puis l'expression du polynôme sur ce segment. <em>(3 pts)</em></li>
+  <li>On travaille sur $[BC]$. Donner $d$, $t$, puis l'expression du polynôme sur ce segment. <em>(3 pts)</em></li>
+</ol>
+</section>
+
+<section class="exercice">
+<h2>5. Exercice : Splines cubiques naturelles uniformes</h2>
+<ol class="q">
+  <li>Un peu de vocabulaire : pourquoi les termes <strong>cubiques</strong>, <strong>naturelles</strong> et <strong>uniformes</strong> ? <em>(1 pt)</em></li>
+</ol>
+<p>On considère la grille suivante, où le point A figure deux fois : on obtiendra une spline fermée.</p>
+<table class="grille">
+  <tr><th>Point</th><td>A</td><td>B</td><td>C</td><td>A</td></tr>
+  <tr><th>Abscisse $X$</th><td>−2</td><td>−1</td><td>4</td><td>−2</td></tr>
+  <tr><th>Ordonnée $Y$</th><td>−3</td><td>4</td><td>1</td><td>−3</td></tr>
+</table>
+<p>Soit $T = \{0 ; 2 ; 4 ; 6\}$. On considère les couples $(T, X)$ et $(T, Y)$. On cherche deux polynômes $P_x$ et $P_y$ de degré 3 dans la base d'Hermite sur chaque segment de la grille. Les vecteurs des dérivées $V_x$ et $V_y$ sont inconnus, solutions des systèmes $M V_x = Z_x$ et $M V_y = Z_y$.</p>
+<ol class="q" start="2">
+  <li>Écrire la matrice $M$. <em>(1 pt)</em></li>
+  <li>Donner les vecteurs $Z_x$ et $Z_y$. <em>(2 pts)</em></li>
+  <li>Résoudre $M V_x = Z_x$ et $M V_y = Z_y$. On admet que $M$ est inversible et que
+    $$M^{-1} = \frac{1}{45}\begin{pmatrix} 26 & -7 & 2 & -1 \\ -7 & 14 & -4 & 2 \\ 2 & -4 & 14 & -7 \\ -1 & 2 & -7 & 26 \end{pmatrix}.$$ <em>(2 pts)</em></li>
+  <li>On travaille sur $[AB]$, soit $t \in [0 ; 2]$. Donner $d$, le paramètre $s$, puis $P_x(s)$ et $P_y(s)$. <em>(2 pts)</em></li>
+  <li>On travaille sur $[BC]$. Préciser l'intervalle de $t$, $d$ et $s$, puis donner $P_x(s)$ et $P_y(s)$. <em>(2 pts)</em></li>
+</ol>
+</section>
+
+</body>
+</html>

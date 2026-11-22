@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Algèbre avancée, Cours 2 : base de Lagrange</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () =>
+    renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false }));
+</script>
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Algèbre avancée · Fiche de révision · Cours 2</p>
+    <h1>Base de Lagrange</h1>
+  </div>
+  <p class="source">Visio du 7 octobre et TP 2<br>(polynômes $L_i$, phénomène de Runge)</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>Pourquoi changer de base</strong> : dans la base canonique, il faut construire et inverser $V$. Dans la base de Lagrange, il n'y a <strong>aucun système à résoudre</strong>.</li>
+    <li>$L_i$ vaut <strong>1 en $x_i$</strong> et <strong>0 en tous les autres $x_k$</strong> :
+      <span class="formule">$\displaystyle L_i(x) = \prod_{k \ne i} \frac{x - x_k}{x_i - x_k}$</span></li>
+    <li>Les coefficients sont directement les ordonnées :
+      <span class="formule">$\displaystyle P(x) = \sum_{i=0}^{n} y_i\, L_i(x)$</span></li>
+    <li>Avec $n+1$ points, chaque $L_i$ est de degré $n$, donc $P$ aussi (au plus).</li>
+  </ul>
+</div>
+
+<h2>1. Construire un $L_i$ (méthode du prof)</h2>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Tableau de définition</strong> : $L_i$ vaut 1 sur sa colonne, 0 ailleurs.</p>
+    <table>
+      <tr><th></th><th>$x_0 = 1$</th><th>$x_1 = 2$</th><th>$x_2 = 3$</th></tr>
+      <tr><td>$L_0$</td><td>1</td><td>0</td><td>0</td></tr>
+      <tr><td>$L_1$</td><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>$L_2$</td><td>0</td><td>0</td><td>1</td></tr>
+    </table>
+    <ol>
+      <li>$L_0$ s'annule en 2 et en 3, donc $L_0(x) = \alpha (x-2)(x-3)$.</li>
+      <li>$L_0(1) = 1$ donne $\alpha (1-2)(1-3) = 1$, soit $\alpha = \frac{1}{(1-2)(1-3)}$.</li>
+      <li>D'où $L_0(x) = \dfrac{(x-2)(x-3)}{(1-2)(1-3)}$.</li>
+    </ol>
+  </div>
+  <div>
+    <div class="boite methode">
+      <span class="boite-titre">Recette pour $L_i$</span>
+      <ul>
+        <li><strong>Numérateur</strong> : produit des $(x - x_k)$ pour <strong>tous les points sauf $x_i$</strong>.</li>
+        <li><strong>Dénominateur</strong> : le même produit où l'on remplace $x$ par $x_i$.</li>
+        <li>Calculer le dénominateur en nombre (attention aux signes).</li>
+      </ul>
+    </div>
+    <div class="exemple"><strong>Exemple du cours</strong> : $x = 1, 2, 3$ et $y = -7, 5, 4$.
+      $$P(x) = -7\,\frac{(x-2)(x-3)}{(1-2)(1-3)} + 5\,\frac{(x-1)(x-3)}{(2-1)(2-3)} + 4\,\frac{(x-1)(x-2)}{(3-1)(3-2)}$$
+      Vérification : $P(1) = -7 \times 1 + 5 \times 0 + 4 \times 0 = -7$ ✓.</div>
+  </div>
+</div>
+
+<div class="exemple"><strong>Exemple du partiel 2025</strong> : $x = -1, 1, 2, 3$ et $y = -3, 1, 3, 4$.
+  $$L_1 = \frac{(x-1)(x-2)(x-3)}{(-2)(-3)(-4)} = -\frac{(x-1)(x-2)(x-3)}{24} \qquad L_2 = \frac{(x+1)(x-2)(x-3)}{(2)(-1)(-2)} = \frac{(x+1)(x-2)(x-3)}{4}$$
+  $$L_3 = \frac{(x+1)(x-1)(x-3)}{(3)(1)(-1)} = -\frac{(x+1)(x-1)(x-3)}{3} \qquad L_4 = \frac{(x+1)(x-1)(x-2)}{(4)(2)(1)} = \frac{(x+1)(x-1)(x-2)}{8}$$
+  $$P(x) = -3L_1(x) + L_2(x) + 3L_3(x) + 4L_4(x)$$
+  <span style="color:#6b6860">Le partiel numérote les points à partir de 1 ($L_1$ à $L_4$) ; le cours, à partir de 0. Seul compte de bien associer chaque $L$ à son point.</span></div>
+
+<h2>2. Côté TP (Python)</h2>
+<div class="deux-colonnes">
+  <div>
+<pre>def lagrange(X, i, x):        # renvoie L_i(x)
+    res = 1
+    for k in range(len(X)):
+        if k != i:
+            res *= (x - X[k]) / (X[i] - X[k])
+    return res
+
+def polyfin(X, Y, x):          # P(x) = Σ y_i L_i(x)
+    return sum(Y[k] * lagrange(X, k, x)
+               for k in range(len(X)))</pre>
+  </div>
+  <div>
+    <ul>
+      <li>La condition <code>k != i</code> évite la division par $x_i - x_i = 0$.</li>
+      <li>Tester avec $f = \sin$ (ça marche bien), puis avec $f(x) = \dfrac{1}{1 + 8x^2}$ (ou $\frac{1}{1+10x^2}$) sur $[-4, 4]$ ou $[-5, 5]$.</li>
+      <li>Inconvénient : <strong>ajouter un point change tous les $L_i$</strong>, il faut tout recalculer. La base de Newton corrige ce défaut.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>3. Phénomène de Runge</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Avec des points <strong>équidistants</strong> (<code>np.linspace</code>) et $f(x) = \frac{1}{1+8x^2}$, le polynôme d'interpolation colle à $f$ au centre mais <strong>oscille de plus en plus fort aux bords</strong> quand $n$ augmente. Augmenter $n$ <strong>aggrave</strong> l'erreur au lieu de la réduire.</p>
+    <p>Ce n'est pas un bug de code : c'est une propriété de l'interpolation polynomiale de haut degré sur une grille régulière.</p>
+  </div>
+  <div class="boite astuce">
+    <span class="boite-titre">Remède : plus de points sur les bords</span>
+    <ul>
+      <li><strong>Points de Tchebychev</strong> : $x_k = \cos\!\left(\frac{(2k+1)\pi}{2(n+1)}\right)$ (ramenés sur $[a, b]$), naturellement resserrés aux extrémités.</li>
+      <li>Version « à la main » du cours : mettre par exemple 40 % des points sur chaque bord et 20 % au centre ($X = X_1 \cup X_2 \cup X_3$).</li>
+      <li>Ou changer d'outil : <strong>polynômes par morceaux</strong> (Hermite, splines), de petit degré sur chaque intervalle.</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>

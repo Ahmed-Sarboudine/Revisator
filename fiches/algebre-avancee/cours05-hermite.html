@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Algèbre avancée, Cours 5 : interpolation d'Hermite</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () =>
+    renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false }));
+</script>
+<style>
+  table.phi td, table.phi th { text-align: center; }
+  pre { break-inside: avoid; }
+  table.phi td.un { color: #c0360f; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Algèbre avancée · Fiche de révision · Cours 5</p>
+    <h1>Interpolation d'Hermite</h1>
+  </div>
+  <p class="source">Intro et TD « Hermite » (novembre), TP 5<br>(base $\varphi_1, \dots, \varphi_4$, polynômes par morceaux)</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li>On connaît en chaque point la <strong>valeur $y_i$</strong> <strong>et la dérivée $v_i$</strong> (la pente de la tangente). Sur chaque intervalle $[x_i, x_{i+1}]$, on cherche un polynôme <strong>de degré 3</strong> : 4 contraintes (2 valeurs, 2 dérivées) pour 4 coefficients.</li>
+    <li>Sur $[0, 1]$, la <strong>base d'Hermite</strong> est faite pour que chaque $\varphi$ « porte » une seule contrainte :
+      $P(t) = y_0\varphi_1(t) + y_1\varphi_2(t) + v_0\varphi_3(t) + v_1\varphi_4(t)$.</li>
+    <li><strong>Cas général</strong> sur $[x_A, x_B]$ : poser <span class="formule">$d = x_B - x_A$</span> et <span class="formule">$t = \dfrac{x - x_A}{d}$</span>, puis
+      <span class="formule">$P(x) = y_A\varphi_1(t) + y_B\varphi_2(t) + d\,\big[v_A\varphi_3(t) + v_B\varphi_4(t)\big]$</span>.</li>
+    <li>Le facteur <strong>$d$</strong> devant les dérivées vient de $\frac{dt}{dx} = \frac1d$. L'oublier est l'erreur la plus fréquente.</li>
+  </ul>
+</div>
+
+<h2>1. La base d'Hermite sur $[0, 1]$</h2>
+<div class="deux-colonnes">
+  <div>
+    <table class="phi">
+      <tr><th></th><th>$\varphi_1$</th><th>$\varphi_2$</th><th>$\varphi_3$</th><th>$\varphi_4$</th></tr>
+      <tr><td>valeur en 0</td><td class="un">1</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>valeur en 1</td><td>0</td><td class="un">1</td><td>0</td><td>0</td></tr>
+      <tr><td>dérivée en 0</td><td>0</td><td>0</td><td class="un">1</td><td>0</td></tr>
+      <tr><td>dérivée en 1</td><td>0</td><td>0</td><td>0</td><td class="un">1</td></tr>
+    </table>
+    $$\begin{aligned}
+      \varphi_1(t) &= (t-1)^2(1+2t) = 2t^3 - 3t^2 + 1 \\
+      \varphi_2(t) &= t^2(3-2t) = -2t^3 + 3t^2 \\
+      \varphi_3(t) &= t(t-1)^2 = t^3 - 2t^2 + t \\
+      \varphi_4(t) &= (t-1)t^2 = t^3 - t^2
+    \end{aligned}$$
+    <p>Ce tableau (une « matrice identité ») est demandé tel quel au partiel.</p>
+  </div>
+  <div>
+    <div class="boite methode">
+      <span class="boite-titre">Retrouver $\varphi_1$ (méthode « stylée » du prof)</span>
+      <ul>
+        <li>$\varphi_1(1) = \varphi_1'(1) = 0$ : 1 est <strong>racine double</strong>, donc $\varphi_1(t) = (at + b)(t-1)^2$.</li>
+        <li>$\varphi_1(0) = 1$ donne $b = 1$.</li>
+        <li>$\varphi_1'(t) = a(t-1)^2 + 2(at+b)(t-1)$ ; $\varphi_1'(0) = a - 2b = 0$ donne $a = 2$.</li>
+        <li>D'où $\varphi_1(t) = (2t+1)(t-1)^2$.</li>
+      </ul>
+      <p>Même idée pour les autres : $\varphi_2$ et $\varphi_4$ ont 0 comme racine double (facteur $t^2$) ; $\varphi_3$ a 0 racine simple et 1 racine double.</p>
+    </div>
+    <p><strong>Dérivées secondes</strong> (utiles pour les splines) :</p>
+    <table class="phi">
+      <tr><th>$t$</th><th>$\varphi_1''$</th><th>$\varphi_2''$</th><th>$\varphi_3''$</th><th>$\varphi_4''$</th></tr>
+      <tr><td>0</td><td>−6</td><td>6</td><td>−4</td><td>−2</td></tr>
+      <tr><td>1</td><td>6</td><td>−6</td><td>2</td><td>4</td></tr>
+    </table>
+  </div>
+</div>
+
+<h2>2. Cas général : se ramener à $[0, 1]$</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Pour $x \in [x_A, x_B]$, $t = \frac{x - x_A}{x_B - x_A}$ va de 0 à 1. On cherche $P(x) = a\varphi_1(t) + b\varphi_2(t) + c\varphi_3(t) + d'\varphi_4(t)$ :</p>
+    <ul>
+      <li>$x = x_A$ ($t = 0$) : $P(x_A) = a = y_A$ ; $x = x_B$ ($t = 1$) : $b = y_B$.</li>
+      <li>$P'(x) = \big[a\varphi_1'(t) + \dots\big]\cdot\frac{dt}{dx}$ avec $\frac{dt}{dx} = \frac{1}{x_B - x_A}$, donc $P'(x_A) = \frac{c}{x_B - x_A} = v_A$ : <strong>$c = (x_B - x_A)\,v_A$</strong>, et de même $d' = (x_B - x_A)\,v_B$.</li>
+    </ul>
+  </div>
+  <div class="exemple"><strong>Exemple du cours</strong> : $x = 1, 5$ ; $y = 6, 2$ ; $v = \frac32, -3$.
+    $d = 4$, $t = \frac{x-1}{4}$ :
+    $$P_1(x) = 6\varphi_1(t) + 2\varphi_2(t) + 4\left[\tfrac32\varphi_3(t) - 3\varphi_4(t)\right]$$
+    <strong>Partiel 2025, segment [BC]</strong> : $B(-1; 4)$, $v_B = 7$ ; $C(3; 5)$, $v_C = -4$.
+    $d = 3 - (-1) = 4$, $t = \frac{x+1}{4}$ :
+    $$P(x) = 4\varphi_1(t) + 5\varphi_2(t) + 4\left[7\varphi_3(t) - 4\varphi_4(t)\right]$$</div>
+</div>
+
+<h2>3. Plusieurs points : polynôme par morceaux (TP 5)</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Avec $n$ points, il y a $n - 1$ intervalles, donc $n - 1$ polynômes $P_i$. Comme les $\varphi$ sont <strong>nulles en dehors de $[0, 1]$</strong>, on peut écrire $P = P_1 + P_2 + \dots$ : pour un $x$ donné, seul le morceau qui le contient est non nul.</p>
+<pre>def phi1(t):
+    if 0 &lt;= t &lt;= 1:
+        return (t - 1)**2 * (1 + 2*t)
+    return 0
+# idem phi2, phi3, phi4
+
+def foncHermite(X, Y, V, x):
+    S = 0
+    for i in range(len(X) - 1):
+        d = X[i+1] - X[i]
+        t = (x - X[i]) / d
+        S += (Y[i]*phi1(t) + Y[i+1]*phi2(t)
+              + d*(V[i]*phi3(t) + V[i+1]*phi4(t)))
+    return S</pre>
+  </div>
+  <div>
+    <div class="boite piege">
+      <span class="boite-titre">Pièges</span>
+      <ul>
+        <li>Oublier le facteur <strong>$d$</strong> devant $v_A\varphi_3 + v_B\varphi_4$ (sauf si $d = 1$).</li>
+        <li>Inverser les rôles : $\varphi_1$, $\varphi_2$ portent les <strong>valeurs</strong>, $\varphi_3$, $\varphi_4$ les <strong>dérivées</strong>.</li>
+        <li>Avec <code>0 &lt;= t &lt;= 1</code> des deux côtés, un nœud intérieur appartient à <strong>deux</strong> morceaux : la somme y vaut $2y_i$. Prendre <code>0 &lt;= t &lt; 1</code> (et inclure $t = 1$ pour le dernier morceau) ou n'évaluer que le bon morceau.</li>
+      </ul>
+    </div>
+    <div class="boite astuce">
+      <span class="boite-titre">Tracer les tangentes</span>
+      La tangente en $(x_k, y_k)$ a pour équation $y = v_k(x - x_k) + y_k$. On trace un petit segment de $x_k - 1$ à $x_k + 1$ :
+      <pre>plt.plot([X[k]-1, X[k]+1], [Y[k]-V[k], Y[k]+V[k]], color='r')</pre>
+      Grille de test du TP : $X = (-5, -2, 3, 7)$, $Y = (0, -3, 4, 3)$, $V = (0, 1, 1{,}5, 1{,}8)$.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

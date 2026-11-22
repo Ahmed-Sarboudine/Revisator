@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Corrigé — Algèbre avancée : sujet de révision (partiel 2025)</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () =>
+    renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false }));
+</script>
+<style>
+  body { font-size: 10pt; }
+  .exercice { border: 1px solid #e4e0d7; border-radius: 8px; padding: 8px 14px 10px; margin: 0 0 14px; }
+  .exercice > h2 { margin: 0 0 4px; border: 0; color: #18763f; }
+  .pastilles { margin: 0 0 6px; }
+  .pastille { display: inline-block; margin: 0 3px 3px 0; padding: 1px 9px; border: 1px solid #c9d2f6; border-radius: 999px; background: #eef1fd; color: #2a4bd7; font-size: 8.5pt; font-weight: 600; text-decoration: none; }
+  .pourquoi { margin: 3px 0 0 2px; padding: 2px 0 2px 10px; border-left: 3px solid #f0c27a; color: #3d3b36; font-size: 9.3pt; }
+  .reponse .katex-display { margin: 4px 0; }
+  table.grille { width: auto; }
+  table.grille td, table.grille th { border: 1px solid #d6d2c8; padding: 3px 10px; text-align: center; }
+  td.coef { color: #c0360f; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Algèbre avancée · Corrigé détaillé · Partiel</p>
+    <h1>Corrigé du sujet de révision</h1>
+  </div>
+  <p class="source">Partiel du 25/11/2025. Les parties Newton, Hermite et splines<br>suivent la correction manuscrite du prof. Pastilles bleues : liens vers les fiches.</p>
+</header>
+
+<!-- ============================ Exercice 1 ============================ -->
+<section class="exercice">
+<div style="break-inside: avoid"><h2>Exercice 1 : Interpolation avec système linéaire</h2>
+<div class="pastilles"><a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/algebre-avancee/cours01-base-canonique/fiche.pdf">→ Fiche cours 1 : base canonique</a></div>
+
+<p class="question-td">1. Base canonique</p>
+<div class="reponse">$(1, x, x^2, x^3)$.
+  <div class="pourquoi">4 points, donc un polynôme de degré au plus 3 : on s'arrête à $x^3$.</div></div></div>
+
+<p class="question-td">2. Degré</p>
+<div class="reponse">On dispose de <strong>4 points</strong>, donc $P$ est de degré <strong>(au plus) 3</strong>.
+  <div class="pourquoi">Règle : degré = nombre de points − 1. Il faut 4 coefficients $a, b, c, d$ pour satisfaire 4 contraintes.</div></div>
+
+<p class="question-td">3. Matrice de Vandermonde</p>
+<div class="reponse">
+  $$V = \begin{pmatrix} 1 & -1 & (-1)^2 & (-1)^3 \\ 1 & 0 & 0 & 0 \\ 1 & 1 & 1 & 1 \\ 1 & 2 & 2^2 & 2^3 \end{pmatrix} = \begin{pmatrix} 1 & -1 & 1 & -1 \\ 1 & 0 & 0 & 0 \\ 1 & 1 & 1 & 1 \\ 1 & 2 & 4 & 8 \end{pmatrix}$$
+  <div class="pourquoi">Ligne $i$ : $1, x_i, x_i^2, x_i^3$, car $P(x_i) = a + bx_i + cx_i^2 + dx_i^3$. Une ligne par point, une colonne par puissance.</div></div>
+
+<p class="question-td">4. Système matriciel</p>
+<div class="reponse">$A = \begin{pmatrix} a \\ b \\ c \\ d \end{pmatrix}$, $Y = \begin{pmatrix} -3 \\ 1 \\ 3 \\ 4 \end{pmatrix}$ et l'équation matricielle est <strong>$V A = Y$</strong>.</div>
+
+<p class="question-td">5. Résolution : $A = V^{-1}Y$</p>
+<div class="reponse">On multiplie chaque ligne de $V^{-1}$ par $Y = (-3, 1, 3, 4)$ :
+  $$\begin{aligned}
+    a &= 0 \times (-3) + 1 \times 1 + 0 \times 3 + 0 \times 4 = 1 \\
+    b &= -\tfrac13(-3) - \tfrac12(1) + 1(3) - \tfrac16(4) = 1 - \tfrac12 + 3 - \tfrac23 = \tfrac{17}{6} \\
+    c &= \tfrac12(-3) - 1(1) + \tfrac12(3) + 0 = -\tfrac32 - 1 + \tfrac32 = -1 \\
+    d &= -\tfrac16(-3) + \tfrac12(1) - \tfrac12(3) + \tfrac16(4) = \tfrac12 + \tfrac12 - \tfrac32 + \tfrac23 = \tfrac16
+  \end{aligned}$$
+  $$\boxed{P(x) = 1 + \tfrac{17}{6}x - x^2 + \tfrac16x^3}$$
+  <div class="pourquoi"><strong>Vérification</strong> : $P(-1) = 1 - \frac{17}{6} - 1 - \frac16 = -3$ ✓ ; $P(1) = 1 + \frac{17}{6} - 1 + \frac16 = 3$ ✓ ; $P(2) = 1 + \frac{17}{3} - 4 + \frac43 = 4$ ✓. La 1<sup>re</sup> ligne de $V^{-1}$ est $(0, 1, 0, 0)$ : $a$ est l'ordonnée du point d'abscisse 0, logique car $P(0) = a$.</div></div>
+</section>
+
+<!-- ============================ Exercice 2 ============================ -->
+<section class="exercice">
+<div style="break-inside: avoid"><h2>Exercice 2 : Base de Lagrange</h2>
+<div class="pastilles"><a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/algebre-avancee/cours02-lagrange/fiche.pdf">→ Fiche cours 2 : Lagrange</a></div>
+
+<p class="question-td">1. Les quatre polynômes $L_k$</p>
+<div class="reponse">Grille $x = -1, 1, 2, 3$. Pour $L_k$ : au numérateur, les $(x - x_j)$ de <strong>tous les autres points</strong> ; au dénominateur, le même produit évalué en $x_k$.
+  $$L_1(x) = \frac{(x-1)(x-2)(x-3)}{(-1-1)(-1-2)(-1-3)} = \frac{(x-1)(x-2)(x-3)}{-24}$$
+  $$L_2(x) = \frac{(x+1)(x-2)(x-3)}{(1+1)(1-2)(1-3)} = \frac{(x+1)(x-2)(x-3)}{4}$$
+  $$L_3(x) = \frac{(x+1)(x-1)(x-3)}{(2+1)(2-1)(2-3)} = \frac{(x+1)(x-1)(x-3)}{-3}$$
+  $$L_4(x) = \frac{(x+1)(x-1)(x-2)}{(3+1)(3-1)(3-2)} = \frac{(x+1)(x-1)(x-2)}{8}$$
+  <div class="pourquoi">$L_1$ doit valoir 0 en 1, 2 et 3 : d'où les facteurs $(x-1)(x-2)(x-3)$. Il doit valoir 1 en $-1$ : on divise par la valeur de ce produit en $-1$, soit $(-2)(-3)(-4) = -24$. Attention : $x - (-1) = x + 1$.</div></div></div>
+
+<p class="question-td">2. Expression de $P$</p>
+<div class="reponse">
+  $$\boxed{P(x) = -3L_1(x) + 1 \cdot L_2(x) + 3L_3(x) + 4L_4(x)}$$
+  <div class="pourquoi">Dans la base de Lagrange, les coefficients sont directement les $y_k$ : en $x = x_k$, seul $L_k$ vaut 1 et les autres valent 0, donc $P(x_k) = y_k$. Développé (facultatif) : $P(x) = -\frac18x^3 + \frac14x^2 + \frac{17}{8}x - \frac54$ ; vérification $P(3) = -\frac{27}{8} + \frac94 + \frac{51}{8} - \frac54 = 4$ ✓.</div></div>
+</section>
+
+<!-- ============================ Exercice 3 ============================ -->
+<section class="exercice">
+<div style="break-inside: avoid"><h2>Exercice 3 : Différences divisées et base de Newton</h2>
+<div class="pastilles"><a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/algebre-avancee/cours03-newton/fiche.pdf">→ Fiche cours 3 : Newton</a></div>
+
+<p class="question-td">1. La base de Newton (numérotée à partir de 1)</p>
+<div class="reponse">$N_1(x) = 1$ ; $N_2(x) = x - (-1) = x + 1$ ; $N_3(x) = (x+1)(x-0) = (x+1)x$ ; $N_4(x) = (x+1)x(x-1)$.
+  <div class="pourquoi">Chaque élément multiplie le précédent par $(x - x_{\text{point suivant}})$. Le dernier point ($x = 2$) n'apparaît pas dans la base.</div></div></div>
+
+<p class="question-td">2. Tableau des différences divisées (méthode du prof)</p>
+<div class="reponse">
+  <table class="grille">
+    <tr><th>$x$</th><th>$y$</th><th>$D_1$ (réf. $x = -1$)</th><th>$D_2$ (réf. $x = 0$)</th><th>$D_3$ (réf. $x = 1$)</th></tr>
+    <tr><td>−1</td><td class="coef">−3</td><td></td><td></td><td></td></tr>
+    <tr><td>0</td><td>1</td><td class="coef">$\frac{1-(-3)}{0-(-1)} = 4$</td><td></td><td></td></tr>
+    <tr><td>1</td><td>3</td><td>$\frac{3-(-3)}{1-(-1)} = 3$</td><td class="coef">$\frac{3-4}{1-0} = -1$</td><td></td></tr>
+    <tr><td>2</td><td>4</td><td>$\frac{4-(-3)}{2-(-1)} = \frac73$</td><td>$\frac{7/3-4}{2-0} = -\frac56$</td><td class="coef">$\frac{-5/6-(-1)}{2-1} = \frac16$</td></tr>
+  </table>
+  <div class="pourquoi">Chaque colonne prend pour référence le point du haut encore actif : $z_k \leftarrow \frac{z_k - z_{\text{réf}}}{x_k - x_{\text{réf}}}$. Les coefficients sont en rouge, sur la <strong>diagonale</strong>. La méthode classique (voisins consécutifs : 4, 2, 1 ; puis −1, −1/2 ; puis 1/6) donne la même diagonale.</div></div>
+
+<p class="question-td">3. Expression de $P$</p>
+<div class="reponse">
+  $$\boxed{P(x) = -3N_1(x) + 4N_2(x) - 1 \cdot N_3(x) + \tfrac16N_4(x)}$$
+  <div class="pourquoi">Même grille que l'exercice 1 : en développant, $-3 + 4(x+1) - (x+1)x + \frac16(x^3 - x) = 1 + \frac{17}{6}x - x^2 + \frac16x^3$. On retrouve <strong>exactement</strong> le même polynôme, car le polynôme d'interpolation est unique. C'est une excellente vérification.</div></div>
+</section>
+
+<!-- ============================ Exercice 4 ============================ -->
+<section class="exercice">
+<div style="break-inside: avoid"><h2>Exercice 4 : Interpolation dans la base d'Hermite</h2>
+<div class="pastilles"><a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/algebre-avancee/cours05-hermite/fiche.pdf">→ Fiche cours 5 : Hermite</a></div>
+
+<p class="question-td">1. Valeurs de la base</p>
+<div class="reponse">
+  <table class="grille">
+    <tr><th></th><th>$\varphi_1$</th><th>$\varphi_2$</th><th>$\varphi_3$</th><th>$\varphi_4$</th></tr>
+    <tr><th>$\varphi(0)$</th><td class="coef">1</td><td>0</td><td>0</td><td>0</td></tr>
+    <tr><th>$\varphi(1)$</th><td>0</td><td class="coef">1</td><td>0</td><td>0</td></tr>
+    <tr><th>$\varphi'(0)$</th><td>0</td><td>0</td><td class="coef">1</td><td>0</td></tr>
+    <tr><th>$\varphi'(1)$</th><td>0</td><td>0</td><td>0</td><td class="coef">1</td></tr>
+  </table>
+  <div class="pourquoi">C'est la définition de la base : chaque $\varphi$ porte <strong>une seule</strong> des quatre contraintes. Pour la retrouver, partir de $\varphi_1 = (t-1)^2(1+2t)$, $\varphi_2 = t^2(3-2t)$, $\varphi_3 = t(t-1)^2$, $\varphi_4 = (t-1)t^2$.</div></div></div>
+
+<p class="question-td">2. Segment [AB] : $A(-4 ; -3)$, $v_A = -9$ ; $B(-1 ; 4)$, $v_B = 7$</p>
+<div class="reponse">$d = x_B - x_A = -1 - (-4) = 3$ et $t = \dfrac{x - (-4)}{3} = \dfrac{x + 4}{3}$.
+  $$\boxed{P(x) = -3\varphi_1(t) + 4\varphi_2(t) + 3\big[-9\varphi_3(t) + 7\varphi_4(t)\big]}$$
+  <div class="pourquoi">Formule : $y_A\varphi_1(t) + y_B\varphi_2(t) + d\,[v_A\varphi_3(t) + v_B\varphi_4(t)]$. Le $d$ vient de la dérivation en chaîne : $\frac{dt}{dx} = \frac1d$, donc pour que $P'(x_A) = v_A$, il faut multiplier $v_A$ par $d$.</div></div>
+
+<p class="question-td">3. Segment [BC] : $B(-1 ; 4)$, $v_B = 7$ ; $C(3 ; 5)$, $v_C = -4$</p>
+<div class="reponse">$d = 3 - (-1) = 4$ et $t = \dfrac{x + 1}{4}$.
+  $$\boxed{P(x) = 4\varphi_1(t) + 5\varphi_2(t) + 4\big[7\varphi_3(t) - 4\varphi_4(t)\big]}$$
+  <div class="pourquoi">Pour s'entraîner, segment [CD] (non demandé) : $d = 3$, $t = \frac{x-3}{3}$, $P(x) = 5\varphi_1(t) + 2\varphi_2(t) + 3[-4\varphi_3(t) + 3\varphi_4(t)]$.</div></div>
+</section>
+
+<!-- ============================ Exercice 5 ============================ -->
+<section class="exercice">
+<div style="break-inside: avoid"><h2>Exercice 5 : Splines cubiques naturelles uniformes</h2>
+<div class="pastilles"><a class="pastille" href="https://ahmed-sarboudine.github.io/Revisator/contenu/algebre-avancee/cours06-splines/fiche.pdf">→ Fiche cours 6 : splines</a></div>
+
+<p class="question-td">1. Vocabulaire</p>
+<div class="reponse">
+  <ul>
+    <li><strong>Cubiques</strong> : recollement de morceaux de courbes polynomiales de <strong>degré 3</strong>.</li>
+    <li><strong>Naturelles</strong> : courbure (dérivée seconde) <strong>nulle au début et à la fin</strong>.</li>
+    <li><strong>Uniformes</strong> : les abscisses (ici les $t_i$) ont un <strong>écart constant</strong>.</li>
+  </ul></div>
+
+<p class="question-td">2. Matrice M (4 points)</p>
+<div class="reponse">
+  $$M = \begin{pmatrix} 2 & 1 & 0 & 0 \\ 1 & 4 & 1 & 0 \\ 0 & 1 & 4 & 1 \\ 0 & 0 & 1 & 2 \end{pmatrix}$$
+  <div class="pourquoi">Diagonale 2, 4, …, 4, 2 ; des 1 juste au-dessus et au-dessous. Les 2 aux coins viennent des conditions « naturelles » $f''(a) = f''(b) = 0$. $M$ est la même pour $X$ et pour $Y$.</div></div></div>
+
+<p class="question-td">3. Vecteurs $Z_x$ et $Z_y$</p>
+<div class="reponse">L'écart est celui entre les $t_i$ : $d = 2$, donc $\frac3d = \frac32$. Schéma : (suivant − courant), puis (suivant − précédent) au milieu, puis (courant − précédent).
+  $$Z_x = \frac32\begin{pmatrix} -1-(-2) \\ 4-(-2) \\ -2-(-1) \\ -2-4 \end{pmatrix} = \frac32\begin{pmatrix} 1 \\ 6 \\ -1 \\ -6 \end{pmatrix} = \begin{pmatrix} 3/2 \\ 9 \\ -3/2 \\ -9 \end{pmatrix}
+  \qquad
+  Z_y = \frac32\begin{pmatrix} 4-(-3) \\ 1-(-3) \\ -3-4 \\ -3-1 \end{pmatrix} = \begin{pmatrix} 21/2 \\ 6 \\ -21/2 \\ -6 \end{pmatrix}$$
+  <div class="pourquoi">Piège classique : prendre $d = 1$ (écart entre indices) ou l'écart entre les $x$. Ici, les $x$ ne sont pas régulièrement espacés : c'est le paramètre $t$ qui l'est.</div></div>
+
+<p class="question-td">4. Résolution : $V = M^{-1}Z$</p>
+<div class="reponse">
+  $$V_x = M^{-1}Z_x = \begin{pmatrix} -2/5 \\ 23/10 \\ 1/5 \\ -23/5 \end{pmatrix} \qquad V_y = M^{-1}Z_y = \begin{pmatrix} 24/5 \\ 9/10 \\ -12/5 \\ -9/5 \end{pmatrix}$$
+  <div class="pourquoi">Exemple de calcul, 1<sup>re</sup> ligne de $V_x$ : $\frac{1}{45}\left(26 \times \frac32 - 7 \times 9 + 2 \times (-\frac32) - 1 \times (-9)\right) = \frac{39 - 63 - 3 + 9}{45} = -\frac{18}{45} = -\frac25$.<br>
+  <strong>Vérification</strong> sans $M^{-1}$ : 1<sup>re</sup> équation de $M V_x = Z_x$ : $2(-\frac25) + \frac{23}{10} = \frac{-8 + 23}{10} = \frac32$ ✓.</div></div>
+
+<p class="question-td">5. Segment [AB] : $t \in [0 ; 2]$</p>
+<div class="reponse">$d = 2$ et $s = \dfrac{t - 0}{2} = \dfrac t2$.
+  $$P_x(s) = -2\varphi_1(s) - 1\cdot\varphi_2(s) + 2\left[-\tfrac25\varphi_3(s) + \tfrac{23}{10}\varphi_4(s)\right]$$
+  $$P_y(s) = -3\varphi_1(s) + 4\varphi_2(s) + 2\left[\tfrac{24}{5}\varphi_3(s) + \tfrac{9}{10}\varphi_4(s)\right]$$
+  <div class="pourquoi">C'est Hermite appliqué deux fois : pour $P_x$, valeurs $x_A = -2$, $x_B = -1$ et dérivées $V_x[0]$, $V_x[1]$ ; pour $P_y$, valeurs $y_A$, $y_B$ et dérivées $V_y[0]$, $V_y[1]$.</div></div>
+
+<p class="question-td">6. Segment [BC] : $t \in [2 ; 4]$</p>
+<div class="reponse">$d = 2$ et $s = \dfrac{t - 2}{2}$.
+  $$P_x(s) = -1\cdot\varphi_1(s) + 4\varphi_2(s) + 2\left[\tfrac{23}{10}\varphi_3(s) + \tfrac15\varphi_4(s)\right]$$
+  $$P_y(s) = 4\varphi_1(s) + 1\cdot\varphi_2(s) + 2\left[\tfrac{9}{10}\varphi_3(s) - \tfrac{12}{5}\varphi_4(s)\right]$$
+  <div class="pourquoi">Pour s'entraîner, segment [CA] (non demandé), $s = \frac{t-4}{2}$ : $P_x = 4\varphi_1 - 2\varphi_2 + 2[\frac15\varphi_3 - \frac{23}{5}\varphi_4]$ et $P_y = \varphi_1 - 3\varphi_2 + 2[-\frac{12}{5}\varphi_3 - \frac95\varphi_4]$. En A, la dérivée de départ ($V[0]$) et celle d'arrivée ($V[3]$) diffèrent : une spline naturelle « fermée » se referme avec un angle.</div></div>
+</section>
+
+</body>
+</html>

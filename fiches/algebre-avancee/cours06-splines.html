@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Algèbre avancée, Cours 6 : splines cubiques</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () =>
+    renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false }));
+</script>
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Algèbre avancée · Fiche de révision · Cours 6</p>
+    <h1>Splines cubiques naturelles uniformes</h1>
+  </div>
+  <p class="source">Visio du 18 novembre et TP 6<br>(système $M V = D$, courbes paramétrées)</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité (« RETENEZ ! » du prof)</span>
+  <ul>
+    <li><strong>Cubique</strong> : sur chaque intervalle, un polynôme de <strong>degré 3</strong> (on recolle des morceaux d'Hermite). <strong>Naturelle</strong> : courbure <strong>nulle au début et à la fin</strong>, $f''(a) = f''(b) = 0$. <strong>Uniforme</strong> : les abscisses sont <strong>régulièrement espacées</strong>, d'écart constant $d$.</li>
+    <li>On veut $f$ de classe <strong>$C^2$</strong> qui passe par tous les points. Les dérivées $v_j$ sont <strong>inconnues</strong> : on les obtient en résolvant <span class="formule">$M V = D$</span>, puis on applique Hermite.</li>
+    <li>Les $n + 1$ équations :
+      $$2v_0 + v_1 = \tfrac3d(y_1 - y_0), \qquad v_{j-1} + 4v_j + v_{j+1} = \tfrac3d(y_{j+1} - y_{j-1}), \qquad v_{n-1} + 2v_n = \tfrac3d(y_n - y_{n-1})$$</li>
+  </ul>
+</div>
+
+<h2>1. Le système à écrire</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Exemple avec 5 points ($n = 4$) :</p>
+    $$M = \begin{pmatrix} 2 & 1 & 0 & 0 & 0 \\ 1 & 4 & 1 & 0 & 0 \\ 0 & 1 & 4 & 1 & 0 \\ 0 & 0 & 1 & 4 & 1 \\ 0 & 0 & 0 & 1 & 2 \end{pmatrix} \qquad D = \frac3d \begin{pmatrix} y_1 - y_0 \\ y_2 - y_0 \\ y_3 - y_1 \\ y_4 - y_2 \\ y_4 - y_3 \end{pmatrix}$$
+    <ul>
+      <li><strong>Diagonale</strong> : 2, 4, 4, …, 4, 2. <strong>Sur- et sous-diagonale</strong> : des 1. Ailleurs : 0.</li>
+      <li><strong>$D$</strong> : première et dernière lignes spéciales (« suivant − courant », « courant − précédent ») ; les autres : <strong>suivant − précédent</strong>, $y_{k+1} - y_{k-1}$.</li>
+      <li>$M$ ne dépend que du <strong>nombre de points</strong>, pas des valeurs.</li>
+    </ul>
+  </div>
+  <div>
+    <div class="boite methode">
+      <span class="boite-titre">D'où viennent ces équations</span>
+      <p>Sur $[x_j, x_{j+1}]$, avec $t = \frac{x - x_j}{d}$ : $f(x) = y_j\varphi_1(t) + y_{j+1}\varphi_2(t) + d\,[v_j\varphi_3(t) + v_{j+1}\varphi_4(t)]$, et $f''(x) = \frac{1}{d^2}[\,\dots\,]$ avec les $\varphi''$.</p>
+      <table>
+        <tr><th>$t$</th><th>$\varphi_1''$</th><th>$\varphi_2''$</th><th>$\varphi_3''$</th><th>$\varphi_4''$</th></tr>
+        <tr><td>0</td><td>−6</td><td>6</td><td>−4</td><td>−2</td></tr>
+        <tr><td>1</td><td>6</td><td>−6</td><td>2</td><td>4</td></tr>
+      </table>
+      <ul>
+        <li>$f''(a) = 0$ (début, $t = 0$) : $-6y_0 + 6y_1 + d(-4v_0 - 2v_1) = 0$, d'où $2v_0 + v_1 = \frac3d(y_1 - y_0)$.</li>
+        <li>Raccord en $x_j$ : $f''$ à gauche ($t = 1$ sur $[x_{j-1}, x_j]$) = $f''$ à droite ($t = 0$ sur $[x_j, x_{j+1}]$), d'où $v_{j-1} + 4v_j + v_{j+1} = \frac3d(y_{j+1} - y_{j-1})$.</li>
+        <li>$f''(b) = 0$ (fin, $t = 1$) : $v_{n-1} + 2v_n = \frac3d(y_n - y_{n-1})$.</li>
+      </ul>
+    </div>
+    <p style="color:#6b6860">Image du prof : une réglette en plastique. La courbure en un point dépend du point <strong>précédent</strong> et du point <strong>suivant</strong>, d'où « suivant − précédent ».</p>
+  </div>
+</div>
+
+<h2>2. Méthode complète</h2>
+<ol>
+  <li>Calculer $d$ (écart constant entre abscisses), écrire $M$ et $D$.</li>
+  <li>Résoudre $V = M^{-1}D$ (au partiel, $M^{-1}$ est donnée ; en TP, <code>np.linalg.solve(M, D)</code>).</li>
+  <li>Sur chaque intervalle, appliquer Hermite avec les $v_j$ trouvés : $f(x) = y_j\varphi_1(t) + y_{j+1}\varphi_2(t) + d\,[v_j\varphi_3(t) + v_{j+1}\varphi_4(t)]$.</li>
+</ol>
+
+<h2>3. Courbes paramétrées (et courbes fermées)</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Une courbe quelconque (qui revient en arrière, se ferme…) n'est pas le graphe d'une fonction. On introduit un <strong>paramètre</strong> $T = (t_0, \dots, t_n)$ régulier et on traite <strong>séparément</strong> :</p>
+    <ul>
+      <li>les couples $(T, X)$ : spline qui donne $V_x$, puis $x(s)$ ;</li>
+      <li>les couples $(T, Y)$ : spline qui donne $V_y$, puis $y(s)$ ;</li>
+      <li>on trace $(x_{\text{aff}}, y_{\text{aff}})$ pour au moins 500 valeurs du paramètre.</li>
+    </ul>
+    <p>Ici l'écart $d$ est celui entre les <strong>$t_i$</strong>, pas entre les $x_i$. La même matrice $M$ sert pour $X$ et pour $Y$.</p>
+  </div>
+  <div class="exemple"><strong>Partiel 2025</strong> : points $A, B, C, A$ avec $X = (-2, -1, 4, -2)$, $Y = (-3, 4, 1, -3)$, $T = (0, 2, 4, 6)$, donc $d = 2$ et $\frac3d = \frac32$.
+    $$Z_X = \tfrac32\begin{pmatrix} 1 \\ 6 \\ -1 \\ -6 \end{pmatrix}, \quad Z_Y = \tfrac32\begin{pmatrix} 7 \\ 4 \\ -7 \\ -4 \end{pmatrix}$$
+    $V_X = M^{-1}Z_X = \left(-\frac25, \frac{23}{10}, \frac15, -\frac{23}{5}\right)$ et $V_Y = \left(\frac{24}{5}, \frac{9}{10}, -\frac{12}{5}, -\frac95\right)$.<br>
+    Sur $[AB]$, $s = \frac{t}{2}$ : $P_x(s) = -2\varphi_1(s) - \varphi_2(s) + 2\left[-\frac25\varphi_3(s) + \frac{23}{10}\varphi_4(s)\right]$.</div>
+</div>
+
+<div class="boite piege">
+  <span class="boite-titre">Pièges</span>
+  <ul>
+    <li>Le $D$ (ou $Z$) commence par $y_1 - y_0$ <strong>puis</strong> $y_2 - y_0$ (pas $y_2 - y_1$).</li>
+    <li>Ne pas oublier le facteur <strong>$\frac3d$</strong> devant $D$, ni le facteur <strong>$d$</strong> dans Hermite.</li>
+    <li><code>np.linspace(a, b, n)</code> donne $n$ <strong>points</strong>, donc $n - 1$ intervalles : $d = \frac{b-a}{n-1}$.</li>
+    <li>Une spline <strong>naturelle</strong> « fermée » (A répété) ne raccorde pas les dérivées en A : la courbe se referme avec un angle. C'est le cas du partiel, et c'est attendu.</li>
+  </ul>
+</div>
+
+<div class="boite astuce">
+  <span class="boite-titre">TP 6</span>
+  Reprendre les fonctions $\varphi$ et <code>foncHermite</code> du TP 5. Construire <code>S</code> (diagonale <code>[2, 4, …, 4, 2]</code>, sur- et sous-diagonale de 1) et <code>B</code>, résoudre $S\,Y' = B$, puis tracer Hermite avec $(X, Y, Y')$. Défi : le « poisson » $X = (7, 0, -8, -8, 0, 7)$, $Y = (0, 4, -3, 3, -4, 0)$, $T = (0, 1, 2, 3, 4, 5)$ en paramétrique.
+</div>
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+{
+  "exercices": [
+    {
+      "numero": 1,
+      "titre": "Interpolation avec système linéaire",
+      "enonce": [
+        {
+          "image": "ex01-enonce-1.png",
+          "largeur": 1333,
+          "hauteur": 786
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex01-correction-1.png",
+          "largeur": 1333,
+          "hauteur": 1467,
+          "liens": [
+            {
+              "x": 3.15,
+              "y": 6.18,
+              "l": 26.3,
+              "h": 2.56,
+              "href": "#/lire/algebre-avancee/cours01-base-canonique/fiche.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "titre": "Base de Lagrange",
+      "enonce": [
+        {
+          "image": "ex02-enonce-1.png",
+          "largeur": 1333,
+          "hauteur": 354
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex02-correction-1.png",
+          "largeur": 1333,
+          "hauteur": 1027,
+          "liens": [
+            {
+              "x": 3.15,
+              "y": 8.83,
+              "l": 22.08,
+              "h": 3.83,
+              "href": "#/lire/algebre-avancee/cours02-lagrange/fiche.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "titre": "Différences divisées et base de Newton",
+      "enonce": [
+        {
+          "image": "ex03-enonce-1.png",
+          "largeur": 1333,
+          "hauteur": 509
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex03-correction-1.png",
+          "largeur": 1306,
+          "hauteur": 879,
+          "liens": [
+            {
+              "x": 3.22,
+              "y": 10.35,
+              "l": 21.54,
+              "h": 4.48,
+              "href": "#/lire/algebre-avancee/cours03-newton/fiche.pdf"
+            }
+          ]
+        },
+        {
+          "image": "ex03-correction-2.png",
+          "largeur": 1333,
+          "hauteur": 337
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "titre": "Interpolation dans la base d'Hermite",
+      "enonce": [
+        {
+          "image": "ex04-enonce-1.png",
+          "largeur": 1333,
+          "hauteur": 494
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex04-correction-1.png",
+          "largeur": 1333,
+          "hauteur": 1172,
+          "liens": [
+            {
+              "x": 3.15,
+              "y": 7.74,
+              "l": 21.1,
+              "h": 3.2,
+              "href": "#/lire/algebre-avancee/cours05-hermite/fiche.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 5,
+      "titre": "Splines cubiques naturelles uniformes",
+      "enonce": [
+        {
+          "image": "ex05-enonce-1.png",
+          "largeur": 1333,
+          "hauteur": 945
+        }
+      ],
+      "correction": [
+        {
+          "image": "ex05-correction-1.png",
+          "largeur": 1306,
+          "hauteur": 1907,
+          "liens": [
+            {
+              "x": 3.22,
+              "y": 4.77,
+              "l": 20.67,
+              "h": 2.06,
+              "href": "#/lire/algebre-avancee/cours06-splines/fiche.pdf"
+            }
+          ]
+        },
+        {
+          "image": "ex05-correction-2.png",
+          "largeur": 1332,
+          "hauteur": 403
+        }
+      ]
+    }
+  ]
+}

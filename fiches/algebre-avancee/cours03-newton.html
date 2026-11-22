@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Algèbre avancée, Cours 3 : base de Newton</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () =>
+    renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false }));
+</script>
+<style>
+  table.dd td, table.dd th { text-align: center; }
+  table.dd td.coef { color: #c0360f; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Algèbre avancée · Fiche de révision · Cours 3</p>
+    <h1>Base de Newton et différences divisées</h1>
+  </div>
+  <p class="source">Visio du 14 octobre et TP 3<br>(système triangulaire, ajout d'un point)</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>Base de Newton</strong> : $N_0 = 1$, $N_1 = (x - x_0)$, $N_2 = (x - x_0)(x - x_1)$, …, $N_k = N_{k-1} \cdot (x - x_{k-1})$. Le <strong>dernier point $x_n$ n'apparaît jamais</strong> dans la base.</li>
+    <li>On cherche <span class="formule">$P(x) = a_0 + a_1N_1(x) + \dots + a_nN_n(x)$</span>. Les contraintes forment un <strong>système triangulaire</strong> : $a_0 = y_0$, puis $a_1$, puis $a_2$…</li>
+    <li>Les coefficients se lisent sur la <strong>diagonale du tableau des différences divisées</strong>.</li>
+    <li><strong>Avantage</strong> : ajouter un point ne change pas les coefficients déjà calculés. On ajoute un seul terme $a_{n+1}N_{n+1}$.</li>
+  </ul>
+</div>
+
+<h2>1. Pourquoi le système est triangulaire</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>$N_k(x_i) = 0$ dès que $i &lt; k$ (le produit contient le facteur $x_i - x_i$). Exemple du cours : $x = 1, 2, 3$ et $y = -4, 5, -2$.</p>
+    $$\begin{cases} P(1) = a_0 = -4 \\ P(2) = a_0 + a_1(2-1) = 5 \\ P(3) = a_0 + a_1(3-1) + a_2(3-1)(3-2) = -2 \end{cases}$$
+    <p>On résout de haut en bas : $a_0 = -4$, $a_1 = 9$, $a_2 = -8$, donc</p>
+    $$P(x) = -4 + 9(x-1) - 8(x-1)(x-2).$$
+  </div>
+  <div>
+    <div class="boite methode">
+      <span class="boite-titre">Différences divisées (forme classique)</span>
+      <p>$f[x_i] = y_i$, puis chaque colonne divise la différence de deux voisins par l'écart de leurs abscisses extrêmes :</p>
+      $$f[x_i, \dots, x_{i+k}] = \frac{f[x_{i+1}, \dots, x_{i+k}] - f[x_i, \dots, x_{i+k-1}]}{x_{i+k} - x_i}$$
+      <p>Les coefficients sont $a_k = f[x_0, \dots, x_k]$ : le <strong>haut de chaque colonne</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<h2>2. Le tableau du prof (méthode du « pivot »)</h2>
+<p>Le prof calcule colonne par colonne en divisant toujours par rapport au <strong>point de référence</strong> de la colonne (le premier point non encore utilisé) :
+<span class="formule">$z_k \leftarrow \dfrac{z_k - z_{\text{ref}}}{x_k - x_{\text{ref}}}$</span> pour tous les $k$ au-dessous de la référence. Les coefficients sont entourés <strong>sur la diagonale</strong>. Les deux méthodes donnent les <strong>mêmes coefficients</strong>.</p>
+<div class="deux-colonnes">
+  <div>
+    <p><strong>Exemple du cours</strong> : $x = -1, 1, 3, 2$ et $y = -7, 5, 1, 10$.</p>
+    <table class="dd">
+      <tr><th>$x_i$</th><th>$y_i$</th><th>col. 1 (réf. $x = -1$)</th><th>col. 2 (réf. $x = 1$)</th><th>col. 3 (réf. $x = 3$)</th></tr>
+      <tr><td>−1</td><td class="coef">−7</td><td></td><td></td><td></td></tr>
+      <tr><td>1</td><td>5</td><td class="coef">$\frac{5-(-7)}{1-(-1)} = 6$</td><td></td><td></td></tr>
+      <tr><td>3</td><td>1</td><td>$\frac{1-(-7)}{3-(-1)} = 2$</td><td class="coef">$\frac{2-6}{3-1} = -2$</td><td></td></tr>
+      <tr><td>2</td><td>10</td><td>$\frac{10-(-7)}{2-(-1)} = \frac{17}{3}$</td><td>$\frac{17/3-6}{2-1} = -\frac13$</td><td class="coef">$\frac{-1/3-(-2)}{2-3} = -\frac53$</td></tr>
+    </table>
+    $$P(x) = -7 + 6(x+1) - 2(x+1)(x-1) - \tfrac53(x+1)(x-1)(x-3)$$
+  </div>
+  <div>
+    <p><strong>Partiel 2025</strong> : $x = -1, 0, 1, 2$ et $y = -3, 1, 3, 4$.</p>
+    <table class="dd">
+      <tr><th>$x_i$</th><th>$y_i$</th><th>col. 1</th><th>col. 2</th><th>col. 3</th></tr>
+      <tr><td>−1</td><td class="coef">−3</td><td></td><td></td><td></td></tr>
+      <tr><td>0</td><td>1</td><td class="coef">4</td><td></td><td></td></tr>
+      <tr><td>1</td><td>3</td><td>$\frac{6}{2} = 3$</td><td class="coef">$\frac{3-4}{1-0} = -1$</td><td></td></tr>
+      <tr><td>2</td><td>4</td><td>$\frac{7}{3}$</td><td>$\frac{7/3-4}{2-0} = -\frac56$</td><td class="coef">$\frac{-5/6+1}{2-1} = \frac16$</td></tr>
+    </table>
+    $$P(x) = -3 + 4(x+1) - (x+1)x + \tfrac16(x+1)x(x-1)$$
+    <p style="color:#6b6860">En développant, on retrouve exactement le polynôme de la base canonique (même grille) : $1 + \frac{17}{6}x - x^2 + \frac16x^3$. Le polynôme d'interpolation est <strong>unique</strong>, seule son écriture change.</p>
+  </div>
+</div>
+
+<div class="boite piege">
+  <span class="boite-titre">Pièges</span>
+  <ul>
+    <li>Au partiel, la base est numérotée <strong>à partir de 1</strong> : $N_1 = 1$, $N_2 = x + 1$, $N_3 = (x+1)x$, $N_4 = (x+1)x(x-1)$. Dans le cours, à partir de 0. Lire l'énoncé.</li>
+    <li>Garder l'<strong>ordre de la grille</strong> donné, même si les $x_i$ ne sont pas triés (exemple $-1, 1, 3, 2$).</li>
+    <li>Le dénominateur utilise les <strong>abscisses</strong>, jamais les ordonnées. Bien écrire $x - (-1) = x + 1$.</li>
+  </ul>
+</div>
+
+<h2>3. Côté TP (Python)</h2>
+<div class="deux-colonnes">
+  <div>
+<pre>def dif_divis(X, Y):
+    Z = list(Y)                    # copie de Y
+    n = len(Z)
+    for ref in range(n - 1):
+        for k in range(ref + 1, n):
+            Z[k] = (Z[k] - Z[ref]) / (X[k] - X[ref])
+    return Z                       # coefficients a_0 … a_n
+
+def polyfin(X, Z, x):              # Σ Z[k]·N_k(x)
+    S, N = Z[0], 1
+    for k in range(1, len(Z)):
+        N = N * (x - X[k - 1])     # N_k = N_{k-1}·(x − x_{k−1})
+        S += Z[k] * N
+    return S</pre>
+  </div>
+  <div>
+    <ul>
+      <li>$Z$ est modifié <strong>sur place</strong> : à la fin, $Z[k]$ contient $a_k$.</li>
+      <li>Version « pas stylée » : recalculer chaque $N_k$ par un produit complet. Version « sensée » : mettre $N$ à jour à chaque tour, comme ci-contre.</li>
+    </ul>
+    <div class="boite astuce">
+      <span class="boite-titre">Ajouter un point $(\alpha, \beta)$</span>
+      <p>$P_{\text{nouveau}} = P_{\text{ancien}} + c\,N_{n+1}$ avec $N_{n+1}(x) = \prod_{k=0}^{n}(x - x_k)$. On impose $P_{\text{nouveau}}(\alpha) = \beta$ :</p>
+      $$c = \frac{\beta - P_{\text{ancien}}(\alpha)}{N_{n+1}(\alpha)}$$
+      <p>Puis <code>Z.append(c)</code>, <code>X.append(α)</code>, <code>Y.append(β)</code>. Aucun autre coefficient ne change.</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

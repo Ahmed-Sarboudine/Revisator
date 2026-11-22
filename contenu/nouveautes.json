@@ -2,6 +2,15 @@
   "versions": [
     {
       "date": "2026-11-22",
+      "titre": "Nouvelle matière : algèbre avancée",
+      "ajouts": [
+        { "texte": "Algèbre avancée : 6 fiches de cours (base canonique, Lagrange, Newton, Bézier, Hermite, splines), avec les visios du prof en PDF", "lien": "#/m/algebre-avancee" },
+        { "texte": "Algèbre avancée : les énoncés des TP 1 à 6", "lien": "#/m/algebre-avancee" },
+        { "texte": "Algèbre avancée : le partiel de novembre 2025 en TD de révision, avec un corrigé détaillé exercice par exercice et les corrections manuscrites du prof", "lien": "#/m/algebre-avancee" }
+      ]
+    },
+    {
+      "date": "2026-11-22",
       "titre": "Cours 5 et préparation du contrôle final",
       "ajouts": [
         { "texte": "Traitement de données : cours 5 (discrimination bayésienne), avec ses notebooks en PDF, une fiche et un QCM de 40 questions", "lien": "#/m/traitement-donnees" },

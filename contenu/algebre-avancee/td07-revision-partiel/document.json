@@ -1,0 +1,9 @@
+{
+  "document": "td",
+  "titre": "Sujet de révision : partiel de novembre 2025",
+  "complements": [
+    { "fichier": "partiel-original.pdf", "titre": "Sujet original du partiel 2025" },
+    { "fichier": "corrige-prof-newton-splines.pdf", "titre": "Correction manuscrite du prof (Newton, splines)" },
+    { "fichier": "corrige-prof-hermite.pdf", "titre": "Correction manuscrite du prof (Hermite)" }
+  ]
+}

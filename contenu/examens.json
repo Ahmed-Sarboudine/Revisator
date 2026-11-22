@@ -17,6 +17,7 @@
     },
     {
       "matiere": "Algèbre",
+      "revision": "algebre-avancee",
       "epreuves": [
         { "nom": "Exam", "date": "2026-11-30", "poids": 60 },
         { "nom": "Wims / TD", "poids": 40 }

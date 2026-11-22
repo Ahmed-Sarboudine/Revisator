@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Algèbre avancée, Cours 1 : base canonique</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () =>
+    renderMathInElement(document.body, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false }));
+</script>
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Algèbre avancée · Fiche de révision · Cours 1</p>
+    <h1>Interpolation dans la base canonique</h1>
+  </div>
+  <p class="source">Visio « Vandermonde » et TP 1<br>(matrice de Vandermonde, $A = V^{-1}Y$)</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>Problème d'interpolation</strong> : on connaît $n+1$ points $(x_i, y_i)$ d'abscisses <strong>distinctes</strong>. On cherche un polynôme $P$ de <strong>degré $\le n$</strong> tel que $P(x_i) = y_i$ pour tout $i$. Ce polynôme existe et il est <strong>unique</strong>.</li>
+    <li><strong>Nombre de points − 1 = degré</strong> : 4 points ⇒ degré 3 ; 3 points ⇒ degré 2.</li>
+    <li>Base canonique : $(1, x, x^2, \dots, x^n)$, et $P(x) = a_0 + a_1x + a_2x^2 + \dots + a_nx^n$.</li>
+    <li>Les $n+1$ contraintes donnent le système <span class="formule">$V A = Y$</span>, donc <span class="formule">$A = V^{-1} Y$</span> ($V$ est inversible car les $x_i$ sont distincts).</li>
+    <li>Au partiel, <strong>$V^{-1}$ est donnée</strong> : il reste à écrire $V$, $A$, $Y$, puis à faire le produit $V^{-1}Y$ ligne par ligne.</li>
+  </ul>
+</div>
+
+<h2>1. Le système de Vandermonde</h2>
+<div class="deux-colonnes">
+  <div>
+    <p>Chaque point donne une équation (une <strong>ligne</strong>) :</p>
+    $$\begin{cases} a_0 + a_1x_0 + a_2x_0^2 + \dots + a_nx_0^n = y_0 \\ a_0 + a_1x_1 + a_2x_1^2 + \dots + a_nx_1^n = y_1 \\ \quad\vdots \\ a_0 + a_1x_n + a_2x_n^2 + \dots + a_nx_n^n = y_n \end{cases}$$
+    <p>soit, sous forme matricielle :</p>
+    $$\underbrace{\begin{pmatrix} 1 & x_0 & x_0^2 & \cdots & x_0^n \\ 1 & x_1 & x_1^2 & \cdots & x_1^n \\ \vdots & & & & \vdots \\ 1 & x_n & x_n^2 & \cdots & x_n^n \end{pmatrix}}_{V} \underbrace{\begin{pmatrix} a_0 \\ a_1 \\ \vdots \\ a_n \end{pmatrix}}_{A} = \underbrace{\begin{pmatrix} y_0 \\ y_1 \\ \vdots \\ y_n \end{pmatrix}}_{Y}$$
+  </div>
+  <div>
+    <div class="boite methode">
+      <span class="boite-titre">Remplir V sans se tromper</span>
+      <ul>
+        <li>Une <strong>ligne par point</strong>, dans l'ordre de la grille.</li>
+        <li>Une <strong>colonne par puissance</strong> : $x^0 = 1$, puis $x$, $x^2$, $x^3$…</li>
+        <li>La première colonne ne contient que des 1.</li>
+        <li>Attention aux signes : $(-1)^2 = 1$ mais $(-1)^3 = -1$ ; $0^0 = 1$ dans la colonne des 1.</li>
+      </ul>
+    </div>
+    <div class="exemple"><strong>Exemple (partiel 2025)</strong> : $x = -1, 0, 1, 2$ et $y = -3, 1, 3, 4$.
+      $$V = \begin{pmatrix} 1 & -1 & 1 & -1 \\ 1 & 0 & 0 & 0 \\ 1 & 1 & 1 & 1 \\ 1 & 2 & 4 & 8 \end{pmatrix},\quad Y = \begin{pmatrix} -3 \\ 1 \\ 3 \\ 4 \end{pmatrix}$$
+      Avec $V^{-1}$ donnée, $A = V^{-1}Y = \left(1,\ \tfrac{17}{6},\ -1,\ \tfrac16\right)$, donc
+      $$P(x) = 1 + \tfrac{17}{6}x - x^2 + \tfrac16 x^3.$$
+      <strong>Vérifier</strong> : $P(2) = 1 + \tfrac{17}{3} - 4 + \tfrac43 = 4$ ✓.</div>
+  </div>
+</div>
+
+<h2>2. Calculer $A = V^{-1}Y$ à la main</h2>
+<p>Le coefficient $a_k$ est le <strong>produit de la ligne $k$ de $V^{-1}$ par la colonne $Y$</strong> : on multiplie terme à terme et on additionne.</p>
+<div class="exemple">Ligne 2 de $V^{-1}$ = $\left(-\tfrac13, -\tfrac12, 1, -\tfrac16\right)$ et $Y = (-3, 1, 3, 4)$ :
+  $a_1 = (-\tfrac13)(-3) + (-\tfrac12)(1) + 1 \times 3 + (-\tfrac16)(4) = 1 - \tfrac12 + 3 - \tfrac23 = \tfrac{17}{6}$.</div>
+<div class="boite piege">
+  <span class="boite-titre">Pièges</span>
+  <ul>
+    <li>Écrire $A = Y V^{-1}$ : faux, le produit matriciel n'est pas commutatif. C'est $V^{-1}$ <strong>à gauche</strong>.</li>
+    <li>Oublier de <strong>vérifier</strong> : remplacer un $x_i$ dans $P$ doit redonner $y_i$. Une seule vérification attrape presque toutes les erreurs de calcul.</li>
+    <li>Le degré est « <strong>au plus</strong> $n$ » : si les points sont alignés, $P$ peut être de degré 1.</li>
+  </ul>
+</div>
+
+<h2>3. Côté TP (Python)</h2>
+<div class="deux-colonnes">
+  <div>
+<pre>import numpy as np
+X = np.linspace(a, b, n)          # points équidistants
+Y = f(X)
+V = np.vander(X, increasing=True) # colonnes 1, x, x², …
+A = np.linalg.solve(V, Y)          # résout V·A = Y
+
+def P(A, x):                       # évaluation naïve
+    return sum(A[k] * x**k for k in range(len(A)))
+
+def horner(A, x):                  # Horner : moins d'opérations
+    s = 0
+    for a in reversed(A):
+        s = s * x + a
+    return s</pre>
+  </div>
+  <div>
+    <ul>
+      <li><code>np.vander</code> sans <code>increasing=True</code> range les puissances dans l'<strong>ordre décroissant</strong> ($x^n, \dots, 1$) : les coefficients sortiraient à l'envers.</li>
+      <li><code>np.linalg.solve(V, Y)</code> est préférable à <code>inv(V) @ Y</code> (plus rapide et plus stable).</li>
+      <li><strong>Horner</strong> : $P(x) = a_0 + x(a_1 + x(a_2 + \dots))$, soit $n$ multiplications au lieu de calculer chaque puissance.</li>
+      <li>Affichage : tracer $f$ et $P$ sur <strong>au moins 500 points</strong> (<code>np.linspace(a, b, 1000)</code>), puis afficher l'<strong>écart maximal</strong> $\max |f(x) - P(x)|$.</li>
+      <li>Quand $n$ augmente, $V$ devient <strong>mal conditionnée</strong> (ses colonnes se ressemblent) : la résolution devient imprécise. C'est une des raisons de passer aux bases de Lagrange et de Newton.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="boite astuce">
+  <span class="boite-titre">Limites de la base canonique</span>
+  Il faut construire et inverser $V$, ce qui coûte cher et devient imprécis pour beaucoup de points. Ajouter un point oblige à <strong>tout recalculer</strong>. Avec $f(x) = \frac{1}{1+8x^2}$ et des points équidistants, le polynôme oscille fortement aux bords quand $n$ augmente : c'est le <strong>phénomène de Runge</strong> (voir la fiche du cours 2).
+</div>
+
+</body>
+</html>

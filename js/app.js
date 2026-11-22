@@ -75,12 +75,14 @@ function ligneNouveaute(ajout) {
 function blocNouveautes(versions) {
   if (versions.length === 0) return "";
   const [derniere, ...anciennes] = versions;
+  // date + titre : deux versions publiées le même jour se distinguent
+  const cle = `${derniere.date} ${derniere.titre}`;
   let vue = null;
   try {
     vue = localStorage.getItem(CLE_NOUVEAUTES);
-    localStorage.setItem(CLE_NOUVEAUTES, derniere.date);
+    localStorage.setItem(CLE_NOUVEAUTES, cle);
   } catch {}
-  const inedite = vue !== derniere.date;
+  const inedite = vue !== cle;
   return `
     <section class="nouveautes${inedite ? " inedite" : ""}" aria-labelledby="titre-nouveautes">
       <div class="nouveautes-tete">
