@@ -1,0 +1,618 @@
+{
+  "matiere": "Traitement de données",
+  "document": "cours",
+  "titre": "Discrimination bayésienne",
+  "questions": [
+    {
+      "id": "bay-001",
+      "type": "unique",
+      "enonce": "Quelle est la différence entre un modèle **discriminant** (cours 4) et un modèle **génératif** (cours 5) ?",
+      "choix": [
+        "Le discriminant décrit la loi de chaque classe séparément",
+        "Le génératif n'utilise pas les classes pour apprendre",
+        "Le génératif décrit la loi de chaque classe, puis applique Bayes",
+        "Le génératif modélise directement $\\Pr(Y = k \\mid \\mathbf{x})$, sans passer par Bayes"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 1, §1.3 : le discriminant (régression logistique) fait une hypothèse sur la **forme de la frontière** et apprend $\\Pr(Y \\mid \\mathbf{x})$ directement. Le génératif fait une hypothèse sur la **loi de chaque classe** $f_k$, estime les proportions $q_k$, et obtient la probabilité par la formule de Bayes."
+    },
+    {
+      "id": "bay-002",
+      "type": "unique",
+      "enonce": "Sur ANSUR, 26 % des hommes mesurent au moins 180 cm, et 99 % des personnes d'au moins 180 cm sont des hommes. Que montrent ces deux chiffres ?",
+      "choix": [
+        "La taille n'a aucun lien avec le sexe dans ANSUR",
+        "L'un des deux chiffres est forcément une erreur de calcul",
+        "$\\Pr(A \\mid B)$ est toujours plus grande que $\\Pr(B \\mid A)$ quand $A$ est majoritaire",
+        "$\\Pr(A \\mid B)$ et $\\Pr(B \\mid A)$ peuvent être très différentes"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 1, §1.1 : **l'ordre compte**. $\\Pr(\\geq 180 \\mid \\text{homme}) = 0{,}26$, mais $\\Pr(\\text{homme} \\mid \\geq 180) = 0{,}99$, car presque aucune femme n'atteint 180 cm (0,5 %) et les hommes sont majoritaires. La formule de Bayes passe de l'une à l'autre."
+    },
+    {
+      "id": "bay-003",
+      "type": "unique",
+      "enonce": "Quelle est la formule de Bayes utilisée dans tout le cours ?",
+      "choix": [
+        "$\\Pr(Y = k \\mid \\mathbf{x}) = q_k\\, f_k(\\mathbf{x})$",
+        "$\\Pr(Y = k \\mid \\mathbf{x}) = \\dfrac{f_k(\\mathbf{x})}{\\sum_l q_l\\, f_l(\\mathbf{x})\\, f_k(\\mathbf{x})}$",
+        "$\\Pr(Y = k \\mid \\mathbf{x}) = \\dfrac{q_k}{\\sum_l q_l\\, f_l(\\mathbf{x})}$",
+        "$\\Pr(Y = k \\mid \\mathbf{x}) = \\dfrac{q_k\\, f_k(\\mathbf{x})}{\\sum_l q_l\\, f_l(\\mathbf{x})}$"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 1, §1.2 : numérateur = proportion × loi de la classe ; dénominateur = loi de $X$ toutes classes confondues (probabilités totales). Comme il est commun à toutes les classes, on décide avec $\\arg\\max_k q_k f_k(\\mathbf{x})$."
+    },
+    {
+      "id": "bay-004",
+      "type": "multiple",
+      "enonce": "Associez correctement les termes de la formule de Bayes. Quelles affirmations sont vraies ?",
+      "choix": [
+        "$\\sum_l q_l f_l(\\mathbf{x})$ doit être estimée à part",
+        "$q_k$ est la probabilité *a priori*, estimée en comptant $P_k / P$",
+        "$f_k(\\mathbf{x})$ est la loi de la classe $k$ (sa vraisemblance)",
+        "$\\Pr(Y = k \\mid \\mathbf{x})$ est la probabilité *a priori*"
+      ],
+      "reponses": [
+        1,
+        2
+      ],
+      "explication": "$\\Pr(Y = k \\mid \\mathbf{x})$ est la probabilité **a posteriori** (après avoir vu $\\mathbf{x}$). Le dénominateur se **déduit** des $q_l$ et $f_l$ ; inutile de l'estimer. Le seul vrai choix de modélisation est la loi $f_k$."
+    },
+    {
+      "id": "bay-005",
+      "type": "unique",
+      "enonce": "Quel est le **seul** vrai choix de modélisation dans l'approche générative ?",
+      "choix": [
+        "La forme de la loi de chaque classe",
+        "Le pas de la descente de gradient",
+        "Le seuil de décision, toujours fixé à 0,5",
+        "La valeur des proportions $q_k$"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 1, §1.2 : les proportions se comptent, le dénominateur se déduit. Il faut **choisir une loi** (normale ou autre) pour $f_k$. Fil rouge du cours : **un modèle génératif n'est bon que si la loi choisie est la bonne.**"
+    },
+    {
+      "id": "bay-006",
+      "type": "unique",
+      "enonce": "Pourquoi ne pas estimer $f_k$ en découpant chaque variable en tranches (comme un histogramme) avec 9 mesures ?",
+      "choix": [
+        "Parce que les 9 mesures ont des unités différentes",
+        "Parce que la formule de Bayes ne marche qu'avec des lois normales à une variable",
+        "Parce que les histogrammes ne sont pas des densités",
+        "Il y aurait $25^9$ cases pour 4 551 personnes"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 1, §1.4 : en dimension 1, la formule de Bayes avec des histogrammes ne fait que recompter. Avec plusieurs variables, presque toutes les cases sont vides. D'où l'idée de **choisir une forme de loi** décrite par peu de paramètres."
+    },
+    {
+      "id": "bay-007",
+      "type": "unique",
+      "enonce": "Comment s'apprennent les paramètres d'un modèle génératif gaussien à une variable ?",
+      "choix": [
+        "Par des formules directes, classe par classe",
+        "Par descente de gradient sur l'entropie croisée, comme la logistique",
+        "En minimisant l'erreur quadratique comme en régression",
+        "Par validation croisée sur la base de test"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 1, §2.2 : $\\hat q_k = P_k/P$, $\\hat m_k$ = moyenne de la classe, $\\hat\\sigma_k^2$ = variance de la classe. Ce sont les estimateurs du maximum de vraisemblance, calculés **exactement**, sans itération. « Apprendre, c'est tout. »"
+    },
+    {
+      "id": "bay-008",
+      "type": "unique",
+      "enonce": "Avec deux classes, la log-cote d'un modèle génératif vaut :",
+      "choix": [
+        "$\\log \\dfrac{f_1(x)}{f_0(x)} \\times \\log \\dfrac{q_1}{q_0}$",
+        "$\\dfrac{q_1 f_1(x)}{q_0 + f_0(x)}$",
+        "$\\log \\dfrac{f_1(x)}{f_0(x)} + \\log \\dfrac{q_1}{q_0}$",
+        "$\\log f_1(x) + \\log q_0 - \\log f_0(x) \\times q_1$"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 1, §3.1 : en divisant la formule de Bayes de la classe 1 par celle de la classe 0, les dénominateurs disparaissent. Un terme décrit la **différence des lois**, l'autre ne dépend que des **proportions**. C'est la formule admise au cours 4, ici démontrée."
+    },
+    {
+      "id": "bay-009",
+      "type": "unique",
+      "enonce": "Deux classes gaussiennes de **même écart-type** : quelle est la forme de la log-cote ?",
+      "choix": [
+        "Affine en $x$ : la forme de la régression logistique",
+        "Un polynôme de degré 2 en $x$",
+        "Exponentielle en $x$, comme la sigmoïde de la régression logistique",
+        "Constante, indépendante de $x$"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 1, §3.1 : avec $\\sigma_0 = \\sigma_1$, les termes en $x^2$ s'annulent. Si les écarts-types sont différents, la log-cote est **quadratique**. Sur ANSUR, génératif à écart-type commun ($\\mu_1 = 0{,}278$) et logistique ($0{,}287$) sont très proches."
+    },
+    {
+      "id": "bay-010",
+      "type": "unique",
+      "enonce": "Pourquoi dit-on que la régression logistique fait **moins d'hypothèses** que le modèle génératif ?",
+      "choix": [
+        "Elle suppose que les variables sont indépendantes",
+        "Elle ne suppose rien du tout sur les données, ni sur la frontière",
+        "Elle ne suppose que la forme de la log-cote",
+        "Elle n'a pas besoin de base d'apprentissage"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 1, §3.3 : si les lois ne sont pas gaussiennes mais que la log-cote reste à peu près affine, la logistique reste juste alors que le génératif se trompe. En échange, le génératif décrit les classes, donne accès aux $q_k$ et demande moins d'exemples quand ses hypothèses sont justes."
+    },
+    {
+      "id": "bay-011",
+      "type": "unique",
+      "enonce": "Un modèle génératif appris sur ANSUR (67 % d'hommes) doit servir dans une population à **parité**. Que faut-il faire ?",
+      "choix": [
+        "Réapprendre toutes les moyennes et variances sur une base équilibrée",
+        "Supprimer des hommes de la base jusqu'à la parité, puis réapprendre",
+        "Remplacer $q_1$ par 0,5, sans rien réapprendre",
+        "Rien : les lois $f_k$ ne dépendent pas des proportions"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 1, §4 : les lois $f_k$ décrivent chaque classe et ne changent pas, seules les proportions changent. Le seuil passe de 166,6 cm (67 % d'hommes) à 169,2 cm (parité). C'est le **décalage de $\\mu_0$** observé au cours 4."
+    },
+    {
+      "id": "bay-012",
+      "type": "unique",
+      "enonce": "Quand la proportion d'hommes $q_1$ **diminue**, que devient le seuil de taille pour être classé « homme » ?",
+      "choix": [
+        "Il augmente : il faut être plus grand",
+        "Il diminue : il suffit d'être plus petit",
+        "Il ne change pas : il ne dépend que des lois",
+        "Il disparaît : tout le monde devient « femme »"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 1, §4 : 166,6 cm pour $q_1 = 0{,}67$, 169,2 cm pour 0,5, 174,0 cm pour 0,2. Moins une classe est fréquente, plus il faut d'indices pour la prédire."
+    },
+    {
+      "id": "bay-013",
+      "type": "unique",
+      "enonce": "Qu'est-ce que le **classifieur de Bayes** ?",
+      "choix": [
+        "Celui qui utilise les vraies lois : le moins d'erreurs possible",
+        "Un classifieur qui fait toujours zéro erreur",
+        "Le Bayes naïf gaussien de scikit-learn (`GaussianNB`)",
+        "N'importe quel classifieur qui utilise la formule de Bayes avec des lois estimées"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 1, §5.2 : son taux d'erreur, l'**erreur de Bayes**, est une limite qu'aucun classifieur ne peut battre ; il n'est pas nul si les classes se chevauchent. Un modèle génératif s'en approche **si la loi choisie est la bonne**."
+    },
+    {
+      "id": "bay-014",
+      "type": "multiple",
+      "enonce": "La classe 1 réunit deux sous-populations (vers 2,5 et vers 10), et on lui ajuste **une** loi normale. Quelles conséquences ?",
+      "choix": [
+        "Le modèle prédit la classe 1 pour de très petites valeurs, sans aucun exemple",
+        "L'erreur passe d'environ 4,8 % à 6,7 %",
+        "La gaussienne se place entre les deux bosses, là où il n'y a presque personne",
+        "Le modèle retrouve exactement le classifieur de Bayes"
+      ],
+      "reponses": [
+        0,
+        1,
+        2
+      ],
+      "explication": "Notebook 1, §5 : la gaussienne très étalée de la classe 1 dépasse celle de la classe 0 loin à gauche (décision absurde sous −2,7) et décale la frontière (1,9 au lieu de 1,6). Près de **40 % d'erreurs en plus**, juste à cause du choix de loi."
+    },
+    {
+      "id": "bay-015",
+      "type": "unique",
+      "enonce": "Pourquoi n'utilise-t-on pas toujours l'**estimation par noyaux** (KDE), qui s'adapte à n'importe quelle loi ?",
+      "choix": [
+        "Elle ne dépend d'aucun hyperparamètre, donc elle sur-apprend",
+        "Elle donne toujours la même erreur que la loi normale",
+        "Elle n'est utilisable qu'en petite dimension",
+        "Elle ne s'applique qu'aux variables binaires, comme les pixels"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 1, §5.3 : la KDE place une petite gaussienne de largeur $h$ sur chaque exemple (hyperparamètre). En dimension 1, elle retrouve l'erreur de Bayes avec $h = 0{,}3$ ; en dimension 9 ou 784, il faudrait astronomiquement plus d'exemples (fléau de la dimension)."
+    },
+    {
+      "id": "bay-016",
+      "type": "unique",
+      "enonce": "Avant de choisir une loi pour chaque classe, quel est le bon réflexe ?",
+      "choix": [
+        "Toujours prendre la loi normale, qui marche dans tous les cas",
+        "Regarder les histogrammes par classe",
+        "Prendre la loi la plus complexe possible, pour ne rien rater",
+        "Choisir la loi qui donne la meilleure accuracy sur le test"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 1, §5.4 et notebook 3 : regarder les données avant de choisir. Sur le poids d'ANSUR, la loi log-normale suit mieux les histogrammes mais change peu les résultats : le choix compte surtout quand la forme réelle est très loin de la forme supposée, près de la frontière."
+    },
+    {
+      "id": "bay-017",
+      "type": "unique",
+      "enonce": "Par quoi est décrite une loi normale à $N$ variables ?",
+      "choix": [
+        "Un vecteur moyen $\\mathbf{m}_k$ et une matrice de covariance $\\mathbf{C}_k$",
+        "Une moyenne et un écart-type uniques, communs à toutes les variables",
+        "Une seule matrice de corrélation, sans moyenne",
+        "Un vecteur de $N$ probabilités de somme 1"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 2, §1.1 : $\\mathbf{C}_k$ porte les variances (diagonale) et les covariances. Les courbes d'égale densité sont des **ellipses** orientées selon les corrélations ; l'exponentielle contient le carré de la **distance de Mahalanobis** au centre."
+    },
+    {
+      "id": "bay-018",
+      "type": "unique",
+      "enonce": "Qu'est-ce qui distingue la **QDA** de la **LDA** ?",
+      "choix": [
+        "La LDA a une covariance par classe, la QDA une covariance commune",
+        "La QDA a une covariance par classe, la LDA une covariance commune",
+        "La QDA suppose les variables indépendantes dans chaque classe, pas la LDA",
+        "La LDA ne fonctionne qu'avec deux classes"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 2 : QDA = une loi normale par classe avec sa propre $\\mathbf{C}_k$ ; LDA = même $\\mathbf{C}$ pour toutes les classes, seules les moyennes diffèrent. Les deux traitent directement le multi-classes (un score par classe)."
+    },
+    {
+      "id": "bay-019",
+      "type": "unique",
+      "enonce": "Quelle est la forme des frontières de décision de la QDA et de la LDA ?",
+      "choix": [
+        "Toutes les deux : des hyperplans",
+        "QDA : quadratiques ; LDA : hyperplans",
+        "Toutes les deux : des cercles centrés sur les moyennes des classes",
+        "QDA : hyperplans ; LDA : quadratiques"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 2, §2.1 et §3.1 : avec une covariance commune, les termes $\\mathbf{x}^T\\mathbf{C}^{-1}\\mathbf{x}$ s'annulent entre classes, le score devient **affine** : frontières linéaires (d'où le nom). Avec des covariances différentes, ils restent : frontières du second degré."
+    },
+    {
+      "id": "bay-020",
+      "type": "multiple",
+      "enonce": "Dans le score discriminant de la QDA, $\\delta_k(\\mathbf{x}) = -\\frac{1}{2}(\\mathbf{x} - \\mathbf{m}_k)^T\\mathbf{C}_k^{-1}(\\mathbf{x} - \\mathbf{m}_k) - \\frac{1}{2}\\log\\det\\mathbf{C}_k + \\log q_k$, que représentent les termes ?",
+      "choix": [
+        "Le premier : la proximité au centre de la classe (Mahalanobis)",
+        "Le deuxième : une correction pour les classes très étalées",
+        "Le deuxième : la corrélation entre la classe et la sortie",
+        "Le troisième : la proportion de la classe"
+      ],
+      "reponses": [
+        0,
+        1,
+        3
+      ],
+      "explication": "Notebook 2, §2.1 : on prédit la classe de plus grand $\\delta_k$. Les probabilités s'obtiennent par **softmax** des scores, comme au cours 4 ; on passe par les logarithmes car les densités sont minuscules en grande dimension."
+    },
+    {
+      "id": "bay-021",
+      "type": "unique",
+      "enonce": "Avec deux classes, la LDA donne une log-cote $\\mu_0 + \\mathbf{x}^T \\mathbf{C}^{-1}(\\mathbf{m}_1 - \\mathbf{m}_0)$. Qu'en déduire ?",
+      "choix": [
+        "Elle n'est valable que si les deux classes ont la même moyenne",
+        "La même forme que la logistique, des coefficients calculés autrement",
+        "Elle est toujours strictement meilleure que la régression logistique sur le test",
+        "Elle donne des probabilités qui ne somment pas à 1"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 2, §3.1 : log-cote affine comme en logistique, mais les coefficients viennent des **moyennes et de la covariance commune**, pas de la minimisation de l'entropie croisée. C'est la généralisation à $N$ variables du modèle « écart-type commun »."
+    },
+    {
+      "id": "bay-022",
+      "type": "unique",
+      "enonce": "Sur des données simulées où les deux classes ont des formes très différentes, la LDA fait 22 % d'erreurs et la QDA 8 %. Pourquoi ?",
+      "choix": [
+        "La LDA ne gère pas les variables corrélées",
+        "La QDA utilise plus d'exemples d'apprentissage que la LDA",
+        "L'hypothèse de covariance commune est fausse ici",
+        "La LDA a sur-appris, car elle a plus de paramètres à estimer que la QDA"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 2, §3.2 : **quand les classes ont des formes différentes, l'hypothèse de covariance commune est un mauvais choix de loi**. La QDA adapte sa frontière à l'orientation et à l'étalement de chaque classe."
+    },
+    {
+      "id": "bay-023",
+      "type": "unique",
+      "enonce": "Sur ANSUR avec les 9 mesures, LDA, QDA et régression logistique atteignent toutes 99,5 %. Pourquoi ?",
+      "choix": [
+        "Parce que la base de test est trop petite pour les distinguer",
+        "Leurs hypothèses y sont presque vraies",
+        "Parce que les 9 mesures sont indépendantes dans chaque classe",
+        "Parce que les trois méthodes sont mathématiquement identiques"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 2, §4.2 : **quand les hypothèses d'un modèle génératif sont justes, il fait aussi bien que la régression logistique**. Les mesures sont pourtant fortement corrélées (0,46 en moyenne), ce qui gênera le Bayes naïf."
+    },
+    {
+      "id": "bay-024",
+      "type": "unique",
+      "enonce": "Avec 2 classes, combien de valeurs différentes contient **une** matrice de covariance $N \\times N$ pour $N = 9$ ?",
+      "choix": [
+        "18",
+        "81",
+        "9",
+        "45"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 2, §5.1 : la matrice est symétrique, soit $N(N+1)/2 = 9 \\times 10 / 2 = 45$ valeurs. La QDA en estime une par classe (109 paramètres en tout pour $K = 2$), la LDA une seule (64), la logistique $(K-1)(N+1) = 10$."
+    },
+    {
+      "id": "bay-025",
+      "type": "unique",
+      "enonce": "Comment le nombre de paramètres de la **QDA** croît-il avec le nombre de variables $N$ ?",
+      "choix": [
+        "Comme $N$ : un paramètre par variable",
+        "Comme $K N^2$",
+        "Comme $K$ seulement : il ne dépend pas de $N$",
+        "Comme $\\log N$, grâce à la symétrie des matrices de covariance"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 2, §5.1 : une matrice de $N(N+1)/2$ valeurs **par classe**. Chaque $\\hat{\\mathbf{C}}_k$ s'estime avec les seuls exemples de la classe $k$ : avec $P_k \\le N$, elle n'est pas inversible et la QDA est **impossible**."
+    },
+    {
+      "id": "bay-026",
+      "type": "multiple",
+      "enonce": "Sur les courbes d'apprentissage (petits échantillons d'ANSUR, 9 mesures), quelles observations sont vraies ?",
+      "choix": [
+        "La LDA fonctionne dès 10 exemples et atteint vite son plateau",
+        "La QDA est meilleure que la LDA pour tous les effectifs",
+        "Avec 5 ou 7 exemples par classe, la QDA est impossible",
+        "À partir d'environ 200 exemples, la QDA rattrape la LDA"
+      ],
+      "reponses": [
+        0,
+        2,
+        3
+      ],
+      "explication": "Notebook 2, §5.2 : c'est le **compromis biais-variance** du cours 1. La QDA est plus flexible (moins de biais) mais ses nombreux paramètres sont mal estimés avec peu d'exemples (plus de variance). Le bon choix de loi dépend aussi du nombre d'exemples."
+    },
+    {
+      "id": "bay-027",
+      "type": "unique",
+      "enonce": "Que fait le **rétrécissement** (*shrinkage*) d'une matrice de covariance ?",
+      "choix": [
+        "Il divise toutes les covariances par le nombre d'exemples",
+        "Il supprime les variables les moins corrélées à la classe à prédire",
+        "Il la rapproche d'une matrice diagonale",
+        "Il remplace la matrice par l'identité, quel que soit $\\alpha$"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 2, §5.3 : c'est une **régularisation**, comme Ridge (cours 3) ou `C` (cours 4). Avec 10 exemples, la LDA régularisée passe de 82 % à 95 %, et la QDA régularisée devient possible. `shrinkage=\"auto\"` choisit $\\alpha$ (Ledoit-Wolf) ; il faut standardiser les variables."
+    },
+    {
+      "id": "bay-028",
+      "type": "unique",
+      "enonce": "Quelle hypothèse fait le **Bayes naïf** ?",
+      "choix": [
+        "Dans chaque classe, les variables sont indépendantes",
+        "Les variables suivent toutes une loi normale",
+        "Les classes ont toutes la même matrice de covariance, pleine",
+        "Les classes ont toutes la même proportion"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 3, §1.1 : $f_k(\\mathbf{x}) = \\prod_j f_{kj}(x_j)$, et le score devient une **somme** : chaque variable vote indépendamment. C'est une QDA à matrices **diagonales** si les lois sont normales ($2KN$ paramètres). La loi de chaque variable est libre (normale, Bernoulli, multinomiale…)."
+    },
+    {
+      "id": "bay-029",
+      "type": "unique",
+      "enonce": "Quelle classe de scikit-learn choisir pour un Bayes naïf sur des **comptages de mots** (sac de mots) ?",
+      "choix": [
+        "`QuadraticDiscriminantAnalysis`",
+        "`MultinomialNB`",
+        "`BernoulliNB`",
+        "`GaussianNB`"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 3, §1.1 : `GaussianNB` pour des mesures continues, `BernoulliNB` pour des variables 0/1, `MultinomialNB` pour des comptages (le modèle classique du filtrage de spams), `CategoricalNB` pour des modalités."
+    },
+    {
+      "id": "bay-030",
+      "type": "unique",
+      "enonce": "Sur ANSUR (9 mesures), le Bayes naïf gaussien fait 93 % contre 99,5 % pour la LDA, avec une entropie croisée 20 fois plus grande. Pourquoi ?",
+      "choix": [
+        "Les mesures ne sont pas gaussiennes, contrairement à ce que suppose la LDA",
+        "Il a beaucoup trop de paramètres à estimer pour 4 551 personnes",
+        "Il n'utilise pas les proportions des classes",
+        "Il compte plusieurs fois la même information"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §1.3 : même à sexe fixé, les mesures sont corrélées (0,46 en moyenne). Une femme grande a aussi grand pied et grande main : l'indice « grande » est compté trois fois, et le modèle devient **trop sûr de lui**."
+    },
+    {
+      "id": "bay-031",
+      "type": "multiple",
+      "enonce": "On donne au Bayes naïf la **taille répétée 5 fois**. Que se passe-t-il ?",
+      "choix": [
+        "Le modèle devient trop sûr de lui : la log-cote est multipliée par 5",
+        "L'entropie croisée augmente nettement (0,33 → 0,77)",
+        "L'accuracy passe de 86 % à 99 %",
+        "Les décisions (accuracy) changent à peine"
+      ],
+      "reponses": [
+        0,
+        1,
+        3
+      ],
+      "explication": "Notebook 3, §1.3 : aucune information nouvelle, mais chaque copie ajoute le même terme $\\log\\frac{f_1}{f_0}$. **Les décisions restent raisonnables, ce sont les probabilités qui deviennent fausses.** Le Bayes naïf est un classifieur acceptable mais un mauvais estimateur de probabilités."
+    },
+    {
+      "id": "bay-032",
+      "type": "unique",
+      "enonce": "Pourquoi le Bayes naïf **gaussien** ne fait-il que 57 % sur MNIST ?",
+      "choix": [
+        "Les images sont trop petites (28 × 28) pour être reconnues",
+        "Les dix chiffres sont très déséquilibrés dans la base",
+        "Il n'a pas assez de paramètres pour décrire les dix chiffres",
+        "Des pixels de variance nulle excluent la bonne classe"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §3.2 : un pixel jamais encré dans les « 1 » a une variance quasi nulle ; un « 1 » penché un peu encré à cet endroit a une densité astronomiquement petite. **Un seul pixel suffit à exclure la bonne classe**, quels que soient les 783 autres. Les pixels ne sont pas gaussiens (81 % valent exactement 0)."
+    },
+    {
+      "id": "bay-033",
+      "type": "unique",
+      "enonce": "En passant de la loi normale à la loi de **Bernoulli** pour les pixels (même hypothèse naïve), l'accuracy sur MNIST passe de 57 % à :",
+      "choix": [
+        "57 % : la loi ne change rien",
+        "99 %",
+        "84 %",
+        "11 %, celle du classifieur naïf"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 3, §3.3 : on binarise (encré ou non) et chaque pixel suit une Bernoulli de paramètre $p_{kj}$. Même hypothèse d'indépendance, même nombre de paramètres : seule la loi change. **Un modèle génératif vaut ce que vaut la loi choisie.**"
+    },
+    {
+      "id": "bay-034",
+      "type": "unique",
+      "enonce": "À quoi sert le **lissage de Laplace** (`alpha=1`) du Bayes naïf de Bernoulli ?",
+      "choix": [
+        "À éviter des probabilités exactement nulles",
+        "À rendre les pixels gaussiens avant l'apprentissage",
+        "À réduire le nombre de pixels utilisés",
+        "À équilibrer les proportions des dix chiffres dans la base"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 3, §3.3 : $\\hat p_{kj} = (n_{kj} + 1)/(P_k + 2)$, comme si l'on ajoutait un exemple encré et un non encré. Un pixel jamais encré dans les « 1 » a alors une probabilité d'encre d'environ 1/1 000, petite mais pas éliminatoire."
+    },
+    {
+      "id": "bay-035",
+      "type": "unique",
+      "enonce": "Sur MNIST, pourquoi la QDA (sans régularisation) est-elle **impossible** ?",
+      "choix": [
+        "La QDA ne sait traiter que deux classes à la fois",
+        "Les images ne sont pas standardisées",
+        "Il y a moins de 784 images de test",
+        "$\\hat{\\mathbf{C}}_k$ n'est pas inversible"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §4 : variance nulle sur des pixels ⇒ matrice de covariance non inversible. Régularisée (`reg_param=0.1`), la QDA atteint 96 %. La LDA (covariance commune) fait 85 %, 87 % régularisée."
+    },
+    {
+      "id": "bay-036",
+      "type": "multiple",
+      "enonce": "Quelles affirmations sur l'**ACP** (analyse en composantes principales) sont vraies ?",
+      "choix": [
+        "Elle choisit les directions qui séparent le mieux les classes",
+        "Elle s'applique à de nouveaux exemples (`transform`)",
+        "Elle est non supervisée : elle n'utilise pas les classes",
+        "Ses composantes sont les directions de plus grande variance"
+      ],
+      "reponses": [
+        1,
+        2,
+        3
+      ],
+      "explication": "Notebook 3, §5.1 : les composantes sont les vecteurs propres de la matrice de covariance, rangés par valeur propre décroissante ; elles sont non corrélées. C'est la **LDA** (projection) qui cherche les directions qui séparent les classes."
+    },
+    {
+      "id": "bay-037",
+      "type": "unique",
+      "enonce": "Sur MNIST, combien de composantes principales faut-il pour garder environ 79 % de la variance ?",
+      "choix": [
+        "784",
+        "2",
+        "10",
+        "40"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §5.2 : 2 composantes gardent 17 %, 10 en gardent 49 %, 40 en gardent 79 % (85 pour 90 %). Avec 40 composantes, les chiffres reconstruits sont parfaitement reconnaissables : l'information utile tient dans quelques dizaines de dimensions."
+    },
+    {
+      "id": "bay-038",
+      "type": "unique",
+      "enonce": "Quelle méthode de réduction de dimension ne sert **qu'à visualiser** ?",
+      "choix": [
+        "La projection LDA",
+        "La SVD tronquée",
+        "Le t-SNE",
+        "L'ACP"
+      ],
+      "reponses": [
+        2
+      ],
+      "explication": "Notebook 3, §5.3 : le t-SNE (non linéaire) conserve les voisinages, mais ne s'applique pas à de nouveaux exemples. ACP, LDA et SVD tronquée sont linéaires et ont une méthode `transform` : utilisables dans un pipeline de prédiction."
+    },
+    {
+      "id": "bay-039",
+      "type": "unique",
+      "enonce": "Comment le cours choisit-il le nombre de composantes avant la QDA (« ACP + QDA ») ?",
+      "choix": [
+        "En gardant les 784 composantes pour ne rien perdre",
+        "Par validation croisée sur l'apprentissage",
+        "En prenant la valeur qui donne la meilleure accuracy sur le test",
+        "En gardant toujours au moins 90 % de la variance totale"
+      ],
+      "reponses": [
+        1
+      ],
+      "explication": "Notebook 3, §5.4 : le nombre de composantes est un **hyperparamètre**, choisi par validation croisée, jamais sur le test. Trop peu : on perd de l'information ; trop : les matrices redeviennent mal estimées."
+    },
+    {
+      "id": "bay-040",
+      "type": "unique",
+      "enonce": "« ACP + Bayes naïf gaussien » atteint 87 % sur MNIST, contre 57 % sur les pixels bruts. Pourquoi ?",
+      "choix": [
+        "L'ACP utilise les classes pour choisir les meilleures directions",
+        "Le Bayes naïf a plus de paramètres après l'ACP",
+        "L'ACP rend toutes les variables binaires, comme la loi de Bernoulli",
+        "Les composantes ne sont pas corrélées"
+      ],
+      "reponses": [
+        3
+      ],
+      "explication": "Notebook 3, §5.4 : changer de **représentation** peut rendre une loi simple adaptée. Les composantes ne sont plus nulles en permanence (fini les variances nulles) et ne sont pas corrélées (l'hypothèse naïve est plus juste)."
+    }
+  ]
+}

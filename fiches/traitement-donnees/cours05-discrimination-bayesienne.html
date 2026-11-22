@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche — Traitement de données, Cours 5 : Discrimination bayésienne</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div>
+    <p class="surtitre">Traitement de données · Fiche de révision · Cours 5</p>
+    <h1>Discrimination bayésienne</h1>
+  </div>
+  <p class="source">Formule de Bayes, modèle génératif, LDA / QDA,<br>Bayes naïf, choix de la loi, ACP</p>
+</header>
+
+<div class="boite essentiel">
+  <span class="boite-titre">À retenir en priorité</span>
+  <ul>
+    <li><strong>Modèle génératif</strong> : décrire chaque classe par une loi f<sub>k</sub> et une proportion q<sub>k</sub>, puis <span class="formule">P(Y = k | x) = q<sub>k</sub> f<sub>k</sub>(x) / Σ<sub>l</sub> q<sub>l</sub> f<sub>l</sub>(x)</span>. On prédit la classe de plus grand q<sub>k</sub> f<sub>k</sub>(x).</li>
+    <li>Le <strong>seul choix de modélisation</strong> est la loi f<sub>k</sub>. Fil rouge : <strong>un modèle génératif n'est bon que si la loi choisie est la bonne</strong>.</li>
+    <li>Log-cote = log(f<sub>1</sub>/f<sub>0</sub>) + log(q<sub>1</sub>/q<sub>0</sub>). Classes gaussiennes de <strong>même variance</strong> ⇒ log-cote <strong>affine</strong> (forme de la régression logistique).</li>
+    <li><strong>LDA</strong> : covariance commune, frontières linéaires. <strong>QDA</strong> : une covariance par classe, frontières quadratiques, ≈ K·N² paramètres.</li>
+    <li><strong>Bayes naïf</strong> : variables indépendantes dans chaque classe ; loi libre par variable ; bon classifieur mais <strong>probabilités trop sûres</strong> si les variables sont corrélées.</li>
+    <li><strong>ACP</strong> : directions de plus grande variance, non supervisée, linéaire, applicable à de nouveaux exemples.</li>
+  </ul>
+</div>
+
+<h2>1. La formule de Bayes (notebook 1)</h2>
+<div class="deux-colonnes">
+  <div>
+    <p class="formule">P(A | B) = P(B | A) · P(A) / P(B)</p>
+    <p><strong>L'ordre compte</strong> : P(≥ 180 cm | homme) = 0,26 mais P(homme | ≥ 180 cm) = 0,99.</p>
+    <table>
+      <tr><th>Terme</th><th>Nom</th><th>Comment l'obtenir</th></tr>
+      <tr><td>P(Y = k | x)</td><td>a posteriori</td><td>ce qu'on cherche</td></tr>
+      <tr><td>q<sub>k</sub></td><td>a priori</td><td>on compte P<sub>k</sub> / P</td></tr>
+      <tr><td>f<sub>k</sub>(x)</td><td>loi de la classe (vraisemblance)</td><td><strong>choisir une loi</strong>, estimer sur la classe k seule</td></tr>
+      <tr><td>Σ q<sub>l</sub> f<sub>l</sub>(x)</td><td>loi de X</td><td>se déduit (probabilités totales)</td></tr>
+    </table>
+  </div>
+  <div>
+    <table>
+      <tr><th></th><th>Discriminant (cours 4)</th><th>Génératif (cours 5)</th></tr>
+      <tr><td>Modélise</td><td>P(Y | x)</td><td>f<sub>k</sub> et q<sub>k</sub></td></tr>
+      <tr><td>Hypothèse</td><td>forme de la frontière</td><td>forme de la loi de chaque classe</td></tr>
+      <tr><td>Apprentissage</td><td>minimiser l'entropie croisée</td><td>formules directes (moyennes, variances)</td></tr>
+    </table>
+    <p>Gaussienne à une variable : <strong>q̂<sub>k</sub> = P<sub>k</sub>/P, m̂<sub>k</sub>, σ̂<sub>k</sub></strong> calculés sur chaque classe (maximum de vraisemblance, exact). <code>GaussianNB</code>. ANSUR : seuil 166,6 cm.</p>
+    <p>Histogramme multivarié impossible : 25<sup>9</sup> cases pour 9 mesures (fléau de la dimension) ⇒ on impose une forme de loi.</p>
+  </div>
+</div>
+
+<h2>2. Lien avec la régression logistique et proportions</h2>
+<div class="deux-colonnes">
+  <div>
+    <p class="formule">log π/(1 − π) = log f<sub>1</sub>(x)/f<sub>0</sub>(x) + log q<sub>1</sub>/q<sub>0</sub></p>
+    <ul>
+      <li>σ<sub>0</sub> ≠ σ<sub>1</sub> : log-cote <strong>quadratique</strong> ; σ<sub>0</sub> = σ<sub>1</sub> : <strong>affine</strong>, μ<sub>1</sub> = (m<sub>1</sub> − m<sub>0</sub>)/σ².</li>
+      <li>ANSUR : génératif à écart-type commun μ<sub>1</sub> = 0,278 ; logistique 0,287. Mêmes résultats en test.</li>
+      <li>La logistique fait <strong>moins d'hypothèses</strong> (seulement la log-cote) ; le génératif décrit les classes, donne les q<sub>k</sub>, et demande moins d'exemples si ses hypothèses sont justes.</li>
+    </ul>
+  </div>
+  <div class="boite methode">
+    <span class="boite-titre">Changer les proportions</span>
+    <p>Les f<sub>k</sub> ne changent pas : on remplace q<sub>k</sub> sans rien réapprendre (<code>priors=[0.5, 0.5]</code>). Seuil : 166,6 cm (67 % d'hommes) → 169,2 cm (parité) → 174,0 cm (20 %). C'est le <strong>décalage de μ<sub>0</sub></strong> du cours 4. Le bon q<sub>k</sub> est celui de la <strong>population d'usage</strong>.</p>
+  </div>
+</div>
+
+<h2>3. Quand la loi est mal choisie</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li><strong>Classifieur de Bayes</strong> : vraies lois et proportions ⇒ le moins d'erreurs possible ; son taux = <strong>erreur de Bayes</strong> (non nulle si les classes se chevauchent).</li>
+      <li>Classe à deux sous-populations ajustée par une gaussienne : elle se place <strong>entre les bosses</strong>, frontière décalée, et région absurde loin des données (la gaussienne la plus étalée l'emporte). 6,7 % d'erreurs au lieu de 4,8 %.</li>
+      <li><strong>Estimation par noyaux</strong> (KDE, largeur h) : sans forme imposée, retrouve l'erreur de Bayes en dimension 1, mais inutilisable en grande dimension.</li>
+    </ul>
+  </div>
+  <div class="boite piege"><span class="boite-titre">Réflexe</span>Toujours <strong>regarder les histogrammes par classe</strong> (et les corrélations dans chaque classe) avant de choisir une loi. Le choix compte surtout quand la vraie forme est très loin de la forme supposée, <strong>près de la frontière</strong> (poids d'ANSUR : log-normale ≈ normale).</div>
+</div>
+
+<h2>4. LDA et QDA (notebook 2)</h2>
+<div class="deux-colonnes">
+  <div>
+    <ul>
+      <li>Loi normale à N variables : <strong>vecteur moyen m<sub>k</sub></strong> et <strong>matrice de covariance C<sub>k</sub></strong> ; ellipses orientées selon les corrélations ; distance de <strong>Mahalanobis</strong>.</li>
+      <li><strong>QDA</strong> : δ<sub>k</sub>(x) = −½(x − m<sub>k</sub>)<sup>T</sup>C<sub>k</sub><sup>−1</sup>(x − m<sub>k</sub>) − ½ log det C<sub>k</sub> + log q<sub>k</sub> (proximité au centre, étalement, proportion). Frontières <strong>quadratiques</strong>.</li>
+      <li><strong>LDA</strong> : C commune ⇒ termes quadratiques annulés ⇒ frontières <strong>hyperplans</strong>. En binaire : log-cote affine, coefficients C<sup>−1</sup>(m<sub>1</sub> − m<sub>0</sub>).</li>
+      <li>Probabilités : softmax des δ<sub>k</sub>. Multi-classes direct.</li>
+      <li>Classes de formes différentes : LDA 22 % d'erreurs, QDA 8 %. ANSUR 9 mesures : LDA = QDA = logistique (99,5 %).</li>
+    </ul>
+  </div>
+  <div>
+    <table>
+      <tr><th>Paramètres (K = 2)</th><th>N = 9</th><th>tendance</th></tr>
+      <tr><td>Régression logistique</td><td>10</td><td>(K−1)(N+1)</td></tr>
+      <tr><td>LDA</td><td>64</td><td>KN + N²/2</td></tr>
+      <tr><td>QDA</td><td>109</td><td>K·N²/2</td></tr>
+    </table>
+    <ul>
+      <li>Une matrice symétrique N × N : N(N+1)/2 valeurs (45 pour N = 9).</li>
+      <li>QDA <strong>impossible</strong> si P<sub>k</sub> ≤ N (C<sub>k</sub> non inversible) ; mauvaise avec peu d'exemples. LDA stable dès 10 exemples. QDA rattrape vers 200 : <strong>compromis biais-variance</strong>.</li>
+      <li><strong>Rétrécissement</strong> : (1 − α)Ĉ + αD (<code>shrinkage="auto"</code>) ; LDA à 10 exemples : 82 % → 95 %. Standardiser avant.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>5. Bayes naïf et choix de la loi (notebook 3)</h2>
+<div class="deux-colonnes">
+  <div>
+    <p class="formule">f<sub>k</sub>(x) = Π<sub>j</sub> f<sub>kj</sub>(x<sub>j</sub>) ⇒ δ<sub>k</sub> = log q<sub>k</sub> + Σ<sub>j</sub> log f<sub>kj</sub>(x<sub>j</sub>)</p>
+    <ul>
+      <li>2KN paramètres (gaussien) : QDA à matrices diagonales. Loi au choix : <code>GaussianNB</code> (continu), <code>BernoulliNB</code> (0/1), <code>MultinomialNB</code> (comptages, sac de mots), <code>CategoricalNB</code>.</li>
+      <li>ANSUR 9 mesures : 93 % (LDA 99,5 %), entropie croisée × 20 : mesures corrélées (0,46) ⇒ même information <strong>comptée plusieurs fois</strong>.</li>
+      <li>Taille répétée 5 fois : AUC et accuracy inchangées, entropie croisée 0,33 → 0,77 : <strong>les décisions restent, les probabilités deviennent fausses</strong>.</li>
+    </ul>
+  </div>
+  <div class="exemple"><strong>MNIST (784 pixels, 10 classes)</strong><br>
+    Naïf gaussien : <strong>57 %</strong> (pixels de variance nulle : un seul suffit à exclure la bonne classe ; 81 % des pixels valent 0).<br>
+    Naïf <strong>Bernoulli</strong> (pixel encré ou non, lissage de Laplace) : <strong>84 %</strong> — même hypothèse, seule la loi change.<br>
+    Multinomial : 83 %. LDA : 85 % (87 % régularisée).<br>
+    QDA : impossible ; régularisée : <strong>96 %</strong>.<br>
+    ACP (40 composantes) + QDA : <strong>96 %</strong>, rapide ; ACP + naïf gaussien : 87 %.</div>
+</div>
+
+<h2>6. Réduire la dimension</h2>
+<table>
+  <tr><th>Méthode</th><th>Utilise les classes</th><th>Transformation</th><th>Conserve</th><th>Nouveaux exemples</th></tr>
+  <tr><td><strong>ACP</strong></td><td>non</td><td>linéaire</td><td>la variance</td><td>oui (<code>transform</code>)</td></tr>
+  <tr><td>Projection <strong>LDA</strong></td><td>oui</td><td>linéaire</td><td>la séparation (K − 1 axes)</td><td>oui</td></tr>
+  <tr><td><strong>t-SNE</strong></td><td>non</td><td>non linéaire</td><td>les voisinages</td><td>non : visualiser seulement</td></tr>
+  <tr><td>SVD tronquée</td><td>non</td><td>linéaire</td><td>comme l'ACP, sans centrer</td><td>oui (matrices creuses)</td></tr>
+</table>
+<p>ACP : vecteurs propres de la covariance, valeurs propres décroissantes, composantes non corrélées. MNIST : 2 composantes = 17 % de la variance, 40 = 79 %, 85 pour 90 %. Le nombre de composantes est un <strong>hyperparamètre</strong> (validation croisée). Changer de représentation peut rendre une loi simple adaptée.</p>
+
+<div class="boite essentiel">
+  <span class="boite-titre">Choisir</span>
+  Bayes naïf : très peu de paramètres, grande dimension, mauvaises probabilités si corrélations · LDA : stable avec peu d'exemples, frontière linéaire · QDA : classes de formes différentes, beaucoup d'exemples · KDE : toute loi, petite dimension · Logistique : moins d'hypothèses ; si les hypothèses génératives sont justes, tous se valent.
+</div>
+
+</body>
+</html>
