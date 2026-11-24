@@ -126,21 +126,6 @@
       "explication": "Question 2.2 : le dictionnaire est **figé** après `fit` sur l'apprentissage. Beaucoup de ces mots sont des numéros de téléphone propres à chaque campagne : gênant, car « contenir un numéro surtaxé » est un bon indice de spam (section 7)."
     },
     {
-      "id": "td4-009",
-      "type": "unique",
-      "enonce": "Que fait la fonction `tokeniser` du TD sur « URGENT! You have WON a guaranteed £1000 cash prize. Call 09061701461 now, claims are closing » ?",
-      "choix": [
-        "Elle garde tous les mots tels quels, majuscules et ponctuation comprises : `URGENT!, You, have, WON…`",
-        "Elle retire les nombres et garde les mots entiers : `urgent, won, guaranteed, cash, prize, call, claims, closing`",
-        "Minuscules, sans mots vides, racines : `urgent, won, guarante, 1000, cash, prize, 09061701461, claim, close`",
-        "Elle ne garde que les mots de plus de 5 lettres : `urgent, guaranteed, claims, closing`"
-      ],
-      "reponses": [
-        2
-      ],
-      "explication": "Question 2.3 : mots d'au moins 2 caractères en minuscules, suppression des **mots vides** (`ENGLISH_STOP_WORDS` : you, have, a, now, are…) et **racinisation** (`SnowballStemmer`). Le dictionnaire passe de 7 298 à 6 021 mots."
-    },
-    {
       "id": "td4-010",
       "type": "unique",
       "enonce": "Que fait l'argument `min_df=2` de `CountVectorizer` ?",
@@ -279,21 +264,6 @@
       "explication": "Question 5.1 : graduer l'axe selon $\\log\\frac{\\pi}{1-\\pi}$ sépare $10^{-3}$, $10^{-2}$, 0,99, 0,999… On voit alors les légitimes entre $10^{-3}$ et $10^{-1}$, la plupart des spams au-dessus de 0,9."
     },
     {
-      "id": "td4-019",
-      "type": "unique",
-      "enonce": "L'AUC vaut 0,995 et la précision moyenne 0,978. Pourquoi la courbe précision-rappel est-elle plus utile ici que la courbe ROC ?",
-      "choix": [
-        "La courbe précision-rappel ne dépend pas du seuil, contrairement à la ROC",
-        "La courbe ROC est fausse quand les classes sont déséquilibrées",
-        "L'AUC ne peut pas dépasser 0,99",
-        "Sur la ROC, la zone de très peu de FP est illisible"
-      ],
-      "reponses": [
-        3
-      ],
-      "explication": "Question 5.2 : la précision-rappel montre directement que la précision reste à 1 jusqu'à un rappel d'environ 0,86 (le point du seuil 0,5), puis baisse. Le seuil 0,5 est au bout du palier : on peut sans doute le baisser un peu."
-    },
-    {
       "id": "td4-020",
       "type": "unique",
       "enonce": "L'opérateur exige « au plus 1 SMS légitime sur 1 000 dans les indésirables ». À quelle contrainte cela correspond-il ?",
@@ -369,21 +339,6 @@
         1
       ],
       "explication": "Question 6.2 : avec une classe moins rare et un score qui sépare très bien les classes, la plupart des probabilités restent proches de 0 ou de 1, et le décalage de $\\mu_0$ change moins de décisions."
-    },
-    {
-      "id": "td4-025",
-      "type": "unique",
-      "enonce": "Quelle représentation des nombres obtient la meilleure précision moyenne (0,964) ?",
-      "choix": [
-        "Garder chaque numéro tel quel dans le dictionnaire",
-        "Garder seulement les numéros présents dans au moins 5 SMS",
-        "Remplacer tous les nombres par un même jeton `<nombre>`",
-        "Supprimer tous les mots qui contiennent un chiffre, comme au cours 2"
-      ],
-      "reponses": [
-        2
-      ],
-      "explication": "Section 7 : un numéro surtaxé est un indice de spam, mais chaque campagne a le sien (hors vocabulaire au test). Le jeton garde l'information « ce SMS contient un nombre » en oubliant le numéro exact. **Un prétraitement n'est jamais bon dans l'absolu : il se mesure.**"
     },
     {
       "id": "td4-026",

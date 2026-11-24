@@ -1,0 +1,34 @@
+{
+  "source": "Page « Contrôle final » du site du cours",
+  "priorite": 4,
+  "theme": "La classification bayésienne",
+  "resume": "Les trois notebooks du cours 5 sont la priorité n°4 du prof.",
+  "points": [
+    "Les hypothèses de chaque méthode (génératif, LDA, QDA, Bayes naïf)",
+    "Pourquoi le choix de la loi compte autant"
+  ],
+  "horsProgramme": [
+    "L'estimation par noyaux",
+    "Les mélanges de gaussiennes"
+  ],
+  "notebooks": {
+    "nb1": {
+      "statut": "entier",
+      "message": "Priorité n°4 : tout le notebook, sauf l'estimation par noyaux. Retiens les hypothèses et pourquoi une loi mal choisie donne de mauvaises décisions."
+    },
+    "nb2": {
+      "statut": "entier",
+      "message": "Priorité n°4 : tout le notebook. Retiens les hypothèses de la LDA et de la QDA, la forme de leurs frontières et le problème des petits effectifs."
+    },
+    "nb3": {
+      "statut": "entier",
+      "message": "Priorité n°4 : tout le notebook. Retiens l'hypothèse du Bayes naïf et pourquoi le choix de la loi d'un pixel change tout."
+    }
+  },
+  "sectionsHorsProgramme": [
+    {
+      "titre": "5.3 Ne pas choisir de forme : l'estimation par noyaux",
+      "note": "L'estimation par noyaux est hors programme du contrôle."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "notebooks": [
+    {
+      "fichier": "nb1.json",
+      "titre": "Approche générative"
+    },
+    {
+      "fichier": "nb2.json",
+      "titre": "LDA et QDA"
+    },
+    {
+      "fichier": "nb3.json",
+      "titre": "Bayes naïf et choix de la loi"
+    }
+  ]
+}

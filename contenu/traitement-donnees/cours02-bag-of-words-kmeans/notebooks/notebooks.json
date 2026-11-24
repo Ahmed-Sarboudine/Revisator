@@ -1,0 +1,12 @@
+{
+  "notebooks": [
+    {
+      "fichier": "nb1.json",
+      "titre": "Sac de mots"
+    },
+    {
+      "fichier": "nb2.json",
+      "titre": "K-moyennes"
+    }
+  ]
+}

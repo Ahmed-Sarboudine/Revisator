@@ -554,10 +554,10 @@
     {
       "id": "intro-033",
       "type": "multiple",
-      "enonce": "Quelles affirmations sur les courbes ROC et rappel-précision sont exactes ?",
+      "enonce": "Quelles affirmations sur la **courbe ROC** sont exactes ?",
       "choix": [
         "La ROC trace la sensibilité en fonction de 1 − spécificité",
-        "Une AUC de 0,5 correspond à un classifieur aléatoire",
+        "La diagonale correspond à un classifieur qui répond au hasard",
         "La ROC trace la précision en fonction du rappel",
         "Sur des classes très déséquilibrées, la ROC peut être trop optimiste",
         "La ROC dépend du seuil de décision choisi"
@@ -567,7 +567,7 @@
         1,
         3
       ],
-      "explication": "La **ROC** trace le taux de vrais positifs contre le taux de faux positifs ($1 -$ spécificité) pour **tous les seuils** : elle compare des modèles **indépendamment du seuil**. AUC : 1 = parfait, **0,5 = aléatoire**. Sur classes déséquilibrées, la courbe **rappel-précision** est plus parlante.",
+      "explication": "La ROC trace le rappel (sensibilité) en fonction du taux de faux positifs (1 − spécificité), un point par seuil : elle ne dépend donc d'aucun seuil particulier. La diagonale correspond au hasard, le coin en haut à gauche au classifieur parfait. Les taux étant calculés à l'intérieur de chaque classe, la ROC reste belle même quand beaucoup de faux positifs noient une classe rare : elle peut alors être trop optimiste. (L'AUC et la courbe précision-rappel sont hors programme du contrôle.)",
       "page": 61
     },
     {

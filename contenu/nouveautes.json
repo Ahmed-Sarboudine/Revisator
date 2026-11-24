@@ -1,6 +1,16 @@
 {
   "versions": [
     {
+      "date": "2026-11-24",
+      "titre": "Les notebooks directement sur le site",
+      "ajouts": [
+        { "texte": "Traitement de données : les notebooks des cours 2 à 5 s'affichent sur le site, avec le code et ses résultats (tableaux, graphiques), sans rien lancer", "lien": "#/m/traitement-donnees" },
+        { "texte": "Traitement de données : TD 1 à 4 en notebook, énoncé puis correction masquée avec tous les résultats", "lien": "#/m/traitement-donnees" },
+        { "texte": "Traitement de données : ce que le prof demande de réviser pour l'exam est en orange (priorité de chaque cours et TD, parties à revoir dans les notebooks), le hors-programme est grisé", "lien": "#/m/traitement-donnees" },
+        { "texte": "Traitement de données : QCM recentrés sur le programme du contrôle (questions hors programme, de syntaxe Python ou de valeurs à retenir par cœur retirées, nouvelles questions sur la courbe ROC, le seuil, les résidus et les K plus proches voisins)", "lien": "#/m/traitement-donnees" }
+      ]
+    },
+    {
       "date": "2026-11-22",
       "titre": "Nouvelle matière : algèbre avancée",
       "ajouts": [

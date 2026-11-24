@@ -24,6 +24,14 @@ const fichiersPdf = (dir) => ({
   fiche: existsSync(join(dir, "fiche.pdf")),
   corrige: existsSync(join(dir, "corrige.pdf")),
   schema: existsSync(join(dir, "schema.pdf")),
+  // notebooks/notebooks.json (scripts/importer-notebooks.js) : notebooks Jupyter affichés avec leurs résultats
+  ...(existsSync(join(dir, "notebooks", "notebooks.json"))
+    ? { notebooks: JSON.parse(readFileSync(join(dir, "notebooks", "notebooks.json"), "utf8")).notebooks.length }
+    : {}),
+  // a-reviser.json : ce que le prof demande de réviser pour l'exam (priorité, parties à surligner)
+  ...(existsSync(join(dir, "a-reviser.json"))
+    ? (({ priorite, theme }) => ({ aReviser: { priorite, theme } }))(JSON.parse(readFileSync(join(dir, "a-reviser.json"), "utf8")))
+    : {}),
 });
 
 function lireDocumentSansQcm(chemin, dir, fichier, idDoc) {

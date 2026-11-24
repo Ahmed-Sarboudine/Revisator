@@ -1,0 +1,59 @@
+{
+  "source": "Page « Contrôle final » du site du cours",
+  "priorite": 2,
+  "theme": "Toute la démarche, sur un cas réel",
+  "resume": "Tout le TD 3 est la priorité n°2 du prof : revois surtout les choix faits et les erreurs à éviter, plus que le code.",
+  "points": [
+    "Pourquoi passer au logarithme",
+    "Séparer apprentissage et test dans le temps",
+    "N'utiliser que l'information disponible au moment de prédire",
+    "Se comparer à une référence naïve",
+    "Coder la saisonnalité"
+  ],
+  "notebooks": {
+    "nb1": {
+      "statut": "entier",
+      "message": "Priorité n°2 : tout le TD. Les choix et les pièges comptent plus que le code.",
+      "points": [
+        {
+          "texte": "Le passage au logarithme",
+          "section": "Question 3"
+        },
+        {
+          "texte": "Les variables décalées : ce qu'on connaît vraiment le lundi",
+          "section": "Question 6"
+        },
+        {
+          "texte": "La saisonnalité",
+          "section": "Question 10"
+        },
+        {
+          "texte": "Le bilan",
+          "section": "Question 11"
+        }
+      ]
+    },
+    "nb2": {
+      "statut": "entier",
+      "message": "Priorité n°2 : tout le TD. Les choix et les pièges comptent plus que le code.",
+      "points": [
+        {
+          "texte": "Le passage au logarithme",
+          "section": "Question 3"
+        },
+        {
+          "texte": "Les variables décalées : ce qu'on connaît vraiment le lundi",
+          "section": "Question 6"
+        },
+        {
+          "texte": "La saisonnalité",
+          "section": "Question 10"
+        },
+        {
+          "texte": "Le bilan",
+          "section": "Question 11"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "notebooks": [
+    {
+      "fichier": "nb1.json",
+      "titre": "Indicateurs et visualisation"
+    },
+    {
+      "fichier": "nb2.json",
+      "titre": "Données Ciqual"
+    },
+    {
+      "fichier": "nb3.json",
+      "titre": "Modèles"
+    }
+  ]
+}

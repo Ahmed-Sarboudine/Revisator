@@ -66,21 +66,6 @@
       "explication": "La variance s'exprime dans le **carré** de l'unité (des g², des kJ²) : difficile à lire. L'écart type $\\sigma = \\sqrt{\\mathrm{Var}}$ revient à l'unité de la variable. Il n'est pas robuste, et il n'est inférieur à la variance que si celle-ci dépasse 1."
     },
     {
-      "id": "reg-005",
-      "type": "unique",
-      "enonce": "Par défaut, `np.std(x)` et `x.std()` (pandas) donnent-ils le même résultat ?",
-      "choix": [
-        "Oui : les deux divisent par $P-1$, l'estimateur non biaisé",
-        "Non : numpy divise par $P-1$, pandas par $P$ (option `ddof`)",
-        "Oui : les deux divisent par $P$, l'estimateur biaisé",
-        "Non : numpy divise par $P$, pandas par $P-1$"
-      ],
-      "reponses": [
-        3
-      ],
-      "explication": "Notebook 1, §3.1 : `np.var`/`np.std` divisent par $P$ par défaut ; `ddof=1` donne $P-1$. Pandas divise par $P-1$ par défaut. La différence est négligeable quand $P$ est grand."
-    },
-    {
       "id": "reg-006",
       "type": "unique",
       "enonce": "Que montre mal une **boîte à moustaches** ?",
@@ -170,51 +155,6 @@
         3
       ],
       "explication": "Notebook 1, §8 : t-SNE conserve les **voisinages** ; les axes n'ont pas de sens, et les distances entre groupes comme leur taille changent avec la perplexité. C'est un outil de **visualisation**, pas de prédiction."
-    },
-    {
-      "id": "reg-012",
-      "type": "unique",
-      "enonce": "Dans la table Ciqual, pourquoi les colonnes de teneurs (lipides, énergie…) sont-elles lues par pandas comme du **texte** ?",
-      "choix": [
-        "Pandas lit toujours les fichiers Excel en texte, il faut tout convertir à la main",
-        "Elles mêlent des nombres à virgule et des « - », « traces », « < 0,5 »",
-        "Les unités (g, mg, µg) sont écrites dans chaque case après le nombre",
-        "Le fichier Excel est mal encodé et pandas ne reconnaît pas les chiffres"
-      ],
-      "reponses": [
-        1
-      ],
-      "explication": "Notebook 2, §3 : une colonne pandas n'a **qu'un seul type**. Les nombres sont stockés avec une **virgule** décimale, et il suffit d'une case non numérique (`-`, `traces`, `< x`) pour que toute la colonne soit de type `str`."
-    },
-    {
-      "id": "reg-013",
-      "type": "unique",
-      "enonce": "Pour la vitamine D, on remplace les valeurs censurées « < x » par une valeur manquante (on les ignore). Quel est l'effet sur la moyenne ?",
-      "choix": [
-        "Elle est sous-estimée : on retire les valeurs les plus grandes",
-        "Elle ne change pas : les valeurs censurées sont trop rares pour compter",
-        "Elle devient négative, car « < x » vaut −x par convention",
-        "Surestimée : on ne garde que les aliments les plus riches"
-      ],
-      "reponses": [
-        3
-      ],
-      "explication": "Notebook 2, §3 : ignorer les valeurs censurées est le **pire choix** : on ne garde que les aliments où le constituant est détectable, donc les plus riches (+30 % pour la vitamine D). Le cours retient `-` → manquant, `traces` → 0, `< x` → x/2."
-    },
-    {
-      "id": "reg-014",
-      "type": "unique",
-      "enonce": "L'énergie manque presque uniquement pour les fruits et légumes. Ces valeurs manquantes sont-elles **MCAR** ?",
-      "choix": [
-        "Non : elles s'expliquent par le groupe de l'aliment, c'est du MAR",
-        "Oui : MCAR signifie seulement que plus de 1 % des valeurs de la colonne manquent",
-        "Oui : elles manquent au hasard, on peut supprimer les lignes sans biais",
-        "Non : elles dépendent de la valeur de l'énergie elle-même, c'est du MNAR"
-      ],
-      "reponses": [
-        0
-      ],
-      "explication": "Notebook 2, §4 : **MCAR** = par pur hasard ; **MAR** = expliqué par d'autres variables observées (ici le groupe) ; **MNAR** = dépend de la valeur elle-même (teneur trop faible pour être mesurée). Supprimer ces lignes crée un **biais de sélection**."
     },
     {
       "id": "reg-015",
@@ -324,21 +264,6 @@
       "explication": "**RMSE** $=\\sqrt{\\mathrm{MSE}}$ et **MAE** (moyenne des |erreurs|) sont en kJ : « on se trompe typiquement de tant de kJ ». MSE et SSE sont en kJ², le R² est sans unité. La MAE est moins sensible aux grosses erreurs isolées que la RMSE."
     },
     {
-      "id": "reg-022",
-      "type": "unique",
-      "enonce": "En régression linéaire simple $y = \\mu_0 + \\mu_1 x$, que vaut la pente des moindres carrés ?",
-      "choix": [
-        "$\\mu_1 = \\bar{y} / \\bar{x}$, rapport des moyennes",
-        "$\\mu_1 = \\rho(X, Y)$, la corrélation",
-        "$\\mu_1 = \\mathrm{Cov}(X, Y) / \\mathrm{Var}(X)$",
-        "$\\mu_1 = \\mathrm{Cov}(X, Y) / \\mathrm{Var}(Y)$"
-      ],
-      "reponses": [
-        2
-      ],
-      "explication": "Notebook 3, §3.1 : en annulant les dérivées du MSE, $\\mu_1 = \\frac{\\sum (x_i-\\bar x)(y_i-\\bar y)}{\\sum (x_i - \\bar x)^2} = \\frac{\\mathrm{Cov}(X,Y)}{\\mathrm{Var}(X)}$ et $\\mu_0 = \\bar y - \\mu_1 \\bar x$."
-    },
-    {
       "id": "reg-023",
       "type": "unique",
       "enonce": "Pour une régression linéaire **simple**, sur la base d'apprentissage, que vaut le $R^2$ ?",
@@ -367,21 +292,6 @@
         0
       ],
       "explication": "La **pente** est l'accroissement moyen de $Y$ quand $X$ augmente d'une unité : ~37 kJ par gramme de lipides (le facteur réglementaire). L'ordonnée à l'origine (489,5) est l'énergie prédite pour un aliment sans lipides."
-    },
-    {
-      "id": "reg-025",
-      "type": "unique",
-      "enonce": "Quelle est la solution des moindres carrés en régression multiple ($\\mathbf{X}$ inclut une colonne de 1) ?",
-      "choix": [
-        "$\\mu^* = \\mathbf{X}^T\\mathbf{y} / P$, la moyenne pondérée",
-        "$\\mu^* = \\mathbf{X}^{-1}\\mathbf{y}$, l'inverse de $\\mathbf{X}$",
-        "$\\mu^* = (\\mathbf{X}^T\\mathbf{X})^{-1}\\mathbf{X}^T\\mathbf{y}$",
-        "$\\mu^* = (\\mathbf{X}\\mathbf{X}^T)^{-1}\\mathbf{X}\\mathbf{y}$"
-      ],
-      "reponses": [
-        2
-      ],
-      "explication": "Annuler le gradient $-\\frac{2}{P}\\mathbf{X}^T(\\mathbf{y} - \\mathbf{X}\\mu)$ donne les **équations normales** $\\mathbf{X}^T\\mathbf{X}\\mu = \\mathbf{X}^T\\mathbf{y}$, solubles si les colonnes de $\\mathbf{X}$ sont linéairement indépendantes. En pratique on résout le système (`np.linalg.solve`) sans calculer l'inverse."
     },
     {
       "id": "reg-026",
@@ -614,6 +524,52 @@
         3
       ],
       "explication": "Notebook 3, §5.1 (variables retardées, `shift`) : avec un découpage aléatoire, le modèle « voit » l'avenir. On apprend sur le passé et on teste sur le futur ; c'est ce que fait le TD 3."
+    },
+    {
+      "id": "reg-041",
+      "type": "unique",
+      "enonce": "Pourquoi compare-t-on des modèles avec le **MSE**, la **RMSE** ou la **MAE**, et jamais avec la **SSE** ?",
+      "choix": [
+        "La SSE augmente avec le nombre d'exemples : elle n'est pas comparable d'une base à l'autre",
+        "La SSE peut être négative",
+        "La SSE ne pénalise pas les grosses erreurs",
+        "La SSE ne s'utilise que pour la régression logistique"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 3, §2 : la SSE cumule les erreurs, donc grandit avec $P$. Une base de test trois fois plus petite donne une SSE environ trois fois plus petite pour un modèle tout aussi bon. Le MSE (SSE / P), la RMSE et la MAE sont des moyennes, comparables entre apprentissage et test."
+    },
+    {
+      "id": "reg-042",
+      "type": "multiple",
+      "enonce": "♣ Sur la base de test, les aliments les plus mal prédits sont presque tous **riches en protéines végétales**. Que retenir de cette analyse des résidus ?",
+      "choix": [
+        "Les résidus révèlent un défaut du modèle ou des données",
+        "La connaissance du domaine aide à corriger le défaut (ici, la bonne colonne de protéines)",
+        "Il faut retirer ces aliments de la base de test",
+        "Un bon $R^2$ dispense de regarder les résidus"
+      ],
+      "reponses": [
+        0,
+        1
+      ],
+      "explication": "Notebook 3, §4.3 : le modèle avait déjà un très bon $R^2$, mais ses plus grosses erreurs avaient un point commun. En prenant la colonne de protéines utilisée par le règlement, la RMSE de test est divisée par plus de deux. Retirer les exemples gênants du test fausserait l'évaluation."
+    },
+    {
+      "id": "reg-043",
+      "type": "unique",
+      "enonce": "Pourquoi les **K plus proches voisins** se dégradent-ils quand le nombre de variables augmente ?",
+      "choix": [
+        "En grande dimension, les données ne couvrent plus l'espace : les « voisins » sont tous lointains",
+        "Le calcul des distances devient impossible au-delà de 10 variables",
+        "K doit forcément être égal au nombre de variables",
+        "Les coefficients deviennent instables, comme avec la colinéarité"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 3, §7.4 (point 5) : c'est le **fléau de la dimension**. Pour garder la même densité de points, il en faudrait exponentiellement plus quand $N$ augmente. Avec une base de taille fixe, les plus proches voisins sont en réalité loin et ressemblent peu à l'exemple à prédire."
     }
   ]
 }

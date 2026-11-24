@@ -36,55 +36,6 @@
       "explication": "$x_{\\text{opt}} = -\\frac{b}{2a} = -\\frac{-4}{2 \\times 2} = 1$ et **$f(1) = 2 - 4 + 5 = 3$**. Confondre le minimum $f(x_{\\text{opt}})$ avec $c = 5$ (valeur en $x = 0$) est le piège classique."
     },
     {
-      "id": "td1-003",
-      "type": "unique",
-      "exercice": "Méthode du nombre d'or (`mno`) sur $f(x) = 2x^2 - 4x + 5$, intervalle de départ $(x_1, x_3) = (-100, 100)$, sondes $x_2 = x_3 - \\frac{x_3 - x_1}{\\varphi}$ et $x_4 = x_1 + \\frac{x_3 - x_1}{\\varphi}$, avec $\\varphi = \\frac{1+\\sqrt{5}}{2} \\approx 1{,}618$.",
-      "enonce": "Que valent les deux premières sondes $x_2$ et $x_4$ ?",
-      "choix": [
-        "$x_2 \\approx -61{,}8$ et $x_4 \\approx 61{,}8$",
-        "$x_2 \\approx -23{,}6$ et $x_4 \\approx 23{,}6$",
-        "$x_2 \\approx -33{,}3$ et $x_4 \\approx 33{,}3$",
-        "$x_2 \\approx -38{,}2$ et $x_4 \\approx 38{,}2$"
-      ],
-      "reponses": [
-        1
-      ],
-      "explication": "$(x_3 - x_1)/\\varphi = 200/1{,}618 \\approx 123{,}6$, donc **$x_2 = 100 - 123{,}6 = -23{,}6$** et $x_4 = -100 + 123{,}6 = 23{,}6$. $\\pm 61{,}8 = \\pm 100/\\varphi$ place les sondes autour du centre au lieu des bornes ; $\\pm 38{,}2$ applique la formule à la demi-largeur (100) au lieu de la largeur (200)."
-    },
-    {
-      "id": "td1-004",
-      "type": "unique",
-      "exercice": "Méthode du nombre d'or (`mno`) sur $f(x) = 2x^2 - 4x + 5$, intervalle de départ $(x_1, x_3) = (-100, 100)$, sondes $x_2 = x_3 - \\frac{x_3 - x_1}{\\varphi}$ et $x_4 = x_1 + \\frac{x_3 - x_1}{\\varphi}$, avec $\\varphi = \\frac{1+\\sqrt{5}}{2} \\approx 1{,}618$.",
-      "enonce": "On trouve $f(x_2) \\approx 1214$ et $f(x_4) \\approx 1025$. Quel intervalle `mno` garde-t-il ?",
-      "choix": [
-        "$(-100 ; 23{,}6)$",
-        "$(-23{,}6 ; 23{,}6)$",
-        "$(23{,}6 ; 100)$",
-        "$(-23{,}6 ; 100)$"
-      ],
-      "reponses": [
-        3
-      ],
-      "explication": "$f(x_2) > f(x_4)$ : le code passe dans le `else` et fait `x_1 = x_2`. Le minimum est dans **$(x_2, x_3) = (-23{,}6 ; 100)$** (il est bien en $x = 1$). On ne peut pas jeter $(x_2, x_4)$ : le minimum peut s'y trouver."
-    },
-    {
-      "id": "td1-005",
-      "type": "multiple",
-      "enonce": "Que faut-il pour appliquer la méthode du nombre d'or (`mno`) ?",
-      "choix": [
-        "Connaître la dérivée $f'$ de la fonction",
-        "Un intervalle de départ qui contient le minimum",
-        "Une fonction de plusieurs variables",
-        "Un pas $\\mu$ bien choisi",
-        "Une fonction unimodale sur cet intervalle"
-      ],
-      "reponses": [
-        1,
-        4
-      ],
-      "explication": "La méthode cherche le minimum d'une fonction **mono-variable et unimodale**, dans un intervalle $(x_1, x_3)$ qui le **contient**. Elle n'utilise que des valeurs de $f$ : ni dérivée, ni pas $\\mu$ (ce sont les ingrédients de la descente de gradient)."
-    },
-    {
       "id": "td1-006",
       "type": "multiple",
       "enonce": "Quelles affirmations sur l'algorithme du gradient sont vraies ?",
@@ -114,22 +65,6 @@
         0
       ],
       "explication": "Le gradient indique la direction de **plus forte montée** ; pour descendre on va dans la direction **opposée** $-\\nabla f$. (L'énoncé dit « dans la direction du gradient » : c'est un raccourci, la formule a bien le signe moins.)"
-    },
-    {
-      "id": "td1-008",
-      "type": "unique",
-      "exercice": "Dans le TD : $f(x) = 2x^2 - 4x + 5$ (fonction `compute_f`).",
-      "enonce": "Que doit renvoyer `compute_df(x)` ?",
-      "choix": [
-        "`2*x - 4`",
-        "`4*x - 4`",
-        "`4*x + 4`",
-        "`4*x - 4 + 5`"
-      ],
-      "reponses": [
-        1
-      ],
-      "explication": "$f'(x) = 2ax + b = $ **$4x - 4$**. La constante $c = 5$ disparaît à la dérivation ; `2*x - 4` oublie le coefficient $a = 2$."
     },
     {
       "id": "td1-009",
@@ -247,53 +182,6 @@
       "explication": "Ici $\\mu = 0{,}0001$ demande **41 672 itérations**, et $\\mu \\geq 0{,}5$ ne converge plus. Plus grand n'est pas mieux : $\\mu = 0{,}1$ et $\\mu = 0{,}4$ demandent toutes deux 42 itérations. $\\mu$ est un **hyperparamètre** fixé à la main, pas un paramètre appris."
     },
     {
-      "id": "td1-016",
-      "type": "unique",
-      "enonce": "Dans `algo_gradient2`, quel test signale que l'on a convergé ?",
-      "choix": [
-        "$|f'(x_t)| \\leq \\varepsilon$",
-        "$|x_{t+1} - x_t| \\leq \\varepsilon$",
-        "$f(x_t) \\leq \\varepsilon$",
-        "$t$ atteint un nombre d'itérations $n$ fixé"
-      ],
-      "reponses": [
-        0
-      ],
-      "explication": "On boucle tant que `np.fabs(dfx) > epsilon` : on s'arrête quand la **dérivée est quasi nulle**, ce qui caractérise le minimum. $f(x) \\leq \\varepsilon$ n'a pas de sens (le minimum vaut 3) ; le nombre $n$ fixé est celui d'`algo_gradient1`."
-    },
-    {
-      "id": "td1-017",
-      "type": "unique",
-      "exercice": "```python\nx = x - mu*dfx\nx_hist.append(x)\nfx2 = f(x)\nif(fx2 >= fx):\n    break\n```",
-      "enonce": "À quoi sert ce test dans `algo_gradient2` ?",
-      "choix": [
-        "À sortir de la boucle si $f$ ne baisse plus",
-        "À vérifier que le gradient est quasi nul",
-        "À limiter le nombre total d'itérations",
-        "À réduire le pas $\\mu$ quand $f$ augmente"
-      ],
-      "reponses": [
-        0
-      ],
-      "explication": "Si un pas ne fait pas baisser $f$, l'algorithme **diverge ou stagne** : on sort (`break`) plutôt que de boucler sans fin. Le pas n'est jamais modifié (il est fixe) ; la limite d'itérations n'apparaît qu'avec `max_iter` dans `algo_gradient3`."
-    },
-    {
-      "id": "td1-018",
-      "type": "unique",
-      "exercice": "Dans le TD : $f(x) = 2x^2 - 4x + 5$ (fonction `compute_f`).",
-      "enonce": "Que renvoie `algo_gradient2(compute_f, compute_df, 0.5, 10.0, 1e-10)` ?",
-      "choix": [
-        "$x = 1$, après 42 itérations",
-        "$x = 10$, sans aucune itération",
-        "$x = -8$, après une itération",
-        "Rien : la boucle ne s'arrête jamais"
-      ],
-      "reponses": [
-        2
-      ],
-      "explication": "$x_1 = -8$ et $f(-8) = 165 = f(10)$ : $f$ n'a pas diminué, le test `fx2 >= fx` **coupe la boucle** et renvoie le dernier point, $-8$. Sans ce test, $x$ oscillerait sans fin entre $10$ et $-8$."
-    },
-    {
       "id": "td1-019",
       "type": "unique",
       "enonce": "Pour $f(\\mathbf{x}) = \\mathbf{x}^\\top A\\mathbf{x} + \\mathbf{x}^\\top\\mathbf{b} + c$ avec $A$ non symétrique, que vaut $\\nabla f(\\mathbf{x})$ ?",
@@ -371,56 +259,6 @@
         3
       ],
       "explication": "Minimum ⇔ **gradient nul** : $(A + A^\\top)\\mathbf{x} + \\mathbf{b} = \\mathbf{0}$. Ici $\\begin{bmatrix} 4 & 3 \\\\ 3 & 8 \\end{bmatrix}\\mathbf{x} = -\\begin{bmatrix} 1 \\\\ 2 \\end{bmatrix}$ donne $\\mathbf{x}_{\\text{opt}} = -\\frac{1}{23}(2, 5) \\approx (-0{,}087 ; -0{,}217)$ et $f(\\mathbf{x}_{\\text{opt}}) = 40/23 \\approx 1{,}739$."
-    },
-    {
-      "id": "td1-024",
-      "type": "multiple",
-      "enonce": "`compute_f2` calcule `np.dot(np.dot(x.T, A), x) + np.dot(x.T, b) + c` et `compute_df2` renvoie `np.dot(A + A.T, x) + b`. Quels `x_0` conviennent pour `algo_gradient3` ?",
-      "choix": [
-        "`np.zeros((2, 1))`",
-        "`np.array((-5., -5.))`",
-        "`np.zeros(2)`",
-        "`[-5., -5.]` (liste Python)"
-      ],
-      "reponses": [
-        1,
-        2
-      ],
-      "explication": "Il faut un **vecteur numpy 1D de forme `(2,)`**. Un vecteur colonne `(2, 1)` casse `compute_df2` : `(A + A.T) @ x + b` est diffusé en une matrice $2 \\times 2$. Une liste Python n'a pas d'attribut `.T`."
-    },
-    {
-      "id": "td1-025",
-      "type": "multiple",
-      "enonce": "Quelles conditions arrêtent la boucle de `algo_gradient3` ?",
-      "choix": [
-        "$\\|\\nabla f(\\mathbf{x})\\| \\leq \\varepsilon$",
-        "$\\|\\mathbf{x}_{k+1} - \\mathbf{x}_k\\| \\leq \\varepsilon$",
-        "Le compteur $k$ atteint `max_iter`",
-        "$f(\\mathbf{x})$ ne diminue plus après un pas",
-        "$f(\\mathbf{x}) \\leq \\varepsilon$"
-      ],
-      "reponses": [
-        0,
-        2,
-        3
-      ],
-      "explication": "`while(np.linalg.norm(dfx) > epsilon and k < max_iter)` : **norme du gradient** ou **`max_iter`** (qui garantit que la boucle se termine), plus le `break` si **$f$ ne baisse plus** (divergence). L'écart entre deux itérés n'est pas testé."
-    },
-    {
-      "id": "td1-026",
-      "type": "unique",
-      "exercice": "La correction lance `algo_gradient3(compute_f2, compute_df2, 0.05, x_0, 1e-10, 10000)` depuis $\\mathbf{x}_0 = (-5, -5)$ et obtient `x_opt_2 = [-0.08695654 -0.21739129]`.",
-      "enonce": "La sortie affiche `compute_df2(x_opt_2) = [-4.64e-08  2.48e-08]`. Pourquoi la boucle s'est-elle arrêtée ?",
-      "choix": [
-        "La norme du gradient est passée sous $\\varepsilon = 10^{-10}$",
-        "Le nombre maximal de 10 000 itérations a été atteint",
-        "$f$ n'a plus diminué (limite de la précision numérique)",
-        "Le pas $\\mu = 0{,}05$ est trop grand : l'algorithme a divergé"
-      ],
-      "reponses": [
-        2
-      ],
-      "explication": "La norme du gradient ($\\approx 5 \\cdot 10^{-8}$) reste **au-dessus de $\\varepsilon$** et seules 144 itérations ont tourné : c'est le test `f(x) >= fx` qui a coupé, $f$ ne baissant plus à la précision machine près. Pas de divergence : $\\mathbf{x}$ est bien à l'optimum."
     },
     {
       "id": "td1-027",

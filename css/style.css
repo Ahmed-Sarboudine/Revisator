@@ -722,7 +722,8 @@ a.nav-exam,
   justify-content: center;
   gap: 2px;
   flex-shrink: 0;
-  width: 60px;
+  min-width: 60px;
+  padding: 0 6px;
   background: var(--accent-doux);
   border: 1px solid transparent;
   border-radius: var(--rayon);
@@ -743,7 +744,9 @@ a.nav-exam,
   }
 
   .bouton-fiche {
-    width: 52px;
+    min-width: 52px;
+    padding: 0 4px;
+    font-size: 0.6875rem;
   }
 }
 
@@ -2378,4 +2381,573 @@ button.bouton-icone {
   .accueil-cote:has(.nouveautes:not(.inedite)) {
     order: 2;
   }
+}
+
+/* ---------- Notebooks Jupyter (#/nb/…) : texte, code, résultats enregistrés ---------- */
+
+.onglet-numero {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--texte-2);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.onglet[aria-selected="true"] .onglet-numero {
+  background: rgb(255 255 255 / 0.18);
+  color: inherit;
+}
+
+.nb {
+  --code-fond: #fbfaf7;
+  --code-mot: #a626a4;
+  --code-chaine: #2f7d32;
+  --code-nombre: #b35c00;
+  --code-commentaire: #8a877e;
+  --code-fonction: #2a4bd7;
+  --code-builtin: #0f7b8a;
+}
+
+@media (prefers-color-scheme: dark) {
+  .nb {
+    --code-fond: #191917;
+    --code-mot: #d59bf6;
+    --code-chaine: #9bd68a;
+    --code-nombre: #f2b46b;
+    --code-commentaire: #85827a;
+    --code-fonction: #8fb0ff;
+    --code-builtin: #6fd0da;
+  }
+}
+
+.nb-contenu {
+  min-width: 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.nb-info {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border-radius: var(--rayon-petit);
+  background: var(--accent-doux);
+  color: var(--texte);
+  font-size: 0.9375rem;
+}
+
+/* texte du notebook */
+.nb-md {
+  margin: 0 0 12px;
+  line-height: 1.65;
+  overflow-wrap: break-word;
+}
+
+.nb-md > :first-child {
+  margin-top: 0;
+}
+
+.nb-md h1,
+.nb-md h2,
+.nb-md h3,
+.nb-md h4 {
+  scroll-margin-top: 76px;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.nb-md h1 {
+  margin: 36px 0 12px;
+  font-size: 1.75rem;
+  letter-spacing: -0.01em;
+}
+
+.nb-md h2 {
+  margin: 32px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--bordure);
+  font-size: 1.375rem;
+}
+
+.nb-md h3 {
+  margin: 24px 0 8px;
+  font-size: 1.125rem;
+}
+
+.nb-md h4 {
+  margin: 18px 0 6px;
+  font-size: 1rem;
+}
+
+.nb-md p,
+.nb-md ul,
+.nb-md ol {
+  margin: 8px 0;
+}
+
+.nb-md ul,
+.nb-md ol {
+  padding-left: 24px;
+}
+
+.nb-md img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 10px auto;
+  border-radius: 6px;
+}
+
+.nb-md blockquote {
+  margin: 12px 0;
+  padding: 8px 14px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--rayon-petit) var(--rayon-petit) 0;
+  background: var(--accent-doux);
+}
+
+.nb-md blockquote > :first-child {
+  margin-top: 0;
+}
+
+.nb-md blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.nb-md code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--surface-2);
+  font: 0.875em "Geist Mono", ui-monospace, Consolas, monospace;
+}
+
+.nb-md pre {
+  overflow-x: auto;
+  padding: 10px 12px;
+  border-radius: var(--rayon-petit);
+  background: var(--surface-2);
+}
+
+.nb-md pre code {
+  padding: 0;
+  background: none;
+}
+
+.nb-md hr {
+  margin: 24px 0;
+  border: 0;
+  border-top: 1px solid var(--bordure);
+}
+
+.nb-md .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0;
+}
+
+/* tableaux (Markdown et sorties pandas) */
+.nb-md table,
+.nb-tableau table {
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.nb-md table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 10px 0;
+}
+
+.nb-md th,
+.nb-md td,
+.nb-tableau th,
+.nb-tableau td {
+  padding: 5px 10px;
+  border: 1px solid var(--bordure);
+  text-align: left;
+  vertical-align: top;
+}
+
+.nb-md th,
+.nb-tableau th {
+  background: var(--surface-2);
+  font-weight: 600;
+}
+
+.nb-tableau {
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 4px 0;
+}
+
+.nb-tableau td,
+.nb-tableau th {
+  white-space: nowrap;
+}
+
+/* cellule de code */
+.nb-code {
+  margin: 14px 0 18px;
+  overflow: hidden;
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon-petit);
+  background: var(--surface);
+  box-shadow: var(--ombre);
+}
+
+.nb-code-entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 6px 4px 12px;
+  border-bottom: 1px solid var(--bordure);
+  background: var(--code-fond);
+}
+
+.nb-numero {
+  color: var(--texte-2);
+  font: 500 0.75rem "Geist Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.nb-copier {
+  min-height: 28px;
+  padding: 2px 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  color: var(--texte-2);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nb-copier:hover {
+    border-color: var(--bordure);
+    background: var(--surface);
+    color: var(--texte);
+  }
+}
+
+.nb-code pre {
+  margin: 0;
+  overflow-x: auto;
+  padding: 12px 14px;
+  background: var(--code-fond);
+  font: 0.8125rem/1.6 "Geist Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  tab-size: 4;
+}
+
+.nb-code pre code {
+  background: none;
+}
+
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-literal {
+  color: var(--code-mot);
+}
+
+.hljs-string,
+.hljs-subst .hljs-string {
+  color: var(--code-chaine);
+}
+
+.hljs-number {
+  color: var(--code-nombre);
+}
+
+.hljs-comment {
+  color: var(--code-commentaire);
+  font-style: italic;
+}
+
+.hljs-title,
+.hljs-title.function_ {
+  color: var(--code-fonction);
+}
+
+.hljs-built_in,
+.hljs-type {
+  color: var(--code-builtin);
+}
+
+.hljs-meta {
+  color: var(--code-nombre);
+}
+
+/* résultats enregistrés */
+.nb-sorties {
+  display: grid;
+  gap: 6px;
+  padding: 10px 14px 12px;
+  border-top: 1px dashed var(--bordure-forte);
+}
+
+.nb-sorties-libelle {
+  color: var(--texte-2);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.nb-sortie {
+  margin: 0;
+  overflow-x: auto;
+  color: var(--texte);
+  font: 0.8125rem/1.5 "Geist Mono", ui-monospace, Consolas, monospace;
+  white-space: pre;
+}
+
+.nb-erreur {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--ko-doux);
+  color: var(--ko);
+  white-space: pre-wrap;
+}
+
+.nb-figure {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  background: #fff; /* graphiques matplotlib à fond transparent : lisibles en mode sombre */
+}
+
+/* sommaire */
+.nb-sommaire {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .nb {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .nb-contenu {
+    margin: 0;
+  }
+
+  .nb-sommaire {
+    position: sticky;
+    top: 76px;
+    display: block;
+    max-height: calc(100dvh - 96px);
+    overflow-y: auto;
+    padding-left: 14px;
+    border-left: 1px solid var(--bordure);
+    font-size: 0.8125rem;
+  }
+
+  .nb-sommaire-titre {
+    margin: 0 0 8px;
+    color: var(--texte-2);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .nb-sommaire ol {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nb-sommaire a {
+    display: block;
+    padding: 3px 0;
+    color: var(--texte-2);
+    line-height: 1.35;
+    text-decoration: none;
+  }
+
+  .nb-sommaire a:hover {
+    color: var(--texte);
+  }
+
+  .nb-sommaire .niveau-3 a {
+    padding-left: 12px;
+  }
+}
+
+/* ---------- À réviser pour l'exam (a-reviser.json) : en-têtes et zones orange ---------- */
+
+.bandeau-reviser {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border: 1px solid color-mix(in oklab, var(--revision) 45%, transparent);
+  border-left: 4px solid var(--revision);
+  border-radius: var(--rayon-petit);
+  background: color-mix(in oklab, var(--revision) 10%, var(--surface));
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.bandeau-reviser p {
+  margin: 0;
+}
+
+.bandeau-reviser p + p,
+.bandeau-reviser ul {
+  margin-top: 6px;
+}
+
+.bandeau-reviser ul {
+  margin-bottom: 0;
+  padding-left: 20px;
+}
+
+.bandeau-reviser-titre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  color: var(--revision);
+  font-weight: 700;
+}
+
+.bandeau-reviser-priorite {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--revision);
+  color: var(--surface);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.bandeau-reviser-hors {
+  color: var(--texte-2);
+  font-size: 0.875rem;
+}
+
+.bandeau-reviser.secondaire {
+  border-color: var(--bordure);
+  border-left-color: var(--bordure-forte);
+  background: var(--surface);
+}
+
+.bandeau-reviser.secondaire .bandeau-reviser-titre {
+  color: var(--texte-2);
+}
+
+/* points du bandeau : boutons qui mènent à la section */
+.bandeau-reviser .bandeau-reviser-liens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.bandeau-reviser-liens button {
+  min-height: 32px;
+  padding: 4px 12px;
+  border: 1px solid color-mix(in oklab, var(--revision) 45%, transparent);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--revision);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bandeau-reviser-liens button:hover {
+    background: color-mix(in oklab, var(--revision) 14%, var(--surface));
+  }
+}
+
+/* sections du notebook */
+.nb-zone {
+  margin: 18px 0;
+  padding: 4px 16px 6px;
+  border-radius: var(--rayon-petit);
+}
+
+.nb-zone-reviser {
+  border: 1px solid color-mix(in oklab, var(--revision) 40%, transparent);
+  border-left: 4px solid var(--revision);
+  background: color-mix(in oklab, var(--revision) 6%, transparent);
+}
+
+.nb-zone-hors {
+  border: 1.5px dashed var(--bordure-forte);
+  opacity: 0.62;
+}
+
+.nb-zone-hors:hover {
+  opacity: 1;
+}
+
+.nb-zone-etiquette {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  margin: 8px 0 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.nb-zone-etiquette span {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.nb-zone-reviser .nb-zone-etiquette {
+  color: var(--revision);
+}
+
+.nb-zone-hors .nb-zone-etiquette {
+  color: var(--texte-2);
+}
+
+/* le premier titre d'une zone n'a pas besoin de sa grande marge */
+.nb-zone .nb-zone-etiquette + .nb-md > :first-child {
+  margin-top: 4px;
+}
+
+.nb-sommaire .reviser a {
+  color: var(--revision);
+  font-weight: 600;
+}
+
+.nb-sommaire .hors a {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+/* liste d'une matière : priorité donnée par le prof */
+.badge-reviser {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--revision) 16%, transparent);
+  color: var(--revision);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
 }

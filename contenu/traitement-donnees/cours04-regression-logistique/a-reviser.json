@@ -1,0 +1,106 @@
+{
+  "source": "Page « Contrôle final » du site du cours",
+  "priorite": 1,
+  "theme": "L'évaluation d'un modèle",
+  "resume": "Les notebooks « Classification et métriques » et « Déséquilibre et seuil » sont la priorité n°1 du prof, avec le cours 1.",
+  "points": [
+    "Lire une matrice de confusion",
+    "Précision et rappel",
+    "Les classes déséquilibrées et le piège de l'accuracy",
+    "Le rôle du seuil, et sur quelles données le choisir",
+    "Lire une courbe ROC"
+  ],
+  "horsProgramme": [
+    "AUC et courbe précision-rappel"
+  ],
+  "notebooks": {
+    "nb1": {
+      "statut": "entier",
+      "message": "Priorité n°1 : tout le notebook, sauf l'AUC et la courbe précision-rappel.",
+      "points": [
+        {
+          "texte": "La matrice de confusion",
+          "section": "3.1 La matrice de confusion"
+        },
+        {
+          "texte": "Rappel, spécificité, précision",
+          "section": "3.3 Rappel, spécificité, précision"
+        },
+        {
+          "texte": "L'effet du seuil",
+          "section": "4.1 L'effet du seuil"
+        },
+        {
+          "texte": "La courbe ROC",
+          "section": "4.3 La courbe ROC"
+        }
+      ]
+    },
+    "nb2": {
+      "statut": "partiel",
+      "message": "Pas cité en entier : seules les parties sur la séparation apprentissage / test et la référence naïve sont surlignées."
+    },
+    "nb3": {
+      "statut": "partiel",
+      "message": "Pas cité dans les conseils de révision, mais la régression logistique sert dans le TD 4 (priorité n°2). Les parties utiles sont surlignées."
+    },
+    "nb4": {
+      "statut": "entier",
+      "message": "Priorité n°1 : tout le notebook, sauf la courbe précision-rappel.",
+      "points": [
+        {
+          "texte": "Le piège de l'accuracy quand une classe est rare",
+          "section": "2. Une classe plus rare"
+        },
+        {
+          "texte": "Déplacer le seuil et le choisir sur la validation",
+          "section": "3. Déplacer le seuil"
+        },
+        {
+          "texte": "Rééquilibrer les classes, et ce qu'on y perd",
+          "section": "4. Rééquilibrer les classes"
+        }
+      ]
+    }
+  },
+  "sections": [
+    {
+      "titre": "4.3 La courbe ROC et l'AUC",
+      "note": "Lire une courbe ROC : à savoir. L'AUC est hors programme."
+    },
+    {
+      "titre": "2.2 Courbe ROC ou courbe précision-rappel",
+      "note": "Retiens pourquoi la ROC peut être trop optimiste quand une classe est rare. La courbe précision-rappel est hors programme."
+    },
+    {
+      "titre": "3.1 Séparer apprentissage et test"
+    },
+    {
+      "titre": "3.3 Une première référence : un seuil sur la taille"
+    },
+    {
+      "titre": "6. Wine Quality : séparer apprentissage et test"
+    },
+    {
+      "titre": "2.2 Les hypothèses du modèle"
+    },
+    {
+      "titre": "4.3 Interpréter le coefficient"
+    },
+    {
+      "titre": "5.3 Lire les coefficients"
+    },
+    {
+      "titre": "6.2 Le problème de la séparation parfaite"
+    },
+    {
+      "titre": "6.3 La régularisation"
+    }
+  ],
+  "sectionsHorsProgramme": [
+    {
+      "titre": "4.4 La courbe précision-rappel",
+      "note": "Hors programme du contrôle."
+    }
+  ]
+}

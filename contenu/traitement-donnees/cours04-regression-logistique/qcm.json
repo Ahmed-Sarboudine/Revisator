@@ -217,21 +217,6 @@
       "explication": "Notebook 1, §4.1 : un seuil plus haut déclare moins d'exemples positifs, donc détecte moins de positifs (rappel ↓) mais reconnaît mieux les négatifs (spécificité ↑). L'AUC ne dépend d'aucun seuil."
     },
     {
-      "id": "log-015",
-      "type": "unique",
-      "enonce": "Que représente l'**AUC** (aire sous la courbe ROC) ?",
-      "choix": [
-        "P(score d'un positif > score d'un négatif), tirés au hasard",
-        "La moyenne de la précision et du rappel sur tous les seuils",
-        "La proportion de bonnes réponses au seuil 0,5",
-        "La proportion de positifs dans la base d'apprentissage"
-      ],
-      "reponses": [
-        0
-      ],
-      "explication": "Notebook 1, §4.3 : l'AUC vaut 1 pour un score parfait, 0,5 pour le hasard. Pour la taille, c'est la probabilité qu'un homme pris au hasard soit plus grand qu'une femme prise au hasard (0,920, vérifié sur toutes les paires)."
-    },
-    {
       "id": "log-016",
       "type": "multiple",
       "enonce": "Quelles affirmations sur la courbe ROC sont vraies ?",
@@ -247,21 +232,6 @@
         2
       ],
       "explication": "`roc_curve(y_vrai, score)` prend le **score** et essaie tous les seuils. La taille en cm ou en m, ou une probabilité croissante en la taille, donnent la même courbe. Rappel et spécificité étant calculés dans chaque classe, la ROC ne dépend pas du déséquilibre."
-    },
-    {
-      "id": "log-017",
-      "type": "unique",
-      "enonce": "Pour la courbe précision-rappel, quelle est la référence d'un score qui répond au hasard ?",
-      "choix": [
-        "Une précision nulle",
-        "La diagonale, comme pour la courbe ROC",
-        "Une précision égale à $q_1$",
-        "Une précision de 0,5 pour tout rappel"
-      ],
-      "reponses": [
-        2
-      ],
-      "explication": "Notebook 1, §4.4 : un score au hasard a une précision égale à $q_1$ quel que soit le rappel. Cette référence **dépend du déséquilibre**, contrairement à la diagonale de la courbe ROC."
     },
     {
       "id": "log-018",
@@ -340,21 +310,6 @@
       "explication": "Notebook 3, §2.2 : Bernoulli + log-cote affine. On en déduit $\\pi = \\sigma(\\mu_0 + \\mu_1 x_1 + \\dots)$ : c'est la **log-cote** qui est affine, pas la probabilité. Des classes gaussiennes de même écart-type vérifient l'hypothèse, mais ce n'en est pas une."
     },
     {
-      "id": "log-023",
-      "type": "unique",
-      "enonce": "Quelle est l'expression de la **sigmoïde** ?",
-      "choix": [
-        "$\\sigma(z) = \\dfrac{e^{-z}}{1 + e^{z}}$",
-        "$\\sigma(z) = \\log \\dfrac{z}{1 - z}$",
-        "$\\sigma(z) = \\dfrac{1}{1 + e^{z}}$",
-        "$\\sigma(z) = \\dfrac{1}{1 + e^{-z}}$"
-      ],
-      "reponses": [
-        3
-      ],
-      "explication": "En inversant la log-cote : $\\frac{\\pi}{1-\\pi} = e^z \\iff \\pi = \\frac{e^z}{1+e^z} = \\frac{1}{1 + e^{-z}}$. La sigmoïde est la réciproque du logit ; $\\log\\frac{z}{1-z}$ est le logit lui-même."
-    },
-    {
       "id": "log-024",
       "type": "unique",
       "enonce": "Avec une variable, où se trouve la **frontière de décision** (probabilité 1/2) du modèle $\\sigma(\\mu_0 + \\mu_1 x)$ ?",
@@ -417,36 +372,6 @@
       "explication": "Notebook 3, §3 : contrairement à la régression linéaire, pas d'équations normales ; on utilise une méthode itérative (descente de gradient du TD 1, ou `lbfgs` dans scikit-learn). Le critère convexe garantit la convergence vers le minimum global."
     },
     {
-      "id": "log-028",
-      "type": "unique",
-      "enonce": "Que fait `LogisticRegression()` de scikit-learn **par défaut** ?",
-      "choix": [
-        "Une régularisation L1 qui sélectionne les variables",
-        "Une standardisation automatique des variables d'entrée",
-        "Aucune régularisation : il faut `C=1` pour l'activer",
-        "Une régularisation L2 avec `C=1`"
-      ],
-      "reponses": [
-        3
-      ],
-      "explication": "Notebook 3, §3.2 et §6.3 : la régularisation est **active par défaut** (L2, `C=1`). `C` joue le rôle de $1/\\lambda$ : plus `C` est petit, plus la régularisation est forte. `C=np.inf` donne $\\lambda = 0$. La standardisation se fait à part (`StandardScaler`)."
-    },
-    {
-      "id": "log-029",
-      "type": "unique",
-      "enonce": "Que renvoie `decision_function(X)` pour une régression logistique ?",
-      "choix": [
-        "La classe prédite au seuil 1/2 sur la probabilité",
-        "La probabilité de chaque classe, de somme 1",
-        "La distance de chaque exemple à son plus proche voisin",
-        "La log-cote $\\mu_0 + \\mu_1 x$"
-      ],
-      "reponses": [
-        3
-      ],
-      "explication": "Notebook 3, §4.2 : `predict_proba` donne les probabilités (colonne 1 = $\\pi$), `predict` la classe au seuil 1/2, `decision_function` la **log-cote**. Une log-cote positive correspond à une probabilité supérieure à 1/2."
-    },
-    {
       "id": "log-030",
       "type": "unique",
       "enonce": "Pour la taille, $\\mu_1 = 0{,}2865$ par cm, et $e^{\\mu_1} \\approx 1{,}33$. Comment l'interpréter ?",
@@ -460,21 +385,6 @@
         3
       ],
       "explication": "Notebook 3, §4.3 : $\\mu_1$ agit sur la **log-cote** ; la **cote** est multipliée par $e^{\\mu_1}$ (rapport des cotes, *odds ratio*). Ce n'est pas la probabilité : son évolution dépend de la position sur la sigmoïde (forte près de la frontière, faible vers 190 cm)."
-    },
-    {
-      "id": "log-031",
-      "type": "unique",
-      "enonce": "Avec une seule variable (la taille), pourquoi l'AUC de la régression logistique est-elle exactement celle de la taille ?",
-      "choix": [
-        "Parce que l'AUC est toujours égale à l'accuracy",
-        "La probabilité classe les personnes dans le même ordre",
-        "Parce que le test et l'apprentissage ont exactement la même taille",
-        "Parce que la régression logistique n'a rien appris"
-      ],
-      "reponses": [
-        1
-      ],
-      "explication": "Notebook 3, §4.4 : la courbe ROC ne dépend que de l'**ordre** des scores. Avec une variable, le modèle se contente de **choisir un seuil** sur la taille ; son intérêt apparaît avec plusieurs variables."
     },
     {
       "id": "log-032",
@@ -614,6 +524,67 @@
         3
       ],
       "explication": "Notebook 4, §4.4 : la log-cote vaut $\\log\\frac{f_1}{f_0} + \\log\\frac{q_1}{q_0}$ ; seul le second terme change. Correction de $\\mu_0$ : −0,72. Une personne de 1,70 m passe de 73 % à 57 % de chances d'être un homme."
+    },
+    {
+      "id": "log-041",
+      "type": "unique",
+      "enonce": "Sur une **courbe ROC**, que représente **un point** de la courbe ?",
+      "choix": [
+        "Un seuil de décision : son taux de faux positifs (abscisse) et son rappel (ordonnée)",
+        "Un exemple de la base de test",
+        "La précision et le rappel d'un seuil",
+        "Un modèle différent pour chaque point"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 1, §4.3 : chaque seuil donne un couple (taux de faux positifs $= 1 -$ spécificité, rappel). La courbe relie ces couples pour **tous** les seuils : elle évalue le **score**, pas une décision."
+    },
+    {
+      "id": "log-042",
+      "type": "unique",
+      "enonce": "Deux scores A et B : la courbe ROC de A est **au-dessus** de celle de B partout. Que peut-on dire ?",
+      "choix": [
+        "A est meilleur que B quel que soit le seuil choisi",
+        "A a forcément une meilleure accuracy au seuil 0,5",
+        "B est meilleur, car sa courbe est plus proche de la diagonale",
+        "On ne peut rien dire sans connaître les proportions des classes"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 1, §4.3 : plus la courbe s'approche du coin en haut à gauche, meilleur est le score. Au-dessus partout : pour **chaque** taux de faux positifs, A détecte plus de positifs. L'accuracy à un seuil donné dépend en plus du seuil et des proportions des classes : la ROC ne la donne pas. La diagonale correspond au hasard."
+    },
+    {
+      "id": "log-043",
+      "type": "multiple",
+      "enonce": "♣ Une classe positive représente **1 %** des exemples. Pourquoi la courbe ROC peut-elle être **trop optimiste** ?",
+      "choix": [
+        "Le taux de faux positifs se calcule parmi les très nombreux négatifs : beaucoup de faux positifs y font un petit taux",
+        "La ROC ne dépend pas des proportions des classes, alors que la précision, elle, s'effondre",
+        "La ROC ne peut pas se tracer quand une classe est rare",
+        "La ROC compte les vrais négatifs deux fois"
+      ],
+      "reponses": [
+        0,
+        1
+      ],
+      "explication": "Notebook 4, §2.1-2.2 : avec 99 % de négatifs, 1 % de faux positifs représente autant d'exemples que tous les positifs. La ROC (rappel et spécificité, calculés à l'intérieur de chaque classe) reste belle, mais la **précision** devient mauvaise. Quand une classe est rare, on regarde donc aussi la précision et le rappel au seuil choisi."
+    },
+    {
+      "id": "log-044",
+      "type": "unique",
+      "enonce": "On veut choisir le seuil de décision d'une régression logistique. Quelle démarche suit le cours ?",
+      "choix": [
+        "Choisir le seuil sur la validation (ou par validation croisée) selon l'usage, puis évaluer une seule fois sur le test",
+        "Garder 0,5, qui est toujours le meilleur seuil",
+        "Choisir le seuil qui maximise l'accuracy sur le test",
+        "Choisir le seuil sur l'apprentissage, où le modèle est le plus fiable"
+      ],
+      "reponses": [
+        0
+      ],
+      "explication": "Notebook 4, §3 : le seuil 0,5 n'a rien d'obligatoire. C'est un **hyperparamètre** : on le choisit sur des données qui n'ont servi ni à apprendre ni à évaluer (validation), selon le compromis voulu entre précision et rappel, puis on mesure une seule fois sur le test. Le choisir sur le test rend l'évaluation trop optimiste."
     }
   ]
 }

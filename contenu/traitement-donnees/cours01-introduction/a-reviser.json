@@ -1,0 +1,18 @@
+{
+  "source": "Page « Contrôle final » du site du cours",
+  "priorite": 1,
+  "theme": "L'évaluation d'un modèle",
+  "resume": "Tout le cours 1 est à réviser : c'est la priorité n°1 du prof.",
+  "points": [
+    "Lire une matrice de confusion",
+    "Précision et rappel",
+    "Les classes déséquilibrées",
+    "Le rôle du seuil",
+    "Lire une courbe ROC",
+    "Le rôle de l'apprentissage, de la validation et du test",
+    "Le sous- et le sur-apprentissage"
+  ],
+  "horsProgramme": [
+    "AUC et courbe précision-rappel"
+  ]
+}

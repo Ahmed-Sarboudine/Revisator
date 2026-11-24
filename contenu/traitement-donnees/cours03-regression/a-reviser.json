@@ -1,0 +1,44 @@
+{
+  "source": "Page « Contrôle final » du site du cours",
+  "priorite": 3,
+  "theme": "La régression",
+  "resume": "Le notebook « Modèles » est la priorité n°3 du prof, « Indicateurs et visualisation » la n°5. « Données Ciqual » n'est pas cité.",
+  "points": [
+    "Les mesures d'erreur et leur lecture",
+    "L'analyse des résidus",
+    "La régularisation (Ridge, Lasso)",
+    "Les K plus proches voisins et leurs limites en grande dimension"
+  ],
+  "notebooks": {
+    "nb1": {
+      "statut": "entier",
+      "message": "Priorité n°5 : tout le notebook (indicateurs, graphiques, corrélation, t-SNE)."
+    },
+    "nb2": {
+      "statut": "secondaire",
+      "message": "Pas cité dans les conseils de révision. À parcourir seulement pour comprendre les données utilisées dans « Modèles »."
+    },
+    "nb3": {
+      "statut": "entier",
+      "message": "Priorité n°3 : tout le notebook. Insiste sur ces parties :",
+      "points": [
+        {
+          "texte": "Les mesures d'erreur et leur lecture",
+          "section": "2. Mesurer la qualité d'une prédiction"
+        },
+        {
+          "texte": "L'analyse des résidus",
+          "section": "4.3 Analyse des résidus"
+        },
+        {
+          "texte": "La régularisation",
+          "section": "6. Régularisation"
+        },
+        {
+          "texte": "Les K plus proches voisins et leurs limites",
+          "section": "7. Méthode des k plus proches voisins"
+        }
+      ]
+    }
+  }
+}

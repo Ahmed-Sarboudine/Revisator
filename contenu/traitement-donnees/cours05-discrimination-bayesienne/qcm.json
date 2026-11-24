@@ -217,21 +217,6 @@
       "explication": "Notebook 1, §5 : la gaussienne très étalée de la classe 1 dépasse celle de la classe 0 loin à gauche (décision absurde sous −2,7) et décale la frontière (1,9 au lieu de 1,6). Près de **40 % d'erreurs en plus**, juste à cause du choix de loi."
     },
     {
-      "id": "bay-015",
-      "type": "unique",
-      "enonce": "Pourquoi n'utilise-t-on pas toujours l'**estimation par noyaux** (KDE), qui s'adapte à n'importe quelle loi ?",
-      "choix": [
-        "Elle ne dépend d'aucun hyperparamètre, donc elle sur-apprend",
-        "Elle donne toujours la même erreur que la loi normale",
-        "Elle n'est utilisable qu'en petite dimension",
-        "Elle ne s'applique qu'aux variables binaires, comme les pixels"
-      ],
-      "reponses": [
-        2
-      ],
-      "explication": "Notebook 1, §5.3 : la KDE place une petite gaussienne de largeur $h$ sur chaque exemple (hyperparamètre). En dimension 1, elle retrouve l'erreur de Bayes avec $h = 0{,}3$ ; en dimension 9 ou 784, il faudrait astronomiquement plus d'exemples (fléau de la dimension)."
-    },
-    {
       "id": "bay-016",
       "type": "unique",
       "enonce": "Avant de choisir une loi pour chaque classe, quel est le bon réflexe ?",
@@ -553,21 +538,6 @@
         3
       ],
       "explication": "Notebook 3, §5.1 : les composantes sont les vecteurs propres de la matrice de covariance, rangés par valeur propre décroissante ; elles sont non corrélées. C'est la **LDA** (projection) qui cherche les directions qui séparent les classes."
-    },
-    {
-      "id": "bay-037",
-      "type": "unique",
-      "enonce": "Sur MNIST, combien de composantes principales faut-il pour garder environ 79 % de la variance ?",
-      "choix": [
-        "784",
-        "2",
-        "10",
-        "40"
-      ],
-      "reponses": [
-        3
-      ],
-      "explication": "Notebook 3, §5.2 : 2 composantes gardent 17 %, 10 en gardent 49 %, 40 en gardent 79 % (85 pour 90 %). Avec 40 composantes, les chiffres reconstruits sont parfaitement reconnaissables : l'information utile tient dans quelques dizaines de dimensions."
     },
     {
       "id": "bay-038",

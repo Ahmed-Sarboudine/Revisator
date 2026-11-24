@@ -1,0 +1,20 @@
+{
+  "notebooks": [
+    {
+      "fichier": "nb1.json",
+      "titre": "Classification et métriques"
+    },
+    {
+      "fichier": "nb2.json",
+      "titre": "Données"
+    },
+    {
+      "fichier": "nb3.json",
+      "titre": "Régression logistique"
+    },
+    {
+      "fichier": "nb4.json",
+      "titre": "Déséquilibre et seuil"
+    }
+  ]
+}

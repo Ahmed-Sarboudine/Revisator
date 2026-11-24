@@ -1,0 +1,13 @@
+{
+  "notebooks": [
+    {
+      "fichier": "nb1.json",
+      "titre": "Énoncé"
+    },
+    {
+      "fichier": "nb2.json",
+      "titre": "Correction",
+      "correction": true
+    }
+  ]
+}

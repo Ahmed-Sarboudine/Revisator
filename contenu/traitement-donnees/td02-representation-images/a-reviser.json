@@ -1,0 +1,25 @@
+{
+  "source": "Page « Contrôle final » du site du cours",
+  "priorite": null,
+  "theme": "Représentation des images",
+  "resume": "Le TD 2 n'est pas cité dans les conseils de révision. Le contrôle porte quand même sur les TD 1 à 4 : retiens le parallèle avec le sac-de-mots (dictionnaire, histogramme, IDF).",
+  "horsProgramme": [
+    "BM25"
+  ],
+  "notebooks": {
+    "nb1": {
+      "statut": "secondaire",
+      "message": "Pas cité dans les conseils de révision."
+    },
+    "nb2": {
+      "statut": "secondaire",
+      "message": "Pas cité dans les conseils de révision."
+    }
+  },
+  "sectionsHorsProgramme": [
+    {
+      "titre": "Une saturation des fortes valeurs, comme dans BM25",
+      "note": "BM25 est hors programme du contrôle."
+    }
+  ]
+}

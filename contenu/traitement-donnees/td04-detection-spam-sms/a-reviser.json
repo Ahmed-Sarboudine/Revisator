@@ -1,0 +1,74 @@
+{
+  "source": "Page « Contrôle final » du site du cours",
+  "priorite": 2,
+  "theme": "Toute la démarche, sur un cas réel",
+  "resume": "Tout le TD 4 est la priorité n°2 du prof : revois surtout les choix faits et les erreurs à éviter, plus que le code.",
+  "points": [
+    "Le piège des doublons entre apprentissage et test",
+    "Apprendre le dictionnaire sur l'apprentissage seulement",
+    "Les métriques à regarder quand le spam est rare",
+    "Lire les coefficients",
+    "Choisir le seuil selon l'usage, sans toucher au test"
+  ],
+  "horsProgramme": [
+    "AUC et courbe précision-rappel"
+  ],
+  "notebooks": {
+    "nb1": {
+      "statut": "entier",
+      "message": "Priorité n°2 : tout le TD. Les choix et les pièges comptent plus que le code.",
+      "points": [
+        {
+          "texte": "Le piège des doublons",
+          "section": "1.3 Un piège : les doublons"
+        },
+        {
+          "texte": "Les mots hors vocabulaire",
+          "section": "2.2 Les mots hors vocabulaire"
+        },
+        {
+          "texte": "Évaluer au seuil 0,5",
+          "section": "4.2 Évaluer au seuil 0,5"
+        },
+        {
+          "texte": "Choisir le seuil",
+          "section": "6. Choisir le seuil"
+        }
+      ]
+    },
+    "nb2": {
+      "statut": "entier",
+      "message": "Priorité n°2 : tout le TD. Les choix et les pièges comptent plus que le code.",
+      "points": [
+        {
+          "texte": "Le piège des doublons",
+          "section": "1.3 Un piège : les doublons"
+        },
+        {
+          "texte": "Les mots hors vocabulaire",
+          "section": "2.2 Les mots hors vocabulaire"
+        },
+        {
+          "texte": "Évaluer au seuil 0,5",
+          "section": "4.2 Évaluer au seuil 0,5"
+        },
+        {
+          "texte": "Choisir le seuil",
+          "section": "6. Choisir le seuil"
+        }
+      ]
+    }
+  },
+  "sections": [
+    {
+      "titre": "5.2 Courbes ROC et précision-rappel",
+      "note": "Lire la courbe ROC : à savoir. La courbe précision-rappel et l'AUC sont hors programme."
+    }
+  ],
+  "sectionsHorsProgramme": [
+    {
+      "titre": "8. Pour aller plus loin",
+      "note": "Partie facultative du TD."
+    }
+  ]
+}

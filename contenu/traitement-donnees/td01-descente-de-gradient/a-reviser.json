@@ -1,0 +1,38 @@
+{
+  "source": "Page « Contrôle final » du site du cours",
+  "priorite": 5,
+  "theme": "Les données et leur représentation",
+  "resume": "Pour le TD 1, le prof demande seulement le rôle du pas dans la descente de gradient (priorité n°5).",
+  "points": [
+    "Le rôle du pas : trop petit, trop grand, divergence",
+    "Le pas optimal"
+  ],
+  "horsProgramme": [
+    "La méthode du nombre d'or"
+  ],
+  "notebooks": {
+    "nb1": {
+      "statut": "partiel",
+      "message": "Seul le rôle du pas est à réviser : les parties concernées sont surlignées."
+    },
+    "nb2": {
+      "statut": "partiel",
+      "message": "Seul le rôle du pas est à réviser : les parties concernées sont surlignées."
+    }
+  },
+  "sections": [
+    {
+      "titre": "Méthode de gradient à pas fixe",
+      "note": "Le rôle du pas : ce qui se passe quand il est trop petit ou trop grand."
+    },
+    {
+      "titre": "Méthode du gradient à pas optimal"
+    }
+  ],
+  "sectionsHorsProgramme": [
+    {
+      "titre": "Méthode du nombre d'or",
+      "note": "La méthode du nombre d'or est hors programme du contrôle."
+    }
+  ]
+}

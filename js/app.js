@@ -4,6 +4,7 @@
 //   #/q/<matiere>/<doc>    QCM d'un cours ou d'un TD
 //   #/d/<matiere>/<doc>    document sans QCM : énoncé, aide (cours, fiche), correction
 //   #/lire/<matiere>/<doc>/<fichier>[/<page>]  un PDF du site dans le lecteur intégré
+//   #/nb/<matiere>/<doc>   notebooks Jupyter d'un cours ou d'un TD (code et résultats, rien n'est exécuté)
 //   #/examen/<matiere>/<n> examen de n questions sur toute la matière
 //   #/erreurs/<matiere>    questions ratées de la matière
 //   #/examens              liste des exams du semestre
@@ -28,6 +29,7 @@ import { icones } from "./icones.js";
 import { pageExamens, prochainExamen, epreuvesDatees, texteCompteARebours } from "./examens.js";
 import { boutonMenu, rendreNav } from "./nav.js";
 import { monterLecteur } from "./lecteur.js";
+import { monterNotebook, bandeauReviser } from "./notebook.js";
 import "./ambiance.js";
 
 const app = document.getElementById("app");
@@ -197,7 +199,11 @@ function ligneDocument(matiere, doc) {
         <span class="numero ${doc.document}" aria-hidden="true">${PREFIXES_NUMERO[doc.document]}${numero(doc)}</span>
         <span class="ligne-corps">
           <span class="ligne-titre">${echapper(doc.titre)}</span>
-          <span class="meta">${meta}</span>
+          <span class="meta">${meta}${
+            doc.aReviser?.priorite != null
+              ? ` <span class="badge-reviser" title="Priorité donnée par le prof pour l'exam">Exam · priorité ${doc.aReviser.priorite}</span>`
+              : ""
+          }</span>
         </span>
         <span class="chevron">${icones.suivant}</span>
       </a>
@@ -207,8 +213,14 @@ function ligneDocument(matiere, doc) {
           : ""
       }
       ${
+        doc.notebooks
+          ? `<a class="bouton-fiche" href="#/nb/${matiere.id}/${doc.id}" aria-label="Notebooks de ${echapper(doc.titre)}">${icones.code}<span>Notebook</span></a>`
+          : ""
+      }
+      ${
         // sans QCM, la correction se découvre sur la page de l'exercice, pas directement depuis la liste
-        doc.corrige && !sansQcm
+        // (avec des notebooks, la correction est dans l'onglet Correction du notebook)
+        doc.corrige && !sansQcm && !doc.notebooks
           ? `<a class="bouton-fiche" href="${routePdf(matiere.id, doc.id, "corrige.pdf")}" aria-label="Corrigé de ${echapper(doc.titre)}">${icones.corrige}<span>Corrigé</span></a>`
           : ""
       }
@@ -218,7 +230,7 @@ function ligneDocument(matiere, doc) {
           : ""
       }
       ${
-        doc.pdf
+        doc.pdf && !doc.notebooks
           ? `<a class="bouton-icone bouton-pdf" href="${routePdf(matiere.id, doc.id, "document.pdf")}" aria-label="Ouvrir le PDF du cours ${echapper(doc.titre)}">${icones.document}</a>`
           : ""
       }
@@ -525,6 +537,7 @@ async function pageLecture(idMatiere, idDoc, nomFichier, page) {
       <p class="surtitre">${echapper(matiere.nom)} · ${echapper(doc.titre)}</p>
       <h1>${echapper(libelle)}</h1>
     </header>
+    ${nomFichier === "document.pdf" ? bandeauReviser(await chargerAReviser(matiere, doc), { points: true }) : ""}
     <div class="zone-document"></div>`;
 
   // le bouton retour revient là d'où l'on vient (QCM, exercice, liste) plutôt qu'à la matière
@@ -538,6 +551,90 @@ async function pageLecture(idMatiere, idDoc, nomFichier, page) {
     url: `contenu/${matiere.id}/${doc.id}/${nomFichier}`,
     page: Number(page) || 1,
   });
+}
+
+// Ce que le prof demande de réviser pour l'exam (a-reviser.json), s'il y en a.
+async function chargerAReviser(matiere, doc) {
+  if (!doc.aReviser) return null;
+  try {
+    const rep = await fetch(`contenu/${matiere.id}/${doc.id}/a-reviser.json`);
+    return rep.ok ? await rep.json() : null;
+  } catch {
+    return null;
+  }
+}
+
+// Notebooks Jupyter d'un cours ou d'un TD : un onglet par notebook ; la correction d'un TD
+// reste masquée tant qu'on ne demande pas à la voir.
+async function pageNotebook(idMatiere, idDoc) {
+  const matiere = await trouverMatiere(idMatiere);
+  const doc = matiere.documents.find((d) => d.id === idDoc);
+  if (!doc?.notebooks) throw new ErreurContenu(`Pas de notebook pour « ${idDoc} » dans ${matiere.nom}.`);
+  document.title = `Notebook · ${doc.titre} · Revisator`;
+
+  const dossier = `contenu/${matiere.id}/${doc.id}/notebooks`;
+  const rep = await fetch(`${dossier}/notebooks.json`);
+  if (!rep.ok) throw new ErreurContenu(`Liste des notebooks introuvable pour « ${doc.titre} ».`);
+  const { notebooks } = await rep.json();
+  const aReviser = await chargerAReviser(matiere, doc);
+
+  app.innerHTML = `
+    ${barreRetour(`#/m/${matiere.id}`, `Retour à ${matiere.nom}`)}
+    <header class="entete-page">
+      <p class="surtitre">${echapper(matiere.nom)} · Notebook${notebooks.length > 1 ? "s" : ""}</p>
+      <h1>${echapper(doc.titre)}</h1>
+      <p class="exercices-lies">
+        <span>Code et résultats enregistrés, rien à lancer.</span>
+        ${doc.nbQuestions > 0 ? `<a href="#/q/${matiere.id}/${doc.id}">Faire le QCM</a>` : ""}
+        ${doc.fiche ? `<a href="${routePdf(matiere.id, doc.id, "fiche.pdf")}">Fiche de révision</a>` : ""}
+      </p>
+    </header>
+    ${bandeauReviser(aReviser)}
+    ${
+      notebooks.length > 1
+        ? `<div class="onglets" role="tablist" aria-label="Notebooks">
+            ${notebooks
+              .map(
+                (n, i) => `<button type="button" role="tab" class="onglet${n.correction ? " onglet-correction" : ""}" data-onglet="${i}" aria-selected="false">${n.correction ? icones.cadenas : ""}${notebooks.some((x) => x.correction) ? "" : `<span class="onglet-numero">${i + 1}</span>`}${echapper(n.titre)}</button>`
+              )
+              .join("")}
+          </div>`
+        : ""
+    }
+    <div class="zone-document" role="tabpanel"></div>`;
+
+  const zone = app.querySelector(".zone-document");
+  let correctionVue = false;
+
+  const ouvrir = (i) => {
+    const n = notebooks[i];
+    app.querySelectorAll(".onglet").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.onglet === String(i))));
+    if (n.correction && !correctionVue) {
+      zone.innerHTML = `
+        <div class="voile-correction">
+          <p class="voile-titre">La correction est prête.</p>
+          <p class="meta">Essaie d'écrire le code toi-même avant de la regarder : c'est comme ça qu'on retient.</p>
+          <button type="button" class="btn principal" data-afficher>Afficher la correction</button>
+        </div>`;
+      zone.querySelector("[data-afficher]").addEventListener("click", () => {
+        correctionVue = true;
+        app.querySelector(".onglet-correction")?.querySelector(".icone")?.remove();
+        ouvrir(i);
+      });
+      return;
+    }
+    monterNotebook(zone, dossier, n.fichier, aReviser);
+  };
+
+  app.querySelector(".onglets")?.addEventListener("click", (e) => {
+    const bouton = e.target.closest("[data-onglet]");
+    if (!bouton) return;
+    ouvrir(Number(bouton.dataset.onglet));
+    // en changeant de notebook, on repart du haut de la zone
+    const haut = zone.getBoundingClientRect().top + window.scrollY - 70;
+    if (window.scrollY > haut) window.scrollTo(0, haut);
+  });
+  ouvrir(0);
 }
 
 async function listeExamens() {
@@ -625,13 +722,14 @@ async function afficherRoute() {
     q: quizDocument,
     d: pageDocument,
     lire: pageLecture,
+    nb: pageNotebook,
     examen: quizExamen,
     erreurs: quizErreurs,
     examens: listeExamens,
   };
   const vue = vues[route] || accueil;
   app.classList.remove("theme-revision");
-  app.classList.toggle("page-lecture", route === "lire" || route === "d");
+  app.classList.toggle("page-lecture", route === "lire" || route === "d" || route === "nb");
   try {
     await vue(...params);
   } catch (e) {

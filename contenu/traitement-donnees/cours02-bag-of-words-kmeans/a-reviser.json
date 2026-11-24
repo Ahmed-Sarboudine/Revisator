@@ -1,0 +1,41 @@
+{
+  "source": "Page « Contrôle final » du site du cours",
+  "priorite": 5,
+  "theme": "Les données et leur représentation",
+  "resume": "Tout le cours 2 (sac-de-mots et K-Means) est au programme, en dernière priorité.",
+  "points": [
+    "Pourquoi et comment représenter un texte en sac-de-mots",
+    "Réduire le vocabulaire et pondérer par TF-IDF",
+    "K-Means : le critère, les deux étapes de chaque itération, l'initialisation",
+    "Choisir K, et l'importance de la mise à l'échelle"
+  ],
+  "horsProgramme": [
+    "BM25",
+    "Score de silhouette et ARI",
+    "Clustering spectral (ouverture)"
+  ],
+  "notebooks": {
+    "nb1": {
+      "statut": "entier",
+      "message": "Priorité n°5 : tout le notebook, sauf BM25."
+    },
+    "nb2": {
+      "statut": "entier",
+      "message": "Priorité n°5 : tout le notebook, sauf la silhouette, l'ARI et le clustering spectral."
+    }
+  },
+  "sectionsHorsProgramme": [
+    {
+      "titre": "Étape 6 : une autre mesure de pertinence",
+      "note": "BM25 est hors programme du contrôle."
+    },
+    {
+      "titre": "D'autres métriques pour évaluer un clustering",
+      "note": "Le score de silhouette et l'ARI sont hors programme du contrôle."
+    },
+    {
+      "titre": "Un aperçu d'une autre famille de méthodes : le clustering spectral",
+      "note": "Ouverture : hors programme du contrôle."
+    }
+  ]
+}
